@@ -43,9 +43,11 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import Aura from '@primeng/themes/aura'; // @browser
+import { TaonCmsAbstractContext } from '@taon-dev/cms/src';
 import { Translation, TranslationManager } from '@taon-dev/i18n/src';
 // TranslationManager.globalDefautlLanguageOverride = 'pl-PL';
 import { TranslateDirective } from '@taon-dev/i18n/src'; // @browser
+import { TaonSessionAbstractContext } from '@taon-dev/session/src';
 import { providePrimeNG } from 'primeng/config'; // @browser
 import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
 import {
@@ -486,24 +488,7 @@ class UserMigration extends TaonBaseMigration {
 //#region  cms context
 var CmsContext = Taon.createContext(() => ({
   ...HOST_CONFIG['CmsContext'],
-  contexts: { TaonBaseContext },
-
-  //#region @websql
-  /**
-   * In production use specyfic for this context name
-   * generated migration object from  ./migrations/index.ts.
-   */
-  migrations: {
-    UserMigration,
-  },
-  //#endregion
-
-  controllers: {
-    UserController,
-  },
-  entities: {
-    User,
-  },
+  contexts: { TaonCmsAbstractContext, TaonSessionAbstractContext },
   database: true,
   disabledRealtime: true,
 }));
