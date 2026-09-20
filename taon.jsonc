@@ -10,7 +10,10 @@
   "version": "v21",
   "shouldGenerateAutogenIndexFile": true,
   "generateTranslationsFor": ["en-US", "pl-PL"],
-  "isomorphicDependenciesForNpmLib": ["@taon-dev/session"],
+  "isomorphicDependenciesForNpmLib": [
+    "@taon-dev/session",
+    "@taon-dev/e-commerce",
+  ],
   "shouldGenerateTranslationFiles": true,
   "shouldGenerateAutogenAppRoutesFile": true,
   "autoReleaseConfigAllowedItems": [
