@@ -9,8 +9,8 @@ import { TaonCmsCommentMiddleware } from './taon-cms-comment.middleware';
 import { TaonCmsCommentSubscriber } from './taon-cms-comment.subscriber';
 //#endregion
 
-export const TaonCmsCommentContext = createContext(() => ({
-  contextName: 'TaonCmsCommentContext',
+export const TaonCmsCommentAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsCommentAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsCommentEntity },

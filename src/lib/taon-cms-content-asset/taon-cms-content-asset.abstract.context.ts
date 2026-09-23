@@ -9,8 +9,8 @@ import { TaonCmsContentAssetMiddleware } from './taon-cms-content-asset.middlewa
 import { TaonCmsContentAssetSubscriber } from './taon-cms-content-asset.subscriber';
 //#endregion
 
-export const TaonCmsContentAssetContext = createContext(() => ({
-  contextName: 'TaonCmsContentAssetContext',
+export const TaonCmsContentAssetAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsContentAssetAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsContentAssetEntity },

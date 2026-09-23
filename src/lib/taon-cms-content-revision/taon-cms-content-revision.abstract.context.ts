@@ -9,8 +9,8 @@ import { TaonCmsContentRevisionMiddleware } from './taon-cms-content-revision.mi
 import { TaonCmsContentRevisionSubscriber } from './taon-cms-content-revision.subscriber';
 //#endregion
 
-export const TaonCmsContentRevisionContext = createContext(() => ({
-  contextName: 'TaonCmsContentRevisionContext',
+export const TaonCmsContentRevisionAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsContentRevisionAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsContentRevisionEntity },

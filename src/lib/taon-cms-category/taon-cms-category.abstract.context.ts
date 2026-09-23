@@ -9,8 +9,8 @@ import { TaonCmsCategoryMiddleware } from './taon-cms-category.middleware';
 import { TaonCmsCategorySubscriber } from './taon-cms-category.subscriber';
 //#endregion
 
-export const TaonCmsCategoryContext = createContext(() => ({
-  contextName: 'TaonCmsCategoryContext',
+export const TaonCmsCategoryAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsCategoryAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsCategoryEntity },

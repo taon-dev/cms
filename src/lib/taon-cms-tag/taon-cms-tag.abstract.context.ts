@@ -9,8 +9,8 @@ import { TaonCmsTagMiddleware } from './taon-cms-tag.middleware';
 import { TaonCmsTagSubscriber } from './taon-cms-tag.subscriber';
 //#endregion
 
-export const TaonCmsTagContext = createContext(() => ({
-  contextName: 'TaonCmsTagContext',
+export const TaonCmsTagAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsTagAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsTagEntity },

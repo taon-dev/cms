@@ -9,8 +9,8 @@ import { TaonCmsContentPermissionMiddleware } from './taon-cms-content-permissio
 import { TaonCmsContentPermissionSubscriber } from './taon-cms-content-permission.subscriber';
 //#endregion
 
-export const TaonCmsContentPermissionContext = createContext(() => ({
-  contextName: 'TaonCmsContentPermissionContext',
+export const TaonCmsContentPermissionAbstractContext = createContext(() => ({
+  contextName: 'TaonCmsContentPermissionAbstractContext',
   abstract: true,
   contexts: { TaonBaseContext },
   entities: { TaonCmsContentPermissionEntity },

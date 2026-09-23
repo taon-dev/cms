@@ -8,6 +8,9 @@ export * from './my-organization-proj';
 export * from './start-cli'; 
 export * from './taon-cms.abstract.context'; 
 export * from './i18n/lib.translation'; 
+export * from './taon-cms-backoffice/taon-cms-backoffice.component'; // @browser
+export * from './taon-cms-backoffice/taon-cms-backoffice.models'; 
+export * from './taon-cms-backoffice/taon-cms-backoffice.routes'; // @browser
 export * from './taon-cms-category/taon-cms-category-api.service'; // @browser
 export * from './taon-cms-category/taon-cms-category.abstract.context'; 
 export * from './taon-cms-category/taon-cms-category.constants'; 
