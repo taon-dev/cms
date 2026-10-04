@@ -3,6 +3,7 @@
 // This disable this auto generate file.
 // set property "shouldGenerateAutogenIndexFile: false" 
 // in taon.jsonc of your project. 
+export * from './app.data'; 
 export * from './build-info._auto-generated_'; 
 export * from './my-organization-proj'; 
 export * from './start-cli'; 

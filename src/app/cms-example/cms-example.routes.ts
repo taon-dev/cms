@@ -3,11 +3,11 @@ import { Routes } from '@angular/router';
 import { adminLazyRoute } from '@taon-dev/ui/src';
 //#endregion
 
-export const TaonCmsBackofficeRoutes: Routes = [
+export const CmsExampleRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./taon-cms-backoffice.component').then(m => m.TaonCmsBackofficeComponent),
+      import('./cms-example.component').then(m => m.CmsExampleComponent),
 
     children: [
       // adminLazyRoute({
@@ -23,8 +23,8 @@ export const TaonCmsBackofficeRoutes: Routes = [
 ];
 
 /**
- * By default exporting TaonCmsBackofficeRoutes,
+ * By default exporting CmsExampleRoutes,
  * the command `taon generate:app:routes`
  * will automatically add them to the root routes in ./src/app.ts.
  */
-// export default TaonCmsBackofficeRoutes;
+// export default CmsExampleRoutes;

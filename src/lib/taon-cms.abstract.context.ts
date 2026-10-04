@@ -1,5 +1,7 @@
 // THIS FILE IS GENERATED - DO NOT MODIFY
+import { TaonSessionAbstractContext } from '@taon-dev/session/src';
 import { createContext, TaonBaseContext } from 'taon/src';
+
 import { TaonCmsCategoryAbstractContext } from './taon-cms-category/taon-cms-category.abstract.context';
 import { TaonCmsCommentAbstractContext } from './taon-cms-comment/taon-cms-comment.abstract.context';
 import { TaonCmsContentAbstractContext } from './taon-cms-content/taon-cms-content.abstract.context';
@@ -21,6 +23,7 @@ export const TaonCmsAbstractContext = createContext(() => ({
     TaonCmsContentRevisionAbstractContext,
     TaonCmsContentTagAbstractContext,
     TaonCmsTagAbstractContext,
+    TaonSessionAbstractContext,
   },
 }));
 
