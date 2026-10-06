@@ -1,6 +1,7 @@
 import { Taon } from 'taon/src';
 
 import type { TaonCmsContentFields } from './taon-cms-content.models';
+import { TaonCmsContentType } from './taon-cms-content.models';
 
 export function contentError(message: string, status = 400): never {
   Taon.error({ message, status });
@@ -23,20 +24,31 @@ export function requireContentVersion(
 }
 
 export function validateContentInput(
-  input: Partial<TaonCmsContentFields> & { tagIds?: number[] },
+  input: Partial<TaonCmsContentFields> & {
+    tagIds?: number[];
+    relatedPostIds?: number[];
+  },
   creating = false,
 ): void {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     contentError('Content must be an object.');
   }
-  for (const field of ['type', 'title', 'slug'] as const) {
+  if (
+    input.type !== undefined &&
+    !Object.values(TaonCmsContentType).includes(input.type)
+  ) {
+    contentError('type must be normal, video, audio, or attachment.');
+  }
+  for (const field of ['title', 'slug'] as const) {
     if (creating || input[field] !== undefined) {
       if (typeof input[field] !== 'string' || !input[field].trim()) {
         contentError(`${field} must be a non-empty string.`);
       }
     }
   }
-  for (const field of ['body', 'excerpt'] as const) {
+  for (const field of [
+    'body', 'excerpt', 'videoKey', 'audioKey', 'attachmentKey',
+  ] as const) {
     if (
       input[field] !== undefined &&
       input[field] !== null &&
@@ -67,12 +79,15 @@ export function validateContentInput(
       contentError('publishedAt must be a valid date or null.');
     }
   }
-  if (input.tagIds !== undefined) {
-    if (!Array.isArray(input.tagIds)) {
-      contentError('tagIds must be an array.');
-    }
-    for (const id of input.tagIds) {
-      requireContentId(id, 'tagId');
+  for (const field of ['tagIds', 'relatedPostIds'] as const) {
+    const ids = input[field];
+    if (ids !== undefined) {
+      if (!Array.isArray(ids)) {
+        contentError(`${field} must be an array.`);
+      }
+      for (const id of ids) {
+        requireContentId(id, field === 'tagIds' ? 'tagId' : 'relatedPostId');
+      }
     }
   }
 }

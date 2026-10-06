@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Add related post</h2>
+<mat-dialog-content>
+  <label class="search-field">
+    <span>Search posts</span>
+    <input type="search" aria-label="Search posts by ID, title or slug" [value]="query()" [disabled]="loading()" (input)="search($event)" />
+  </label>
+  @if (loading()) {
+    <p role="status">Loading posts...</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+    <button mat-button type="button" (click)="load()">Try again</button>
+  } @else {
+    <mat-radio-group aria-label="Related post" [value]="selected()" (change)="selected.set($event.value)">
+      @for (post of filteredPosts(); track post.id) {
+        <mat-radio-button [value]="post.id">
+          #{{ post.id }} - {{ post.title }} <span class="slug">{{ post.slug }}</span>
+        </mat-radio-button>
+      } @empty {
+        <p>No matching posts available.</p>
+      }
+    </mat-radio-group>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button type="button" [disabled]="loading() || !!error() || selected() === null" (click)="choose()">Add related post</button>
+</mat-dialog-actions>

@@ -97,3 +97,34 @@
   padding: 1rem;
   color: #b3261e;
 }
+
+.post-type-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.media-attachment,
+.related-posts {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
+.related-posts {
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+}

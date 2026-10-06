@@ -2,6 +2,7 @@ export * from './taon-cms-content-api.service'; // @browser
 export * from './taon-cms-content.abstract.context';
 export * from './taon-cms-content.constants';
 export * from './taon-cms-content.controller';
+export * from './taon-cms-content-storage.controller';
 export * from './taon-cms-content.entity';
 export * from './taon-cms-content.middleware';
 export * from './taon-cms-content.models';

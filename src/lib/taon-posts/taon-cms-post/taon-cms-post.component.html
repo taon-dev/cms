@@ -27,7 +27,7 @@
       }
     </div>
     @if (busy()) {
-      <span role="status">Saving...</span>
+      <span role="status">{{ uploading() ? 'Uploading...' : 'Saving...' }}</span>
     }
   </header>
   @if (error()) {
@@ -37,6 +37,16 @@
 
 <article class="post-article" [attr.aria-busy]="busy()">
   @if (editing()) {
+    <mat-radio-group
+      class="post-type-selector"
+      aria-label="Post type"
+      [value]="draft().type"
+      [disabled]="busy() || dialogOpen()"
+      (change)="updateDraft('type', $event.value)">
+      @for (type of postTypes; track type.value) {
+        <mat-radio-button [value]="type.value">{{ type.label }}</mat-radio-button>
+      }
+    </mat-radio-group>
     <div
       class="post-title editable"
       contenteditable="true"
@@ -73,6 +83,49 @@
       <span>URL slug</span>
       <input aria-label="URL slug" [value]="draft().slug" [disabled]="busy() || dialogOpen()" (input)="updateSlug($event)" placeholder="my-post" />
     </label>
+    @if (mediaAttachment(); as media) {
+      <section class="media-attachment" aria-labelledby="media-attachment-heading">
+        <h2 id="media-attachment-heading">{{ media.heading }}</h2>
+        @if (draft()[media.key]; as key) {
+          <p>Attached file: {{ key }}</p>
+          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="removeMedia()">Remove</button>
+        } @else {
+          <input
+            #mediaInput
+            hidden
+            type="file"
+            [accept]="media.accept"
+            [disabled]="busy() || dialogOpen()"
+            (change)="fileSelected($event)" />
+          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="mediaInput.click()">{{ media.uploadLabel }}</button>
+        }
+      </section>
+    }
+    <section class="related-posts" aria-labelledby="related-posts-heading">
+      <h2 id="related-posts-heading">Related posts</h2>
+      @if (relatedPostsLoading()) {
+        <p role="status">Loading related posts...</p>
+      } @else if (relatedPostsError()) {
+        <p class="error" role="alert">{{ relatedPostsError() }}</p>
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadRelatedPosts()">Try again</button>
+      } @else {
+        <ul>
+          @for (post of relatedPosts(); track post.id) {
+            <li>
+              <span>#{{ post.id }} - {{ post.title }}</span>
+              <button mat-icon-button type="button" [attr.aria-label]="'Remove related post ' + post.title" [disabled]="busy() || dialogOpen()" (click)="removeRelatedPost(post.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </li>
+          } @empty {
+            <li>No related posts yet.</li>
+          }
+        </ul>
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="addRelatedPost()">
+          <mat-icon>add</mat-icon> Add related post
+        </button>
+      }
+    </section>
   } @else if (currentPost(); as post) {
     <h1 class="post-title">{{ post.title }}</h1>
     @if (post.excerpt) {

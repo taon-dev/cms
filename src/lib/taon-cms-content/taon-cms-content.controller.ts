@@ -33,6 +33,9 @@ import { TaonCmsContentRepository } from './taon-cms-content.repository';
     'deleteContent',
     'restoreContent',
     'listRevisions',
+    'listRelatedPosts',
+    'addRelatedPost',
+    'deleteRelatedPost',
     'paginationQuery'
   ],
 })
@@ -79,6 +82,41 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
     return async () => this.taonCmsContentRepository.restoreContent(id, input);
+    //#endregion
+  }
+
+  @GET()
+  listRelatedPosts(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsContentEntity[]> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.listRelatedPosts(id);
+    //#endregion
+  }
+
+  @POST()
+  addRelatedPost(
+    @Query('id') id: number,
+    @Query('relatedPostId') relatedPostId: number,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.addRelatedPost(
+      id, relatedPostId, expectedVersion,
+    );
+    //#endregion
+  }
+
+  @DELETE()
+  deleteRelatedPost(
+    @Query('id') id: number,
+    @Query('relatedPostId') relatedPostId: number,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.deleteRelatedPost(
+      id, relatedPostId, expectedVersion,
+    );
     //#endregion
   }
 

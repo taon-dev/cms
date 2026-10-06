@@ -1,6 +1,8 @@
 //#region imports
 import {
   Column,
+  JoinTable,
+  ManyToMany,
   CustomColumn,
   PrimaryGeneratedColumn,
   Taon,
@@ -11,6 +13,7 @@ import {
 import { _ } from 'tnp-core/src';
 
 import { TaonCmsContentDefaultsValues } from './taon-cms-content.constants';
+import { TaonCmsContentType } from './taon-cms-content.models';
 //#endregion
 
 @TaonEntity({
@@ -29,10 +32,9 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   version: number;
 
   //#region @websql
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', default: TaonCmsContentType.Normal })
   //#endregion
-  type: string;
-  // article | video | audio | page | file
+  type: TaonCmsContentType = TaonCmsContentType.Normal;
 
   //#region @websql
   @Column({ type: 'varchar' })
@@ -45,6 +47,16 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   slug: string;
 
   //#region @websql
+  @ManyToMany(() => TaonCmsContentEntity)
+  @JoinTable({
+    name: 'taon_cms_related_posts',
+    joinColumn: { name: 'contentId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'relatedPostId', referencedColumnName: 'id' },
+  })
+  //#endregion
+  relatedPosts: TaonCmsContentEntity[];
+
+  //#region @websql
   @Column({ type: 'text', nullable: true })
   //#endregion
   excerpt: string | null;
@@ -53,6 +65,21 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   @Column({ type: 'text', nullable: true })
   //#endregion
   body: string | null;
+
+  //#region @websql
+  @Column({ type: 'varchar', nullable: true })
+  //#endregion
+  videoKey: string | null = null;
+
+  //#region @websql
+  @Column({ type: 'varchar', nullable: true })
+  //#endregion
+  audioKey: string | null = null;
+
+  //#region @websql
+  @Column({ type: 'varchar', nullable: true })
+  //#endregion
+  attachmentKey: string | null = null;
 
   //#region @websql
   @Column({ type: 'integer', nullable: true })

@@ -1,6 +1,6 @@
 //#region imports
 import { TaonBaseRepository, TaonRepository } from 'taon/src';
-import { Raw } from 'taon-typeorm/src';
+import { In, Raw } from 'taon-typeorm/src';
 import type { EntityManager } from 'taon-typeorm/src';
 
 import { TaonCmsCategoryRepository } from '../taon-cms-category/taon-cms-category.repository';
@@ -10,6 +10,7 @@ import { TaonCmsContentTagRepository } from '../taon-cms-content-tag/taon-cms-co
 import { TaonCmsTagRepository } from '../taon-cms-tag/taon-cms-tag.repository';
 
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
+import { TaonCmsContentType } from './taon-cms-content.models';
 import type {
   TaonCmsContentFields,
   TaonCmsContentSnapshot,
@@ -54,6 +55,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     return this.connection.transaction(async manager => {
       const fields = this.contentFields(input);
       const tagIds = [...new Set(input.tagIds ?? [])];
+      const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
       await this.validateReferences(fields, tagIds, manager);
       await this.requireAvailableSlug(fields.slug, manager);
       const repository = manager.getRepository<TaonCmsContentEntity>(
@@ -69,12 +71,13 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         }),
       );
       await this.taonCmsContentTagRepository.replaceTags(content.id, tagIds, manager);
+      await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
       await this.taonCmsContentRevisionRepository.recordContent(
         content,
-        { ...fields, tagIds },
+        { ...fields, tagIds, relatedPostIds },
         manager,
       );
-      return content;
+      return this.requireContent(content.id, manager);
     });
     //#endregion
   }
@@ -95,10 +98,14 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         input.tagIds === undefined
           ? snapshot.tagIds
           : [...new Set(input.tagIds)];
+      const relatedPostIds =
+        input.relatedPostIds === undefined
+          ? snapshot.relatedPostIds
+          : [...new Set(input.relatedPostIds)];
       return this.commitUpdate(
         current,
         input.expectedVersion,
-        { ...fields, tagIds },
+        { ...fields, tagIds, relatedPostIds },
         manager,
       );
     });
@@ -159,8 +166,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       }
       validateContentInput(revision.snapshot, true);
       const snapshot = {
-        ...this.contentFields(revision.snapshot),
+        // Older complete snapshots predate primary media; preserve those keys.
+        ...this.contentFields(revision.snapshot, await this.snapshotOf(current, manager)),
         tagIds: revision.snapshot.tagIds,
+        relatedPostIds: revision.snapshot.relatedPostIds ?? [],
       };
       return this.commitUpdate(
         current,
@@ -182,6 +191,61 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async listRelatedPosts(id: number): Promise<TaonCmsContentEntity[]> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager =>
+      (await this.requireContent(id, manager)).relatedPosts,
+    );
+    //#endregion
+  }
+
+  async addRelatedPost(
+    id: number,
+    relatedPostId: number,
+    expectedVersion: number,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return this.changeRelatedPost(id, relatedPostId, expectedVersion, true);
+    //#endregion
+  }
+
+  async deleteRelatedPost(
+    id: number,
+    relatedPostId: number,
+    expectedVersion: number,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return this.changeRelatedPost(id, relatedPostId, expectedVersion, false);
+    //#endregion
+  }
+
+  private async changeRelatedPost(
+    id: number,
+    relatedPostId: number,
+    expectedVersion: number,
+    adding: boolean,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    requireContentId(id);
+    requireContentId(relatedPostId, 'relatedPostId');
+    requireContentVersion(expectedVersion);
+    if (id === relatedPostId) {
+      contentError('A post cannot relate to itself.');
+    }
+    return this.connection.transaction(async manager => {
+      const current = await this.requireContent(id, manager);
+      await this.requireContent(relatedPostId, manager);
+      const snapshot = await this.snapshotOf(current, manager);
+      const ids = snapshot.relatedPostIds ?? [];
+      snapshot.relatedPostIds = adding
+        ? [...new Set([...ids, relatedPostId])]
+        : ids.filter(postId => postId !== relatedPostId);
+      return this.commitUpdate(current, expectedVersion, snapshot, manager);
+    });
+    //#endregion
+  }
+
   private async requireContent(
     id: number,
     manager: EntityManager,
@@ -189,7 +253,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#region @websqlFunc
     const content = await manager
       .getRepository<TaonCmsContentEntity>(this.target)
-      .findOneBy({ id });
+      .findOne({ where: { id }, relations: { relatedPosts: true } });
     if (!content) {
       contentError(`Content ${id} does not exist.`, 404);
     }
@@ -201,11 +265,11 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     input: Partial<TaonCmsContentFields>,
     current?: TaonCmsContentFields,
   ): TaonCmsContentFields {
-    const type = input.type ?? current?.type;
+    const type = input.type ?? current?.type ?? TaonCmsContentType.Normal;
     const title = input.title ?? current?.title;
     const slug = input.slug ?? current?.slug;
-    if (type === undefined || title === undefined || slug === undefined) {
-      contentError('type, title, and slug are required.');
+    if (title === undefined || slug === undefined) {
+      contentError('title and slug are required.');
     }
     const publishedAt =
       input.publishedAt === undefined
@@ -216,6 +280,14 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       title,
       slug,
       body: input.body === undefined ? (current?.body ?? null) : input.body,
+      videoKey:
+        input.videoKey === undefined ? (current?.videoKey ?? null) : input.videoKey,
+      audioKey:
+        input.audioKey === undefined ? (current?.audioKey ?? null) : input.audioKey,
+      attachmentKey:
+        input.attachmentKey === undefined
+          ? (current?.attachmentKey ?? null)
+          : input.attachmentKey,
       excerpt:
         input.excerpt === undefined
           ? (current?.excerpt ?? null)
@@ -244,6 +316,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         status: this.contentStatus(content.status),
       }),
       tagIds: await this.taonCmsContentTagRepository.findTagIds(content.id, manager),
+      relatedPostIds: content.relatedPosts.map(post => post.id),
     };
     //#endregion
   }
@@ -283,6 +356,36 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  private async replaceRelatedPosts(
+    id: number,
+    relatedPostIds: number[],
+    previousIds: number[],
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    if (relatedPostIds.includes(id)) {
+      contentError('A post cannot relate to itself.');
+    }
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    if (relatedPostIds.length) {
+      const posts = await repository.findBy({ id: In(relatedPostIds) });
+      const foundIds = new Set(posts.map(post => post.id));
+      const missingId = relatedPostIds.find(postId => !foundIds.has(postId));
+      if (missingId !== undefined) {
+        contentError(`Content ${missingId} does not exist.`, 404);
+      }
+    }
+    const added = relatedPostIds.filter(postId => !previousIds.includes(postId));
+    const removed = previousIds.filter(postId => !relatedPostIds.includes(postId));
+    if (added.length || removed.length) {
+      await repository.createQueryBuilder()
+        .relation('relatedPosts')
+        .of(id)
+        .addAndRemove(added, removed);
+    }
+    //#endregion
+  }
+
   private async commitUpdate(
     current: TaonCmsContentEntity,
     expectedVersion: number,
@@ -316,10 +419,20 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       contentError('Content has changed. Reload it before editing.', 409);
     }
     await this.taonCmsContentTagRepository.replaceTags(current.id, snapshot.tagIds, manager);
+    await this.replaceRelatedPosts(
+      current.id,
+      [...new Set(snapshot.relatedPostIds ?? [])],
+      current.relatedPosts.map(post => post.id),
+      manager,
+    );
     const updated = await this.requireContent(current.id, manager);
     await this.taonCmsContentRevisionRepository.recordContent(
       updated,
-      { ...fields, tagIds: snapshot.tagIds },
+      {
+        ...fields,
+        tagIds: snapshot.tagIds,
+        relatedPostIds: updated.relatedPosts.map(post => post.id),
+      },
       manager,
     );
     return updated;

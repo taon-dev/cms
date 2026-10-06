@@ -12,6 +12,7 @@ import { TaonCmsContentMiddleware } from './taon-cms-content.middleware';
 import { TaonCmsContentProvider } from './taon-cms-content.provider';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { TaonCmsContentSubscriber } from './taon-cms-content.subscriber';
+import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
 
 //#endregion
 
@@ -26,7 +27,7 @@ export const TaonCmsContentAbstractContext = createContext(() => ({
     TaonCmsContentRevisionAbstractContext,
   },
   entities: { TaonCmsContentEntity },
-  controllers: { TaonCmsContentController },
+  controllers: { TaonCmsContentController, TaonCmsContentStorageController },
   repositories: { TaonCmsContentRepository },
   providers: { TaonCmsContentProvider },
   middlewares: { TaonCmsContentMiddleware },
