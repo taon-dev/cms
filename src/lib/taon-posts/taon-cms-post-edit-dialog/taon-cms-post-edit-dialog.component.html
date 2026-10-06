@@ -1,0 +1,12 @@
+<header class="dialog-header">
+  <h2>{{ data.mode === 'add' ? 'Add post' : 'Manage post' }}</h2>
+  <button mat-icon-button type="button" aria-label="Close post editor" [disabled]="editor()?.busy() || editor()?.dialogOpen()" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+<taon-cms-post
+  [post]="data.post ?? null"
+  [mode]="data.mode"
+  (changed)="changed.emit($event)"
+  (deleted)="deleted($event)"
+  (cancelled)="close()" />

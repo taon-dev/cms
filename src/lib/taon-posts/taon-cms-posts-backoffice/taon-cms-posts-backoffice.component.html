@@ -1,4 +1,14 @@
-<router-outlet></router-outlet>
-<p>
-  taon-cms-posts-backoffice works!
-</p>
+<h1>CMS posts</h1>
+@if (loading()) {
+  <p role="status">Loading posts...</p>
+}
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+<taon-datatable
+  [entityCrudController]="crud"
+  [columns]="columns"
+  [allowedColumns]="['id', 'title', 'status']"
+  searchMode="advanced"
+  (addingItem)="add()">
+</taon-datatable>

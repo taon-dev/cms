@@ -1,4 +1,85 @@
-<router-outlet></router-outlet>
-<p>
-  taon-cms-post works!
-</p>
+@if (mode() !== 'view-clean') {
+  <header class="post-actions">
+    <span class="post-status">{{ mode() === 'add' ? 'New draft' : currentPost()?.status }}</span>
+    <div class="buttons">
+      @if (editing()) {
+        <button mat-flat-button type="button" [disabled]="busy() || dialogOpen() || !canSave()" (click)="save()">
+          {{ mode() === 'add' ? 'Add' : 'Save' }}
+        </button>
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="cancel()">Cancel</button>
+      } @else if (currentPost()) {
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="edit()">
+          <mat-icon>edit</mat-icon> Edit
+        </button>
+      }
+      @if (mode() !== 'add' && currentPost()) {
+        @if (canPublish()) {
+          <button mat-flat-button type="button" [disabled]="busy() || dialogOpen() || (editing() && !canSave())" (click)="publish()">Publish</button>
+        }
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="revert()">
+          <mat-icon>history</mat-icon> Revert
+        </button>
+        @if (currentPost()?.status !== 'archived') {
+          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="delete()">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        }
+      }
+    </div>
+    @if (busy()) {
+      <span role="status">Saving...</span>
+    }
+  </header>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+}
+
+<article class="post-article" [attr.aria-busy]="busy()">
+  @if (editing()) {
+    <div
+      class="post-title editable"
+      contenteditable="true"
+      role="textbox"
+      aria-label="Post title"
+      aria-required="true"
+      data-placeholder="Title"
+      [attr.contenteditable]="!busy() && !dialogOpen()"
+      [taonCmsEditableSingleLine]="true"
+      [taonCmsEditable]="draft().title"
+      (taonCmsEditableChange)="updateDraft('title', $event)"></div>
+    <div
+      class="post-excerpt editable"
+      contenteditable="true"
+      role="textbox"
+      aria-label="Post excerpt"
+      aria-multiline="true"
+      data-placeholder="A short introduction..."
+      [attr.contenteditable]="!busy() && !dialogOpen()"
+      [taonCmsEditable]="draft().excerpt"
+      (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
+    <div
+      class="post-body editable"
+      contenteditable="true"
+      role="textbox"
+      aria-label="Post body"
+      aria-multiline="true"
+      data-placeholder="Tell your story..."
+      [attr.contenteditable]="!busy() && !dialogOpen()"
+      taonCmsEditableFormat="html"
+      [taonCmsEditable]="draft().body"
+      (taonCmsEditableChange)="updateDraft('body', $event)"></div>
+    <label class="slug-field">
+      <span>URL slug</span>
+      <input aria-label="URL slug" [value]="draft().slug" [disabled]="busy() || dialogOpen()" (input)="updateSlug($event)" placeholder="my-post" />
+    </label>
+  } @else if (currentPost(); as post) {
+    <h1 class="post-title">{{ post.title }}</h1>
+    @if (post.excerpt) {
+      <p class="post-excerpt">{{ post.excerpt }}</p>
+    }
+    <div class="post-body" [innerHTML]="post.body"></div>
+  } @else {
+    <p role="status">No post is loaded.</p>
+  }
+</article>

@@ -1,7 +1,28 @@
 //#region imports
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MtxGridColumn } from '@ng-matero/extensions/grid';
+import {
+  TaonConfirmDialogComponent,
+  TaonDatatableComponent,
+} from '@taon-dev/ui/src';
+import { Subject, finalize, takeUntil } from 'rxjs';
+
+import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
+import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
+import { TaonCmsPostEditDialogComponent } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
+import type { TaonCmsPostEditDialogData } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
 //#endregion
 
 @Component({
@@ -9,6 +30,131 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './taon-cms-posts-backoffice.component.html',
   styleUrls: ['./taon-cms-posts-backoffice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, RouterOutlet],
+  imports: [MatButtonModule, TaonDatatableComponent],
+  providers: [TaonCmsContentApiService],
 })
-export class TaonCmsPostsBackofficeComponent {}
+export class TaonCmsPostsBackofficeComponent {
+  @ViewChild(TaonDatatableComponent)
+  readonly datatable!: TaonDatatableComponent;
+
+  readonly taonCmsContentApiService = inject(TaonCmsContentApiService);
+
+  readonly posts = signal<TaonCmsContentEntity[]>([]);
+
+  readonly loading = signal(false);
+
+  readonly deleting = signal<number | null>(null);
+
+  readonly error = signal('');
+
+  private readonly dialog = inject(MatDialog);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly cancelLoad$ = new Subject<void>();
+
+  public get crud() {
+    return this.taonCmsContentApiService.taonCmsContentController;
+  }
+
+  readonly columns: MtxGridColumn[] = [
+    { header: 'ID', field: 'id', sortable: true },
+    { header: 'Title', field: 'title', sortable: true },
+    { header: 'Status', field: 'status', sortable: true },
+    {
+      header: 'Actions',
+      field: 'actions',
+      type: 'button',
+      buttons: [
+        {
+          type: 'icon',
+          icon: 'edit',
+          tooltip: 'Edit post',
+          click: (post: TaonCmsContentEntity) => this.edit(post),
+        },
+        {
+          type: 'icon',
+          icon: 'delete',
+          tooltip: 'Delete (archive) post',
+          disabled: (post: TaonCmsContentEntity) =>
+            post.status === 'archived' || this.deleting() !== null,
+          click: (post: TaonCmsContentEntity) => this.delete(post),
+        },
+      ],
+    },
+  ];
+
+  reload(): void {
+    this.datatable.reload();
+  }
+
+  ngAfterViewInit(): void {
+    this.reload();
+  }
+
+  add(): void {
+    this.openEditor({ mode: 'add' });
+  }
+
+  edit(post: TaonCmsContentEntity): void {
+    this.openEditor({ mode: 'edit', post });
+  }
+
+  delete(post: TaonCmsContentEntity): void {
+    if (this.deleting() !== null || post.status === 'archived') {
+      return;
+    }
+    this.deleting.set(post.id);
+    const ref = this.dialog.open(TaonConfirmDialogComponent, {
+      data: {
+        title: 'Delete post?',
+        message:
+          'This archives the post. It can be restored from its revisions.',
+        confirmText: 'Delete',
+      },
+    });
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(confirmed => {
+        if (!confirmed) {
+          this.deleting.set(null);
+          return;
+        }
+        this.error.set('');
+        this.taonCmsContentApiService
+          .deleteContent(post.id, post.version)
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.deleting.set(null)),
+          )
+          .subscribe({
+            next: () => this.reload(),
+            error: (error: unknown) => {
+              console.error(
+                '[taon-cms-posts-backoffice] Unable to delete post',
+                error,
+              );
+              this.error.set(
+                'The post could not be deleted. Refresh the table before retrying.',
+              );
+            },
+          });
+      });
+  }
+
+  private openEditor(data: TaonCmsPostEditDialogData): void {
+    const ref = this.dialog.open(TaonCmsPostEditDialogComponent, {
+      data,
+      width: '100vw',
+      height: '100dvh',
+      maxWidth: '100vw',
+      maxHeight: '100dvh',
+      disableClose: true,
+      autoFocus: 'first-tabbable',
+    });
+    ref.componentInstance.changed
+      .pipe(takeUntil(ref.afterClosed()), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.reload());
+  }
+}

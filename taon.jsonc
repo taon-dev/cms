@@ -5,9 +5,7 @@
     "author": "Dfilipiak",
     "description": "Description for cms. Hello world!",
     "private": false,
-    "scripts": {
-      ,
-    },
+    "scripts": {},
   },
   "version": "v21",
   "shouldGenerateAutogenIndexFile": true,

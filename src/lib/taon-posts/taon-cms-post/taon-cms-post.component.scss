@@ -1,3 +1,99 @@
 :host {
   display: block;
 }
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #8883;
+}
+
+.post-status {
+  margin-right: auto;
+  text-transform: capitalize;
+  opacity: 0.7;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.post-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 4rem) 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.post-title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.post-excerpt {
+  margin: 0 0 2rem;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  opacity: 0.7;
+  white-space: pre-wrap;
+}
+
+.post-body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.editable {
+  min-height: 1.2em;
+  outline: none;
+
+  &:focus {
+    box-shadow: -3px 0 #8885;
+  }
+
+  &:empty::before {
+    content: attr(data-placeholder);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+.post-body.editable {
+  min-height: 12rem;
+}
+
+.slug-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #8883;
+  font-size: 0.875rem;
+
+  input {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.5rem;
+    color: inherit;
+    background: transparent;
+    border: 1px solid #8885;
+    border-radius: 4px;
+  }
+}
+
+.error {
+  padding: 1rem;
+  color: #b3261e;
+}

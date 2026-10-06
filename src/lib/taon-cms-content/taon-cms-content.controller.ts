@@ -33,6 +33,7 @@ import { TaonCmsContentRepository } from './taon-cms-content.repository';
     'deleteContent',
     'restoreContent',
     'listRevisions',
+    'paginationQuery'
   ],
 })
 export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsContentEntity> {

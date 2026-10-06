@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Restore a revision</h2>
+<mat-dialog-content>
+  <p>Restoring replaces the post, including its status, with the selected revision.</p>
+  @if (loading()) {
+    <p role="status">Loading revisions...</p>
+  } @else {
+    <mat-radio-group aria-label="Post revisions" [value]="selected()" (change)="selected.set($event.value)" [disabled]="applying()">
+      @for (revision of revisions(); track revision.id) {
+        <mat-radio-button [value]="revision.revisionNumber" [disabled]="!revision.snapshot">
+          <strong>Revision {{ revision.revisionNumber }}</strong>
+          <span>{{ revision.createdAt | date: 'medium' }}</span>
+          @if (revision.createdByUserId !== null && revision.createdByUserId !== undefined) {
+            <span>User {{ revision.createdByUserId }}</span>
+          }
+          @if (!revision.snapshot) {
+            <span>Legacy revision - cannot be restored</span>
+          }
+        </mat-radio-button>
+      } @empty {
+        <p>No revisions are available.</p>
+      }
+    </mat-radio-group>
+  }
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+    <button mat-button type="button" [disabled]="loading() || applying()" (click)="load()">Reload revisions</button>
+  }
+  @if (applying()) {
+    <p role="status">Restoring...</p>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="applying()" (click)="cancel()">Cancel</button>
+  <button mat-flat-button type="button" [disabled]="loading() || applying() || selected() === null" (click)="apply()">Apply</button>
+</mat-dialog-actions>
