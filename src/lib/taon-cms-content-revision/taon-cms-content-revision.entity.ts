@@ -10,6 +10,8 @@ import {
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
+import type { TaonCmsContentSnapshot } from '../taon-cms-content/taon-cms-content.models';
+
 import { TaonCmsContentRevisionDefaultsValues } from './taon-cms-content-revision.constants';
 //#endregion
 
@@ -47,6 +49,11 @@ export class TaonCmsContentRevisionEntity extends TaonBaseEntity<TaonCmsContentR
   @Column({ type: 'text', nullable: true })
   //#endregion
   body: string | null;
+
+  //#region @websql
+  @Column({ type: 'simple-json', nullable: true })
+  //#endregion
+  snapshot: TaonCmsContentSnapshot | null;
 
   //#region @websql
   @Column({ type: 'integer', nullable: true })

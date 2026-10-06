@@ -6,16 +6,34 @@ import {
   TaonBaseCrudController,
   Query,
   GET,
+  POST,
+  PUT,
+  DELETE,
+  Body,
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
+import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
+
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
+import type {
+  TaonCmsCreateContent,
+  TaonCmsRestoreContent,
+  TaonCmsUpdateContent,
+} from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 //#endregion
 
 @TaonController<TaonCmsContentController>({
   className: 'TaonCmsContentController',
-  allowedMethods: [],
+  allowedMethods: [
+    'getAll',
+    'createContent',
+    'updateContent',
+    'deleteContent',
+    'restoreContent',
+    'listRevisions',
+  ],
 })
 export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsContentEntity> {
   entityClassResolveFn: () => typeof TaonCmsContentEntity = () =>
@@ -23,23 +41,52 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
 
   taonCmsContentRepository = this.injectCustomRepo(TaonCmsContentRepository);
 
-  //#region methods & getters / hello world
-  /**
-   * TODO remove this demo example method
-   */
-  @GET()
-  helloWord(@Query('yourName') yourName: string): Taon.Response<string> {
+  @POST()
+  createContent(
+    @Body() input: TaonCmsCreateContent,
+  ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
-    return async (req, res) => {
-      const numOfEntities = await this.db.count();
-      const numberOfEvenEntities =
-        await this.taonCmsContentRepository.countEntitesWithEvenId();
-      return `Hello ${yourName || 'world'} from ${ClassHelpers.getName(TaonCmsContentController)}
-      controller..  ${numOfEntities} entites in db..
-      ${numberOfEvenEntities} entites with even ids (2,4,6,8 etc.)
-      `;
-    };
+    return async () => this.taonCmsContentRepository.createContent(input);
     //#endregion
   }
-  //#endregion
+
+  @PUT()
+  updateContent(
+    @Query('id') id: number,
+    @Body() input: TaonCmsUpdateContent,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.updateContent(id, input);
+    //#endregion
+  }
+
+  @DELETE()
+  deleteContent(
+    @Query('id') id: number,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () =>
+      this.taonCmsContentRepository.archiveContent(id, expectedVersion);
+    //#endregion
+  }
+
+  @POST()
+  restoreContent(
+    @Query('id') id: number,
+    @Body() input: TaonCmsRestoreContent,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.restoreContent(id, input);
+    //#endregion
+  }
+
+  @GET()
+  listRevisions(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsContentRevisionEntity[]> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.listRevisions(id);
+    //#endregion
+  }
 }

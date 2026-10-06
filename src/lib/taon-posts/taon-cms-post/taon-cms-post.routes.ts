@@ -3,23 +3,13 @@ import { Routes } from '@angular/router';
 import { adminLazyRoute } from '@taon-dev/ui/src';
 //#endregion
 
-export const TaonCmsBackofficeRoutes: Routes = [
+export const TaonCmsPostRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./taon-cms-backoffice.component').then(
-        m => m.TaonCmsBackofficeComponent,
-      ),
+      import('./taon-cms-post.component').then(m => m.TaonCmsPostComponent),
 
     children: [
-      adminLazyRoute({
-        path: 'posts',
-        menuItem: 'Posts',
-        expandable: true,
-        icon: 'edit',
-        loader: () =>
-          import('@taon-dev/cms/src').then(m => m.TaonCmsPostsBackofficeRoutes),
-      }),
       // adminLazyRoute({
       //   path: 'dashboard',
       //   menuItem: 'Dashboard',
@@ -33,8 +23,8 @@ export const TaonCmsBackofficeRoutes: Routes = [
 ];
 
 /**
- * By default exporting TaonCmsBackofficeRoutes,
+ * By default exporting TaonCmsPostRoutes,
  * the command `taon generate:app:routes`
  * will automatically add them to the root routes in ./src/app.ts.
  */
-// export default TaonCmsBackofficeRoutes;
+// export default TaonCmsPostRoutes;

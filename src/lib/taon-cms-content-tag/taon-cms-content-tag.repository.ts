@@ -1,6 +1,7 @@
 //#region imports
 import { TaonBaseRepository, TaonRepository } from 'taon/src';
 import { Raw } from 'taon-typeorm/src';
+import type { EntityManager } from 'taon-typeorm/src';
 
 import { TaonCmsContentTagEntity } from './taon-cms-content-tag.entity';
 //#endregion
@@ -9,19 +10,37 @@ import { TaonCmsContentTagEntity } from './taon-cms-content-tag.entity';
   className: 'TaonCmsContentTagRepository',
 })
 export class TaonCmsContentTagRepository extends TaonBaseRepository<TaonCmsContentTagEntity> {
-  entityClassResolveFn: () => typeof TaonCmsContentTagEntity = () => TaonCmsContentTagEntity;
+  entityClassResolveFn: () => typeof TaonCmsContentTagEntity = () =>
+    TaonCmsContentTagEntity;
 
-  /**
-   * TODO remove this demo example method
-   */
-  async countEntitesWithEvenId(): Promise<number> {
+  async findTagIds(
+    contentId: number,
+    manager: EntityManager,
+  ): Promise<number[]> {
     //#region @websqlFunc
-    const result = await this.count({
-      where: {
-        id: Raw(alias => `${alias} % 2 = 0`),
-      },
-    });
-    return result;
+    const links = await manager
+      .getRepository<TaonCmsContentTagEntity>(this.target)
+      .find({ where: { contentId }, order: { tagId: 'ASC' } });
+    return links.map(link => link.tagId);
+    //#endregion
+  }
+
+  async replaceTags(
+    contentId: number,
+    tagIds: number[],
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const repository = manager.getRepository<TaonCmsContentTagEntity>(
+      this.target,
+    );
+    await repository.delete({ contentId });
+    const links = [...new Set(tagIds)].map(tagId =>
+      repository.create({ contentId, tagId }),
+    );
+    if (links.length) {
+      await repository.save(links);
+    }
     //#endregion
   }
 }

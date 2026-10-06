@@ -61,6 +61,14 @@ export const TaonBaselineBackofficeRoutes: Routes = [
             m => m.TaonEmailsBackofficeRoutes,
           ),
       }),
+      adminLazyRoute({
+        path: 'cms',
+        menuItem: 'CMS',
+        expandable: true,
+        icon: 'content_copy',
+        loader: () =>
+          import('@taon-dev/cms/src').then(m => m.TaonCmsBackofficeRoutes),
+      }),
     ],
   },
 ];

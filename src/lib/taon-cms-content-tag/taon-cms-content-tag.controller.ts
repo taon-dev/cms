@@ -15,30 +15,13 @@ import { TaonCmsContentTagRepository } from './taon-cms-content-tag.repository';
 
 @TaonController<TaonCmsContentTagController>({
   className: 'TaonCmsContentTagController',
-  allowedMethods: []
+  allowedMethods: [],
 })
 export class TaonCmsContentTagController extends TaonBaseCrudController<TaonCmsContentTagEntity> {
-  entityClassResolveFn: () => typeof TaonCmsContentTagEntity = () => TaonCmsContentTagEntity;
+  entityClassResolveFn: () => typeof TaonCmsContentTagEntity = () =>
+    TaonCmsContentTagEntity;
 
-  taonCmsContentTagRepository = this.injectCustomRepo(TaonCmsContentTagRepository);
-
-  //#region methods & getters / hello world
-  /**
-   * TODO remove this demo example method
-   */
-  @GET()
-  helloWord(@Query('yourName') yourName: string): Taon.Response<string> {
-    //#region @websqlFunc
-    return async (req, res) => {
-      const numOfEntities = await this.db.count();
-      const numberOfEvenEntities =
-        await this.taonCmsContentTagRepository.countEntitesWithEvenId();
-      return `Hello ${yourName || 'world'} from ${ClassHelpers.getName(TaonCmsContentTagController)}
-      controller..  ${numOfEntities} entites in db..
-      ${numberOfEvenEntities} entites with even ids (2,4,6,8 etc.)
-      `;
-    };
-    //#endregion
-  }
-  //#endregion
+  taonCmsContentTagRepository = this.injectCustomRepo(
+    TaonCmsContentTagRepository,
+  );
 }
