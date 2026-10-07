@@ -1,4 +1,9 @@
-<router-outlet></router-outlet>
-<p>
-  taon-cms-backoffice works!
-</p>
+@if (!componentLoaded) {
+  <code>
+    In CMS you can manage content and settings for your website.
+  </code>
+}
+
+<router-outlet
+  (activate)="onRouteActivate($event)"
+  (deactivate)="onRouteDeactivate($event)"></router-outlet>

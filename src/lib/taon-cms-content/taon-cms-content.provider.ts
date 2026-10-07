@@ -10,8 +10,4 @@ import { Injectable } from '@angular/core';
 //#region @browser
 @Injectable()
 //#endregion
-export class TaonCmsContentProvider extends TaonBaseProvider {
-
-
-
-}
+export class TaonCmsContentProvider extends TaonBaseProvider {}

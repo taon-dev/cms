@@ -1,3 +1,4 @@
+//#region imports
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -5,14 +6,15 @@ import { Taon, TaonBaseAngularService, TaonStorageObject } from 'taon/src';
 
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 
-import { TaonCmsContentController } from './taon-cms-content.controller';
 import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
+import { TaonCmsContentController } from './taon-cms-content.controller';
 import type { TaonCmsContentEntity } from './taon-cms-content.entity';
 import type {
   TaonCmsCreateContent,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
 } from './taon-cms-content.models';
+//#endregion
 
 @Injectable()
 export class TaonCmsContentApiService extends TaonBaseAngularService {
@@ -28,7 +30,8 @@ export class TaonCmsContentApiService extends TaonBaseAngularService {
     const formData = new FormData();
     formData.append('file', file);
     const response = await this.taonCmsContentStorageController
-      .uploadFormDataToServer(formData).request();
+      .uploadFormDataToServer(formData)
+      .request();
     const objects = response.body.json;
     if (objects.length !== 1 || !objects[0].key) {
       throw new Error('The upload did not return a media key.');
@@ -82,8 +85,11 @@ export class TaonCmsContentApiService extends TaonBaseAngularService {
     relatedPostId: number,
     expectedVersion: number,
   ): Observable<TaonCmsContentEntity> {
-    return this.taonCmsContentController.addRelatedPost(id, relatedPostId, expectedVersion)
-      .request!().observable.pipe(map(res => res.body.json));
+    return this.taonCmsContentController.addRelatedPost(
+      id,
+      relatedPostId,
+      expectedVersion,
+    ).request!().observable.pipe(map(res => res.body.json));
   }
 
   public deleteRelatedPost(
@@ -91,8 +97,11 @@ export class TaonCmsContentApiService extends TaonBaseAngularService {
     relatedPostId: number,
     expectedVersion: number,
   ): Observable<TaonCmsContentEntity> {
-    return this.taonCmsContentController.deleteRelatedPost(id, relatedPostId, expectedVersion)
-      .request!().observable.pipe(map(res => res.body.json));
+    return this.taonCmsContentController.deleteRelatedPost(
+      id,
+      relatedPostId,
+      expectedVersion,
+    ).request!().observable.pipe(map(res => res.body.json));
   }
 
   public get allMyEntities$(): Observable<TaonCmsContentEntity[]> {
