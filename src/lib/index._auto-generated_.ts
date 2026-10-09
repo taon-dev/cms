@@ -37,6 +37,7 @@ export * from './taon-cms-comment/taon-cms-comment.utils';
 export * from './taon-cms-content/taon-cms-content-api.service'; // @browser
 export * from './taon-cms-content/taon-cms-content-storage.controller'; 
 export * from './taon-cms-content/taon-cms-content.abstract.context'; 
+export * from './taon-cms-content/taon-cms-content.config.service'; // @browser
 export * from './taon-cms-content/taon-cms-content.constants'; 
 export * from './taon-cms-content/taon-cms-content.controller'; 
 export * from './taon-cms-content/taon-cms-content.entity'; 

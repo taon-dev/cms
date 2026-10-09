@@ -542,7 +542,7 @@ export const CmsStartFunction = async (
       await taonSessionUserIdentityRepository.createSocialIdentity(
         user.id,
         TaonSessionIdentityProvider.GOOGLE,
-        'idfromgoogle',
+        'idfromgoogle2',
         `fromgogle${DEFAULT_EMAIL3}`,
         true,
       );
