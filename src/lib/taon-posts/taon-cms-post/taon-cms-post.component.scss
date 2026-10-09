@@ -106,7 +106,8 @@
 }
 
 .media-attachment,
-.related-posts {
+.related-posts,
+.post-permissions {
   margin-top: 1.5rem;
   font-size: 0.875rem;
 
@@ -115,7 +116,8 @@
   }
 }
 
-.related-posts {
+.related-posts,
+.post-permissions {
   ul {
     padding: 0;
     list-style: none;

@@ -11,6 +11,7 @@ import {
   TaonEntity,
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
+import { TaonPermissionEntity } from '@taon-dev/session/src';
 
 import { TaonCmsContentDefaultsValues } from './taon-cms-content.constants';
 import { TaonCmsContentType } from './taon-cms-content.models';
@@ -55,6 +56,16 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   })
   //#endregion
   relatedPosts: TaonCmsContentEntity[];
+
+  //#region @websql
+  @ManyToMany(() => TaonPermissionEntity)
+  @JoinTable({
+    name: 'taon_cms_content_permissions',
+    joinColumn: { name: 'contentId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permissionId', referencedColumnName: 'id' },
+  })
+  //#endregion
+  permissions: TaonPermissionEntity[];
 
   //#region @websql
   @Column({ type: 'text', nullable: true })

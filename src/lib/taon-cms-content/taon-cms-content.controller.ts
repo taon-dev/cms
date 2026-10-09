@@ -21,6 +21,7 @@ import type {
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
 } from './taon-cms-content.models';
+import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 //#endregion
 
@@ -28,12 +29,14 @@ import { TaonCmsContentRepository } from './taon-cms-content.repository';
   className: 'TaonCmsContentController',
   allowedMethods: [
     'getAll',
+    'getBy',
     'createContent',
     'updateContent',
     'deleteContent',
     'restoreContent',
     'listRevisions',
     'listRelatedPosts',
+    'listPermissions',
     'addRelatedPost',
     'deleteRelatedPost',
     'paginationQuery'
@@ -91,6 +94,15 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   ): Taon.Response<TaonCmsContentEntity[]> {
     //#region @websqlFunc
     return async () => this.taonCmsContentRepository.listRelatedPosts(id);
+    //#endregion
+  }
+
+  @GET()
+  listPermissions(
+    @Query('id') id: number,
+  ): Taon.Response<TaonPermissionEntity[]> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.listPermissions(id);
     //#endregion
   }
 

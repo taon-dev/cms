@@ -27,6 +27,7 @@ export function validateContentInput(
   input: Partial<TaonCmsContentFields> & {
     tagIds?: number[];
     relatedPostIds?: number[];
+    permissionIds?: number[];
   },
   creating = false,
 ): void {
@@ -79,14 +80,21 @@ export function validateContentInput(
       contentError('publishedAt must be a valid date or null.');
     }
   }
-  for (const field of ['tagIds', 'relatedPostIds'] as const) {
+  for (const field of ['tagIds', 'relatedPostIds', 'permissionIds'] as const) {
     const ids = input[field];
     if (ids !== undefined) {
       if (!Array.isArray(ids)) {
         contentError(`${field} must be an array.`);
       }
       for (const id of ids) {
-        requireContentId(id, field === 'tagIds' ? 'tagId' : 'relatedPostId');
+        requireContentId(
+          id,
+          field === 'tagIds'
+            ? 'tagId'
+            : field === 'relatedPostIds'
+              ? 'relatedPostId'
+              : 'permissionId',
+        );
       }
     }
   }

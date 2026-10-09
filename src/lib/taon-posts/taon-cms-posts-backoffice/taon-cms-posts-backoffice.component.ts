@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MtxGridColumn } from '@ng-matero/extensions/grid';
 import {
@@ -49,6 +50,10 @@ export class TaonCmsPostsBackofficeComponent {
 
   private readonly dialog = inject(MatDialog);
 
+  private readonly route = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly cancelLoad$ = new Subject<void>();
@@ -71,6 +76,12 @@ export class TaonCmsPostsBackofficeComponent {
           icon: 'edit',
           tooltip: 'Edit post',
           click: (post: TaonCmsContentEntity) => this.edit(post),
+        },
+        {
+          type: 'icon',
+          icon: 'open_in_new',
+          tooltip: 'Post details',
+          click: (post: TaonCmsContentEntity) => this.openDetails(post),
         },
         {
           type: 'icon',
@@ -98,6 +109,15 @@ export class TaonCmsPostsBackofficeComponent {
 
   edit(post: TaonCmsContentEntity): void {
     this.openEditor({ mode: 'edit', post });
+  }
+
+  openDetails(post: TaonCmsContentEntity): void {
+    const postsRoute = this.route.parent;
+    if (!postsRoute) {
+      this.error.set('The Post details route is unavailable.');
+      return;
+    }
+    void this.router.navigate([post.id], { relativeTo: postsRoute });
   }
 
   delete(post: TaonCmsContentEntity): void {

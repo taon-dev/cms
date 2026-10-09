@@ -9,6 +9,7 @@ import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/
 import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
 import { TaonCmsContentController } from './taon-cms-content.controller';
 import type { TaonCmsContentEntity } from './taon-cms-content.entity';
+import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import type {
   TaonCmsCreateContent,
   TaonCmsRestoreContent,
@@ -77,6 +78,11 @@ export class TaonCmsContentApiService extends TaonBaseAngularService {
 
   public listRelatedPosts(id: number): Observable<TaonCmsContentEntity[]> {
     return this.taonCmsContentController.listRelatedPosts(id)
+      .request!().observable.pipe(map(res => res.body.json));
+  }
+
+  public listPermissions(id: number): Observable<TaonPermissionEntity[]> {
+    return this.taonCmsContentController.listPermissions(id)
       .request!().observable.pipe(map(res => res.body.json));
   }
 

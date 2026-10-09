@@ -1,24 +1,44 @@
 //#region imports
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
-import { adminLazyRoute } from '@taon-dev/ui/src';
+import { ResolveFn } from '@angular/router';
+
+import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
+import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 //#endregion
+
+const resolvePost: ResolveFn<TaonCmsContentEntity> = async route => {
+  const id = Number(route.paramMap.get('id'));
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw new Error('Invalid Post ID');
+  }
+  const apiService = inject(TaonCmsContentApiService);
+  const post = (await apiService.taonCmsContentController.getBy(id).request())
+    .body.json;
+  if (!post) {
+    throw new Error('Post not found');
+  }
+  return post;
+};
 
 export const TaonCmsPostsBackofficeRoutes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
     loadComponent: () =>
-      import('./taon-cms-posts-backoffice.component').then(m => m.TaonCmsPostsBackofficeComponent),
-
-    children: [
-      // adminLazyRoute({
-      //   path: 'dashboard',
-      //   menuItem: 'Dashboard',
-      //   icon: 'dashboard',
-      //   expandable: false,
-      //   loader: () =>
-      //     import('./anothermodule.routes').then(m => m.DashboardRoutes),
-      // }),
-    ],
+      import('./taon-cms-posts-backoffice.component').then(
+        m => m.TaonCmsPostsBackofficeComponent,
+      ),
+  },
+  {
+    path: ':id',
+    data: { hideInNavigation: true },
+    providers: [TaonCmsContentApiService],
+    resolve: { post: resolvePost },
+    loadComponent: () =>
+      import('../taon-cms-post-details-page/taon-cms-post-details-page.component').then(
+        m => m.TaonCmsPostDetailsPageComponent,
+      ),
   },
 ];
 

@@ -31,11 +31,13 @@ export interface TaonCmsCreateContent
     Partial<Omit<TaonCmsContentFields, 'title' | 'slug'>> {
   tagIds?: number[];
   relatedPostIds?: number[];
+  permissionIds?: number[];
 }
 
 export interface TaonCmsUpdateContent extends Partial<TaonCmsContentFields> {
   tagIds?: number[];
   relatedPostIds?: number[];
+  permissionIds?: number[];
   expectedVersion: number;
 }
 
@@ -47,4 +49,5 @@ export interface TaonCmsRestoreContent {
 export interface TaonCmsContentSnapshot extends TaonCmsContentFields {
   tagIds: number[];
   relatedPostIds?: number[];
+  permissionIds: number[];
 }

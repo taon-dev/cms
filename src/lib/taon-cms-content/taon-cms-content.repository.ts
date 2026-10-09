@@ -2,6 +2,7 @@
 import { TaonBaseRepository, TaonRepository } from 'taon/src';
 import { In, Raw } from 'taon-typeorm/src';
 import type { EntityManager } from 'taon-typeorm/src';
+import { TaonPermissionEntity } from '@taon-dev/session/src';
 
 import { TaonCmsCategoryRepository } from '../taon-cms-category/taon-cms-category.repository';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
@@ -56,7 +57,8 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       const fields = this.contentFields(input);
       const tagIds = [...new Set(input.tagIds ?? [])];
       const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
-      await this.validateReferences(fields, tagIds, manager);
+      const permissionIds = [...new Set(input.permissionIds ?? [])];
+      await this.validateReferences(fields, tagIds, permissionIds, manager);
       await this.requireAvailableSlug(fields.slug, manager);
       const repository = manager.getRepository<TaonCmsContentEntity>(
         this.target,
@@ -72,9 +74,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       );
       await this.taonCmsContentTagRepository.replaceTags(content.id, tagIds, manager);
       await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
+      await this.replacePermissions(content.id, permissionIds, [], manager);
       await this.taonCmsContentRevisionRepository.recordContent(
         content,
-        { ...fields, tagIds, relatedPostIds },
+        { ...fields, tagIds, relatedPostIds, permissionIds },
         manager,
       );
       return this.requireContent(content.id, manager);
@@ -102,10 +105,14 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         input.relatedPostIds === undefined
           ? snapshot.relatedPostIds
           : [...new Set(input.relatedPostIds)];
+      const permissionIds =
+        input.permissionIds === undefined
+          ? snapshot.permissionIds
+          : [...new Set(input.permissionIds)];
       return this.commitUpdate(
         current,
         input.expectedVersion,
-        { ...fields, tagIds, relatedPostIds },
+        { ...fields, tagIds, relatedPostIds, permissionIds },
         manager,
       );
     });
@@ -170,6 +177,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         ...this.contentFields(revision.snapshot, await this.snapshotOf(current, manager)),
         tagIds: revision.snapshot.tagIds,
         relatedPostIds: revision.snapshot.relatedPostIds ?? [],
+        permissionIds: revision.snapshot.permissionIds ?? [],
       };
       return this.commitUpdate(
         current,
@@ -196,6 +204,15 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     requireContentId(id);
     return this.connection.transaction(async manager =>
       (await this.requireContent(id, manager)).relatedPosts,
+    );
+    //#endregion
+  }
+
+  async listPermissions(id: number): Promise<TaonPermissionEntity[]> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager =>
+      (await this.requireContent(id, manager)).permissions,
     );
     //#endregion
   }
@@ -253,7 +270,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#region @websqlFunc
     const content = await manager
       .getRepository<TaonCmsContentEntity>(this.target)
-      .findOne({ where: { id }, relations: { relatedPosts: true } });
+      .findOne({
+        where: { id },
+        relations: { relatedPosts: true, permissions: true },
+      });
     if (!content) {
       contentError(`Content ${id} does not exist.`, 404);
     }
@@ -317,6 +337,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       }),
       tagIds: await this.taonCmsContentTagRepository.findTagIds(content.id, manager),
       relatedPostIds: content.relatedPosts.map(post => post.id),
+      permissionIds: content.permissions.map(permission => permission.id),
     };
     //#endregion
   }
@@ -331,6 +352,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   private async validateReferences(
     fields: TaonCmsContentFields,
     tagIds: number[],
+    permissionIds: number[],
     manager: EntityManager,
   ): Promise<void> {
     //#region @websqlFunc
@@ -338,6 +360,26 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       await this.taonCmsCategoryRepository.requireCategory(fields.categoryId, manager);
     }
     await this.tags.requireTags(tagIds, manager);
+    await this.requirePermissions(permissionIds, manager);
+    //#endregion
+  }
+
+  private async requirePermissions(
+    permissionIds: number[],
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    if (!permissionIds.length) {
+      return;
+    }
+    const permissions = await manager
+      .getRepository<TaonPermissionEntity>(TaonPermissionEntity)
+      .findBy({ id: In(permissionIds) });
+    const foundIds = new Set(permissions.map(permission => permission.id));
+    const missingId = permissionIds.find(id => !foundIds.has(id));
+    if (missingId !== undefined) {
+      contentError(`Permission ${missingId} does not exist.`, 404);
+    }
     //#endregion
   }
 
@@ -386,6 +428,26 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  private async replacePermissions(
+    id: number,
+    permissionIds: number[],
+    previousIds: number[],
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const added = permissionIds.filter(permissionId => !previousIds.includes(permissionId));
+    const removed = previousIds.filter(permissionId => !permissionIds.includes(permissionId));
+    if (added.length || removed.length) {
+      await manager
+        .getRepository<TaonCmsContentEntity>(this.target)
+        .createQueryBuilder()
+        .relation('permissions')
+        .of(id)
+        .addAndRemove(added, removed);
+    }
+    //#endregion
+  }
+
   private async commitUpdate(
     current: TaonCmsContentEntity,
     expectedVersion: number,
@@ -396,7 +458,12 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     if (current.version !== expectedVersion) {
       contentError('Content has changed. Reload it before editing.', 409);
     }
-    await this.validateReferences(snapshot, snapshot.tagIds, manager);
+    await this.validateReferences(
+      snapshot,
+      snapshot.tagIds,
+      snapshot.permissionIds,
+      manager,
+    );
     await this.requireAvailableSlug(snapshot.slug, manager, current.id);
     // Preserve the first pre-API version before replacing it.
     const history = await this.taonCmsContentRevisionRepository.listForContent(current.id, manager);
@@ -425,6 +492,12 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       current.relatedPosts.map(post => post.id),
       manager,
     );
+    await this.replacePermissions(
+      current.id,
+      [...new Set(snapshot.permissionIds ?? [])],
+      current.permissions.map(permission => permission.id),
+      manager,
+    );
     const updated = await this.requireContent(current.id, manager);
     await this.taonCmsContentRevisionRepository.recordContent(
       updated,
@@ -432,6 +505,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         ...fields,
         tagIds: snapshot.tagIds,
         relatedPostIds: updated.relatedPosts.map(post => post.id),
+        permissionIds: updated.permissions.map(permission => permission.id),
       },
       manager,
     );

@@ -126,6 +126,51 @@
         </button>
       }
     </section>
+    <section class="post-permissions" aria-labelledby="post-permissions-heading">
+      <h2 id="post-permissions-heading">Allow Read only with Permissions</h2>
+      @if (permissionsLoading()) {
+        <p role="status">Loading assigned permissions...</p>
+      } @else if (permissionsError()) {
+        <p class="error" role="alert">{{ permissionsError() }}</p>
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadPermissions()">Try again</button>
+      } @else {
+        <ul>
+          @for (permission of permissions(); track permission.id) {
+            <li>
+              <span>{{ permission.name }} ({{ permission.code }})</span>
+              <button mat-icon-button type="button" [attr.aria-label]="'Remove permission ' + permission.name" [disabled]="busy() || dialogOpen()" (click)="removePermission(permission.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </li>
+          } @empty {
+            <li>No permissions assigned.</li>
+          }
+        </ul>
+        @if (permissionOptionsError()) {
+          <p class="error" role="alert">{{ permissionOptionsError() }}</p>
+          <button mat-button type="button" [disabled]="busy() || dialogOpen() || permissionOptionsLoading()" (click)="loadPermissionOptions()">Try again</button>
+        } @else {
+          <div class="permission-assignment">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Permission</mat-label>
+              <mat-select
+                [value]="selectedPermissionId()"
+                [disabled]="busy() || dialogOpen() || permissionOptionsLoading()"
+                (selectionChange)="selectedPermissionId.set($event.value)">
+                @for (permission of availablePermissions(); track permission.id) {
+                  <mat-option [value]="permission.id">{{ permission.name }} ({{ permission.code }})</mat-option>
+                } @empty {
+                  <mat-option [disabled]="true">No permissions available</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button mat-button type="button" [disabled]="busy() || dialogOpen() || !selectedPermissionId()" (click)="addPermission()">
+              <mat-icon>add</mat-icon> Assign permission
+            </button>
+          </div>
+        }
+      }
+    </section>
   } @else if (currentPost(); as post) {
     <h1 class="post-title">{{ post.title }}</h1>
     @if (post.excerpt) {

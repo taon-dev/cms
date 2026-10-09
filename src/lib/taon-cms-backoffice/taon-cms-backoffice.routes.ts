@@ -20,6 +20,16 @@ export const TaonCmsBackofficeRoutes: Routes = [
         loader: () =>
           import('@taon-dev/cms/src').then(m => m.TaonCmsPostsBackofficeRoutes),
       }),
+      adminLazyRoute({
+        path: 'assets',
+        menuItem: 'Assets',
+        expandable: false,
+        icon: 'perm_media',
+        loader: () =>
+          import('../taon-cms-assets-backoffice/taon-cms-assets-backoffice.routes').then(
+            m => m.TaonCmsAssetsBackofficeRoutes,
+          ),
+      }),
       // adminLazyRoute({
       //   path: 'dashboard',
       //   menuItem: 'Dashboard',
