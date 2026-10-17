@@ -43,15 +43,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import Aura from '@primeng/themes/aura'; // @browser
-import {
-  MIGRATIONS_CLASSES_FOR_CmsContext,
-  TaonCmsAbstractContext,
-} from '@taon-dev/cms/src';
-import {
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID,
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET,
-  ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS,
-} from '@taon-dev/cms/src';
+import { TaonCmsAbstractContext } from '@taon-dev/cms/src';
+
 import { Translation, TranslationManager } from '@taon-dev/i18n/src';
 // TranslationManager.globalDefautlLanguageOverride = 'pl-PL';
 import { TranslateDirective } from '@taon-dev/i18n/src'; // @browser
@@ -105,7 +98,12 @@ import {
 import { Utils, UtilsOs } from 'tnp-core/src';
 
 import { HOST_CONFIG } from './app.hosts';
-import { ENV_ANGULAR_NODE_APP_BUILD_PWA_DISABLE_SERVICE_WORKER } from './lib/env/env.angular-node-app';
+import {
+  ENV_ANGULAR_NODE_APP_BUILD_PWA_DISABLE_SERVICE_WORKER,
+  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID,
+  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET,
+  ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS,
+} from './lib/env/env.angular-node-app';
 // @placeholder-for-imports
 
 //#endregion
@@ -400,7 +398,7 @@ var CmsContext = Taon.createContext(() => ({
     TaonBaseContext,
   },
   migrations: {
-    ...MIGRATIONS_CLASSES_FOR_CmsContext,
+    // ...MIGRATIONS_CLASSES_FOR_CmsContext,
   },
   providers: {
     [ClassHelpers.getName(TaonSessionProvider)]: TaonSessionProviderOverride,
