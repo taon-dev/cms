@@ -8,18 +8,18 @@ msgstr ""
 msgid "Sudo"
 msgstr ""
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:38
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:46
 msgid "Users"
 msgstr ""
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:49
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:57
 msgid "Sessions"
 msgstr ""
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:60
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:68
 msgid "Authorization"
 msgstr ""
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:71
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:79
 msgid "Emails"
 msgstr ""

@@ -45,6 +45,50 @@ export class TaonCmsContentApiService<
       .json;
   }
 
+  public async getVideoLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController.getVideoLinkBySlug(slug).request()
+    ).body.text;
+  }
+
+  public async getPublicVideoLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController
+        .getPublicVideoLinkBySlug(slug)
+        .request()
+    ).body.text;
+  }
+
+  public async getAudioLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController.getAudioLinkBySlug(slug).request()
+    ).body.text;
+  }
+
+  public async getPublicAudioLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController
+        .getPublicAudioLinkBySlug(slug)
+        .request()
+    ).body.text;
+  }
+
+  public async getAttachmentLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController
+        .getAttachmentLinkBySlug(slug)
+        .request()
+    ).body.text;
+  }
+
+  public async getPublicAttachmentLinkBySlug(slug: string): Promise<string> {
+    return (
+      await this.taonCmsContentController
+        .getPublicAttachmentLinkBySlug(slug)
+        .request()
+    ).body.text;
+  }
+
   public getContentByHook(hook: HOOKS): Observable<string> {
     return this.taonCmsContentController.getContentByHook(hook)
       .request!().observable.pipe(map(res => res.body.text));

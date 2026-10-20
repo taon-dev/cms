@@ -1,41 +1,79 @@
 @if (mode() !== 'view-clean') {
   <header class="post-actions">
-    <span class="post-status">{{ mode() === 'add' ? 'New draft' : currentPost()?.status }}</span>
+    <span class="post-status">{{
+      mode() === 'add' ? 'New draft' : currentPost()?.status
+    }}</span>
     <div class="buttons">
       @if (editing()) {
-        <button mat-flat-button type="button" [disabled]="busy() || dialogOpen() || !canSave()" (click)="save()">
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="busy() || dialogOpen() || !canSave()"
+          (click)="save()">
           {{ mode() === 'add' ? 'Add' : 'Save' }}
         </button>
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="cancel()">Cancel</button>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="cancel()">
+          Cancel
+        </button>
       } @else if (currentPost()) {
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="edit()">
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="edit()">
           <mat-icon>edit</mat-icon> Edit
         </button>
       }
       @if (mode() !== 'add' && currentPost()) {
         @if (canPublish()) {
-          <button mat-flat-button type="button" [disabled]="busy() || dialogOpen() || (editing() && !canSave())" (click)="publish()">Publish</button>
+          <button
+            mat-flat-button
+            type="button"
+            [disabled]="busy() || dialogOpen() || (editing() && !canSave())"
+            (click)="publish()">
+            Publish
+          </button>
         }
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="revert()">
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="revert()">
           <mat-icon>history</mat-icon> Revert
         </button>
         @if (currentPost()?.status !== 'archived') {
-          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="delete()">
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="delete()">
             <mat-icon>delete</mat-icon> Delete
           </button>
         }
       }
     </div>
     @if (busy()) {
-      <span role="status">{{ uploading() ? 'Uploading...' : 'Saving...' }}</span>
+      <span role="status">{{
+        uploading() ? 'Uploading...' : 'Saving...'
+      }}</span>
     }
   </header>
   @if (error()) {
-    <p class="error" role="alert">{{ error() }}</p>
+    <p
+      class="error"
+      role="alert">
+      {{ error() }}
+    </p>
   }
 }
 
-<article class="post-article" [attr.aria-busy]="busy()">
+<article
+  class="post-article"
+  [attr.aria-busy]="busy()">
   @if (editing()) {
     <mat-radio-group
       class="post-type-selector"
@@ -44,7 +82,9 @@
       [disabled]="busy() || dialogOpen()"
       (change)="updateDraft('type', $event.value)">
       @for (type of postTypes; track type.value) {
-        <mat-radio-button [value]="type.value">{{ type.label }}</mat-radio-button>
+        <mat-radio-button [value]="type.value">{{
+          type.label
+        }}</mat-radio-button>
       }
     </mat-radio-group>
     <div
@@ -81,14 +121,73 @@
       (taonCmsEditableChange)="updateDraft('body', $event)"></div>
     <label class="slug-field">
       <span>URL slug</span>
-      <input aria-label="URL slug" [value]="draft().slug" [disabled]="busy() || dialogOpen()" (input)="updateSlug($event)" placeholder="my-post" />
+      <input
+        aria-label="URL slug"
+        [value]="draft().slug"
+        [disabled]="busy() || dialogOpen()"
+        (input)="updateSlug($event)"
+        placeholder="my-post" />
     </label>
     @if (mediaAttachment(); as media) {
-      <section class="media-attachment" aria-labelledby="media-attachment-heading">
+      <section
+        class="media-attachment"
+        aria-labelledby="media-attachment-heading">
         <h2 id="media-attachment-heading">{{ media.heading }}</h2>
         @if (draft()[media.key]; as key) {
-          <p>Attached file: {{ key }}</p>
-          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="removeMedia()">Remove</button>
+          @if (mediaPreviewLoading()) {
+            <p role="status">Loading media preview...</p>
+          }
+          @if (mediaPreviewError()) {
+            <p
+              class="error"
+              role="alert">
+              {{ mediaPreviewError() }}
+            </p>
+          }
+          @if (media.type === 'video' && mediaPreviewUrl()) {
+            <video
+              controls
+              [src]="mediaPreviewUrl()">
+              Your browser does not support video playback.
+            </video>
+          } @else if (media.type === 'audio' && mediaPreviewUrl()) {
+            <audio
+              controls
+              [src]="mediaPreviewUrl()">
+              Your browser does not support audio playback.
+            </audio>
+          } @else if (media.type === 'attachment' && mediaPreviewUrl()) {
+            <p>
+              Attached file: {{ mediaFileName(key) }}
+              <a
+                [href]="mediaPreviewUrl()"
+                target="_blank"
+                rel="noopener"
+                >Download or open</a
+              >
+            </p>
+          }
+          <input
+            #mediaInput
+            hidden
+            type="file"
+            [accept]="media.accept"
+            [disabled]="busy() || dialogOpen()"
+            (change)="fileSelected($event)" />
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="mediaInput.click()">
+            Replace
+          </button>
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="removeMedia()">
+            Remove
+          </button>
         } @else {
           <input
             #mediaInput
@@ -97,23 +196,46 @@
             [accept]="media.accept"
             [disabled]="busy() || dialogOpen()"
             (change)="fileSelected($event)" />
-          <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="mediaInput.click()">{{ media.uploadLabel }}</button>
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="mediaInput.click()">
+            {{ media.uploadLabel }}
+          </button>
         }
       </section>
     }
-    <section class="related-posts" aria-labelledby="related-posts-heading">
+    <section
+      class="related-posts"
+      aria-labelledby="related-posts-heading">
       <h2 id="related-posts-heading">Related posts</h2>
       @if (relatedPostsLoading()) {
         <p role="status">Loading related posts...</p>
       } @else if (relatedPostsError()) {
-        <p class="error" role="alert">{{ relatedPostsError() }}</p>
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadRelatedPosts()">Try again</button>
+        <p
+          class="error"
+          role="alert">
+          {{ relatedPostsError() }}
+        </p>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="loadRelatedPosts()">
+          Try again
+        </button>
       } @else {
         <ul>
           @for (post of relatedPosts(); track post.id) {
             <li>
               <span>#{{ post.id }} - {{ post.title }}</span>
-              <button mat-icon-button type="button" [attr.aria-label]="'Remove related post ' + post.title" [disabled]="busy() || dialogOpen()" (click)="removeRelatedPost(post.id)">
+              <button
+                mat-icon-button
+                type="button"
+                [attr.aria-label]="'Remove related post ' + post.title"
+                [disabled]="busy() || dialogOpen()"
+                (click)="removeRelatedPost(post.id)">
                 <mat-icon>close</mat-icon>
               </button>
             </li>
@@ -121,62 +243,109 @@
             <li>No related posts yet.</li>
           }
         </ul>
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="addRelatedPost()">
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="addRelatedPost()">
           <mat-icon>add</mat-icon> Add related post
         </button>
       }
     </section>
-    <section class="application-hook" aria-labelledby="application-hook-heading">
-      <h2 id="application-hook-heading">Application Hook</h2>
-      @if (applicationHooksLoading()) {
-        <p role="status">Loading application hooks...</p>
-      } @else if (applicationHooksError()) {
-        <p class="error" role="alert">{{ applicationHooksError() }}</p>
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadApplicationHooks()">Try again</button>
-      } @else {
-        <mat-checkbox
-          [checked]="useAsApplicationHook()"
-          [disabled]="busy() || dialogOpen()"
-          (change)="setUseAsApplicationHook($event.checked)">
-          Use as application hook
-        </mat-checkbox>
-        @if (useAsApplicationHook()) {
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Application Hook</mat-label>
-            <mat-select
-              [value]="selectedApplicationHook()"
-              [disabled]="busy() || dialogOpen()"
-              (selectionChange)="selectedApplicationHook.set($event.value)">
-              @for (applicationHook of applicationHooks(); track applicationHook.id) {
-                <mat-option
-                  [value]="applicationHook.hook"
-                  [disabled]="applicationHookInUseByAnotherPost(applicationHook)">
-                  {{ applicationHookLabel(applicationHook.hook) }}
-                  @if (applicationHookInUseByAnotherPost(applicationHook)) {
-                    (in use by post #{{ applicationHook.contentId }})
-                  }
-                </mat-option>
-              } @empty {
-                <mat-option [disabled]="true">No application hooks configured</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+
+    @if (!mediaAttachment()) {
+      <section
+        class="application-hook"
+        aria-labelledby="application-hook-heading">
+        <h2 id="application-hook-heading">
+          Application Hook
+        </h2>
+        @if (applicationHooksLoading()) {
+          <p role="status">Loading application hooks...</p>
+        } @else if (applicationHooksError()) {
+          <p
+            class="error"
+            role="alert">
+            {{ applicationHooksError() }}
+          </p>
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="loadApplicationHooks()">
+            Try again
+          </button>
+        } @else {
+          <mat-checkbox
+            [checked]="useAsApplicationHook()"
+            [disabled]="busy() || dialogOpen()"
+            (change)="setUseAsApplicationHook($event.checked)">
+            Use as application hook
+          </mat-checkbox>
+          @if (useAsApplicationHook()) {
+            <mat-form-field
+              appearance="outline"
+              subscriptSizing="dynamic">
+              <mat-label>Application Hook</mat-label>
+              <mat-select
+                [value]="selectedApplicationHook()"
+                [disabled]="busy() || dialogOpen()"
+                (selectionChange)="selectedApplicationHook.set($event.value)">
+                @for (
+                  applicationHook of applicationHooks();
+                  track applicationHook.id
+                ) {
+                  <mat-option
+                    [value]="applicationHook.hook"
+                    [disabled]="
+                      applicationHookInUseByAnotherPost(applicationHook)
+                    ">
+                    {{ applicationHookLabel(applicationHook.hook) }}
+                    @if (applicationHookInUseByAnotherPost(applicationHook)) {
+                      (in use by post #{{ applicationHook.contentId }})
+                    }
+                  </mat-option>
+                } @empty {
+                  <mat-option [disabled]="true"
+                    >No application hooks configured</mat-option
+                  >
+                }
+              </mat-select>
+            </mat-form-field>
+          }
         }
-      }
-    </section>
-    <section class="post-permissions" aria-labelledby="post-permissions-heading">
+      </section>
+    }
+    <section
+      class="post-permissions"
+      aria-labelledby="post-permissions-heading">
       <h2 id="post-permissions-heading">Allow Read only with Permissions</h2>
       @if (permissionsLoading()) {
         <p role="status">Loading assigned permissions...</p>
       } @else if (permissionsError()) {
-        <p class="error" role="alert">{{ permissionsError() }}</p>
-        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadPermissions()">Try again</button>
+        <p
+          class="error"
+          role="alert">
+          {{ permissionsError() }}
+        </p>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="loadPermissions()">
+          Try again
+        </button>
       } @else {
         <ul>
           @for (permission of permissions(); track permission.id) {
             <li>
               <span>{{ permission.name }} ({{ permission.code }})</span>
-              <button mat-icon-button type="button" [attr.aria-label]="'Remove permission ' + permission.name" [disabled]="busy() || dialogOpen()" (click)="removePermission(permission.id)">
+              <button
+                mat-icon-button
+                type="button"
+                [attr.aria-label]="'Remove permission ' + permission.name"
+                [disabled]="busy() || dialogOpen()"
+                (click)="removePermission(permission.id)">
                 <mat-icon>close</mat-icon>
               </button>
             </li>
@@ -185,24 +354,49 @@
           }
         </ul>
         @if (permissionOptionsError()) {
-          <p class="error" role="alert">{{ permissionOptionsError() }}</p>
-          <button mat-button type="button" [disabled]="busy() || dialogOpen() || permissionOptionsLoading()" (click)="loadPermissionOptions()">Try again</button>
+          <p
+            class="error"
+            role="alert">
+            {{ permissionOptionsError() }}
+          </p>
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen() || permissionOptionsLoading()"
+            (click)="loadPermissionOptions()">
+            Try again
+          </button>
         } @else {
           <div class="permission-assignment">
-            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-form-field
+              appearance="outline"
+              subscriptSizing="dynamic">
               <mat-label>Permission</mat-label>
               <mat-select
                 [value]="selectedPermissionId()"
-                [disabled]="busy() || dialogOpen() || permissionOptionsLoading()"
+                [disabled]="
+                  busy() || dialogOpen() || permissionOptionsLoading()
+                "
                 (selectionChange)="selectedPermissionId.set($event.value)">
-                @for (permission of availablePermissions(); track permission.id) {
-                  <mat-option [value]="permission.id">{{ permission.name }} ({{ permission.code }})</mat-option>
+                @for (
+                  permission of availablePermissions();
+                  track permission.id
+                ) {
+                  <mat-option [value]="permission.id"
+                    >{{ permission.name }} ({{ permission.code }})</mat-option
+                  >
                 } @empty {
-                  <mat-option [disabled]="true">No permissions available</mat-option>
+                  <mat-option [disabled]="true"
+                    >No permissions available</mat-option
+                  >
                 }
               </mat-select>
             </mat-form-field>
-            <button mat-button type="button" [disabled]="busy() || dialogOpen() || !selectedPermissionId()" (click)="addPermission()">
+            <button
+              mat-button
+              type="button"
+              [disabled]="busy() || dialogOpen() || !selectedPermissionId()"
+              (click)="addPermission()">
               <mat-icon>add</mat-icon> Assign permission
             </button>
           </div>
@@ -214,7 +408,44 @@
     @if (post.excerpt) {
       <p class="post-excerpt">{{ post.excerpt }}</p>
     }
-    <div class="post-body" [innerHTML]="post.body"></div>
+    <div
+      class="post-body"
+      [innerHTML]="post.body"></div>
+    @if (mediaAttachment(); as media) {
+      @if (draft()[media.key]; as key) {
+        @if (mediaPreviewLoading()) {
+          <p role="status">Loading media...</p>
+        } @else if (mediaPreviewError()) {
+          <p
+            class="error"
+            role="alert">
+            {{ mediaPreviewError() }}
+          </p>
+        } @else if (media.type === 'video' && mediaPreviewUrl()) {
+          <video
+            controls
+            [src]="mediaPreviewUrl()">
+            Your browser does not support video playback.
+          </video>
+        } @else if (media.type === 'audio' && mediaPreviewUrl()) {
+          <audio
+            controls
+            [src]="mediaPreviewUrl()">
+            Your browser does not support audio playback.
+          </audio>
+        } @else if (media.type === 'attachment' && mediaPreviewUrl()) {
+          <p>
+            Attached file: {{ mediaFileName(key) }}
+            <a
+              [href]="mediaPreviewUrl()"
+              target="_blank"
+              rel="noopener"
+              >Download or open</a
+            >
+          </p>
+        }
+      }
+    }
   } @else {
     <p role="status">No post is loaded.</p>
   }

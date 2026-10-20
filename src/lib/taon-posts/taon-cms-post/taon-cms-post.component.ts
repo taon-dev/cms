@@ -119,6 +119,24 @@ export class TaonCmsPostComponent {
 
   readonly uploading = signal(false);
 
+  readonly mediaPreviewUrl = signal('');
+
+  readonly mediaPreviewLoading = signal(false);
+
+  readonly mediaPreviewError = signal('');
+
+  private readonly mediaFileNames = signal<Record<string, string>>({});
+
+  private readonly uploadedMediaPreview = signal<{
+    key: string;
+    url: string;
+    fileName: string;
+  } | null>(null);
+
+  private mediaPreviewRequest = 0;
+
+  private mediaPreviewSignature = '';
+
   readonly dialogOpen = signal(false);
 
   readonly error = signal('');
@@ -137,8 +155,9 @@ export class TaonCmsPostComponent {
 
   readonly useAsApplicationHook = signal(false);
 
-  readonly selectedApplicationHook =
-    signal<TaonCmsApplicationHook | null>(null);
+  readonly selectedApplicationHook = signal<TaonCmsApplicationHook | null>(
+    null,
+  );
 
   readonly permissions = signal<TaonPermissionEntity[]>([]);
 
@@ -213,6 +232,82 @@ export class TaonCmsPostComponent {
           this.loadPermissionOptions();
         });
       }
+    });
+    effect(() => {
+      const media = this.mediaAttachment();
+      const key = media ? this.draft()[media.key] : null;
+      const slug = this.draft().slug;
+      const editing = this.editing();
+      const viewing = !!this.currentPost() && this.mode() !== 'add';
+      const stagedPreview = this.uploadedMediaPreview();
+      if ((!editing && !viewing) || !media || !key) {
+        this.mediaPreviewSignature = '';
+        this.mediaPreviewRequest += 1;
+        this.mediaPreviewUrl.set('');
+        this.mediaPreviewLoading.set(false);
+        this.mediaPreviewError.set('');
+        return;
+      }
+      if (stagedPreview?.key === key) {
+        const signature = `upload:${key}:${stagedPreview.url}`;
+        if (signature === this.mediaPreviewSignature) {
+          return;
+        }
+        this.mediaPreviewSignature = signature;
+        this.mediaPreviewRequest += 1;
+        this.mediaPreviewUrl.set(stagedPreview.url);
+        this.mediaPreviewLoading.set(false);
+        this.mediaPreviewError.set('');
+        return;
+      }
+      if (!slug) {
+        this.mediaPreviewSignature = '';
+        this.mediaPreviewRequest += 1;
+        this.mediaPreviewUrl.set('');
+        this.mediaPreviewLoading.set(false);
+        this.mediaPreviewError.set('');
+        return;
+      }
+      const signature = `${this.mode()}:${media.type}:${slug}:${key}`;
+      if (signature === this.mediaPreviewSignature) {
+        return;
+      }
+      this.mediaPreviewSignature = signature;
+      const requestId = ++this.mediaPreviewRequest;
+      this.mediaPreviewUrl.set('');
+      this.mediaPreviewLoading.set(true);
+      this.mediaPreviewError.set('');
+      const getLink = editing
+        ? this.getMediaLink(slug, media.type)
+        : this.getMediaLinkForView(slug, media.type);
+      void getLink
+        .then(url => {
+          if (
+            requestId === this.mediaPreviewRequest &&
+            !this.destroyRef.destroyed
+          ) {
+            this.mediaPreviewUrl.set(url);
+          }
+        })
+        .catch((error: unknown) => {
+          console.error('[taon-cms-post] Unable to load media preview', error);
+          if (
+            requestId === this.mediaPreviewRequest &&
+            !this.destroyRef.destroyed
+          ) {
+            this.mediaPreviewError.set(
+              'Media preview could not be loaded. Please reopen the editor to try again.',
+            );
+          }
+        })
+        .finally(() => {
+          if (
+            requestId === this.mediaPreviewRequest &&
+            !this.destroyRef.destroyed
+          ) {
+            this.mediaPreviewLoading.set(false);
+          }
+        });
     });
   }
   //#endregion
@@ -468,6 +563,18 @@ export class TaonCmsPostComponent {
     try {
       const object = await this.api.uploadMedia(file);
       if (!this.destroyRef.destroyed && this.draft() === draft) {
+        const fileName = object.fileName || file.name;
+        this.mediaFileNames.update(names => ({
+          ...names,
+          [object.key]: fileName,
+        }));
+        if (object.downloadUrl) {
+          this.uploadedMediaPreview.set({
+            key: object.key,
+            url: this.uploadedMediaUrl(object.downloadUrl, media.type),
+            fileName,
+          });
+        }
         this.updateDraft(media.key, object.key);
       }
     } catch (error: unknown) {
@@ -487,7 +594,74 @@ export class TaonCmsPostComponent {
     if (!media || !this.editing() || this.busy() || this.dialogOpen()) {
       return;
     }
+    this.uploadedMediaPreview.set(null);
     this.updateDraft(media.key, null);
+  }
+  //#endregion
+
+  //#region methods / uploaded media URL
+  private uploadedMediaUrl(url: string, type: TaonCmsContentType): string {
+    if (type !== TaonCmsContentType.Attachment) {
+      return url;
+    }
+    const parsedUrl = new URL(url);
+    parsedUrl.searchParams.set('download', 'true');
+    return parsedUrl.href;
+  }
+  //#endregion
+
+  //#region methods / get media link
+  private getMediaLink(
+    slug: string,
+    type: TaonCmsContentType,
+  ): Promise<string> {
+    switch (type) {
+      case TaonCmsContentType.Video:
+        return this.api.getVideoLinkBySlug(slug);
+      case TaonCmsContentType.Audio:
+        return this.api.getAudioLinkBySlug(slug);
+      case TaonCmsContentType.Attachment:
+        return this.api.getAttachmentLinkBySlug(slug);
+      default:
+        return Promise.reject(new Error('This post type has no media.'));
+    }
+  }
+  //#endregion
+
+  //#region methods / get media link for viewing
+  private async getMediaLinkForView(
+    slug: string,
+    type: TaonCmsContentType,
+  ): Promise<string> {
+    try {
+      switch (type) {
+        case TaonCmsContentType.Video:
+          return await this.api.getPublicVideoLinkBySlug(slug);
+        case TaonCmsContentType.Audio:
+          return await this.api.getPublicAudioLinkBySlug(slug);
+        case TaonCmsContentType.Attachment:
+          return await this.api.getPublicAttachmentLinkBySlug(slug);
+        default:
+          throw new Error('This post type has no media.');
+      }
+    } catch {
+      return this.getMediaLink(slug, type);
+    }
+  }
+  //#endregion
+
+  //#region methods / media file name
+  mediaFileName(key: string): string {
+    const fileName = this.mediaFileNames()[key];
+    if (fileName) {
+      return fileName;
+    }
+    const uploaded = this.uploadedMediaPreview();
+    if (uploaded?.key === key) {
+      return uploaded.fileName;
+    }
+    const storedName = key.split('/').pop() || key;
+    return storedName.replace(/^[0-9a-f-]{36}__/i, '');
   }
   //#endregion
 
@@ -686,6 +860,9 @@ export class TaonCmsPostComponent {
     this.applicationHooksError.set('');
     this.permissionsLoading.set(false);
     this.permissionsError.set('');
+    this.uploadedMediaPreview.set(null);
+    this.mediaPreviewSignature = '';
+    this.mediaPreviewRequest += 1;
     this.currentPost.set(post);
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);

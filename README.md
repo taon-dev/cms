@@ -12,9 +12,16 @@ and pagination; archived posts remain visible so they can be restored.
 Use the post component with a content entity returned by the API:
 
 ```html
-<taon-cms-post [post]="post" mode="view" (changed)="post = $event" />
-<taon-cms-post mode="add" (changed)="onCreated($event)" />
-<taon-cms-post [post]="post" mode="view-clean" />
+<taon-cms-post
+  [post]="post"
+  mode="view"
+  (changed)="post = $event" />
+<taon-cms-post
+  mode="add"
+  (changed)="onCreated($event)" />
+<taon-cms-post
+  [post]="post"
+  mode="view-clean" />
 ```
 
 Modes are `view`, `edit`, `add`, and `view-clean`. The public `view-clean`
@@ -33,14 +40,29 @@ The Material radio selector above the title selects `TaonCmsContentType.Normal`,
 and attachment posts show a primary-media upload section directly below the URL
 slug. Uploads use `TaonCmsContentStorageController` (Taon's bucket storage) and
 store the returned key in `videoKey`, `audioKey`, or `attachmentKey`, never in
-`body`. The attached file's key is shown once uploaded.
+`body`. The editor previews video/audio with native controls and shows an
+attachment filename with a download/open action. Existing media can be replaced
+or removed.
 
 Changing type only changes which media section is visible; all keys and files
-are retained. Uploads and Remove change the draft; Save/Publish persists the
-keys, and Cancel discards draft changes. Remove clears only the selected key,
-not the stored file, so revision history remains usable. Files uploaded to
-discarded drafts are also retained. Upload failures display an error and keep
-the draft intact.
+are retained. Uploads, Replace, and Remove change the draft; Save/Publish
+persists the keys, and Cancel discards draft changes. Remove clears only the
+selected key, not the stored file, so revision history remains usable. Files
+uploaded to discarded drafts are also retained. Upload failures display an
+error and keep the draft intact.
+
+`TaonCmsContentApiService` exposes private and public
+`getVideoLinkBySlug`/`getPublicVideoLinkBySlug`,
+`getAudioLinkBySlug`/`getPublicAudioLinkBySlug`, and
+`getAttachmentLinkBySlug`/`getPublicAttachmentLinkBySlug` methods. Private URL
+issuance checks the post's assigned permission codes (or super-user access);
+public URL issuance is limited to published posts without permissions. Private
+download URLs are signed, key- and storage-controller-bound tokens that expire
+after five minutes; no temporary-link database or KV records are created.
+Storage downloads validate these tokens and support streamed HTTP Range
+requests for video/audio. Node storage persists content type and original
+filename metadata alongside the object; Cloudflare R2 stores the same metadata
+with the object.
 
 Below the media section, the related-post list shows IDs and titles with remove
 buttons. Add related post opens `TaonRelatedPostChooserComponent`
@@ -123,10 +145,10 @@ and revision snapshots before using enum-validated writes/restores.
 
 The content context includes its category, tag, content-tag, and revision
 dependencies. Assets, comments, and permissions need no new repository operations
-for archive-based deletion. Apply your application's authorization middleware to
-these endpoints; this API does not add a new permission policy.
-Apply that policy to the content storage controller as well; it exposes upload,
-download, existence, and metadata endpoints, not physical file deletion.
+for archive-based deletion. Media uses the post's existing permissions; it does
+not add separate video, audio, or attachment permissions. The content storage
+controller exposes only uploads and token/public-policy-validated downloads;
+physical file deletion remains unavailable through this controller.
 
 Run the focused content tests with `npm run test:content`
 after Taon generates the package configuration, or directly with
