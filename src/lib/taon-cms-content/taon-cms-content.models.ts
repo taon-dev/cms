@@ -32,12 +32,14 @@ export interface TaonCmsCreateContent
   tagIds?: number[];
   relatedPostIds?: number[];
   permissionIds?: number[];
+  applicationHook?: TaonCmsApplicationHook | null;
 }
 
 export interface TaonCmsUpdateContent extends Partial<TaonCmsContentFields> {
   tagIds?: number[];
   relatedPostIds?: number[];
   permissionIds?: number[];
+  applicationHook?: TaonCmsApplicationHook | null;
   expectedVersion: number;
 }
 
@@ -51,3 +53,4 @@ export interface TaonCmsContentSnapshot extends TaonCmsContentFields {
   relatedPostIds?: number[];
   permissionIds: number[];
 }
+import type { TaonCmsApplicationHook } from '../taon-cms-application-hooks';

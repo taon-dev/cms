@@ -8,6 +8,7 @@ export * from './start-cli';
 export * from './taon-cms-application-hooks'; 
 export * from './taon-cms.abstract.context'; 
 export * from './decorators/taon-cms-authorization'; 
+export * from './taon-cms-application-hook/taon-cms-application-hook.entity'; 
 export * from './taon-cms-assets-backoffice/taon-cms-assets-backoffice.component'; // @browser
 export * from './taon-cms-assets-backoffice/taon-cms-assets-backoffice.routes'; // @browser
 export * from './taon-cms-backoffice/taon-cms-backoffice.component'; // @browser

@@ -5,6 +5,7 @@ import { TaonCmsCategoryAbstractContext } from '../taon-cms-category/taon-cms-ca
 import { TaonCmsContentRevisionAbstractContext } from '../taon-cms-content-revision/taon-cms-content-revision.abstract.context';
 import { TaonCmsContentTagAbstractContext } from '../taon-cms-content-tag/taon-cms-content-tag.abstract.context';
 import { TaonCmsTagAbstractContext } from '../taon-cms-tag/taon-cms-tag.abstract.context';
+import { TaonCmsApplicationHookEntity } from '../taon-cms-application-hook/taon-cms-application-hook.entity';
 
 import { TaonCmsContentController } from './taon-cms-content.controller';
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
@@ -26,7 +27,7 @@ export const TaonCmsContentAbstractContext = createContext(() => ({
     TaonCmsContentTagAbstractContext,
     TaonCmsContentRevisionAbstractContext,
   },
-  entities: { TaonCmsContentEntity },
+  entities: { TaonCmsApplicationHookEntity, TaonCmsContentEntity },
   controllers: { TaonCmsContentController, TaonCmsContentStorageController },
   repositories: { TaonCmsContentRepository },
   providers: { TaonCmsContentProvider },

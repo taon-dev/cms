@@ -2,9 +2,10 @@
 import { Injectable } from '@angular/core';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Taon, TaonBaseAngularService, TaonStorageObject } from 'taon/src';
 
+import type { TaonCmsApplicationHookEntity } from '../taon-cms-application-hook/taon-cms-application-hook.entity';
 import { TaonCmsApplicationHook } from '../taon-cms-application-hooks';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 
@@ -45,11 +46,21 @@ export class TaonCmsContentApiService<
   }
 
   public getContentByHook(hook: HOOKS): Observable<string> {
-    // if(hook === 'footer-about') {
+    return this.taonCmsContentController.getContentByHook(hook)
+      .request!().observable.pipe(map(res => res.body.text));
+  }
 
-    // }
-    // TODO
-    return of('');
+  public getPublicContentByHook(hook: HOOKS): Observable<string> {
+    return this.taonCmsContentController.getPublicContentByHook(hook)
+      .request!().observable.pipe(
+      map(res => res.body.text),
+      catchError(() => of('---')),
+    );
+  }
+
+  public listApplicationHooks(): Observable<TaonCmsApplicationHookEntity[]> {
+    return this.taonCmsContentController.listApplicationHooks()
+      .request!().observable.pipe(map(res => res.body.json));
   }
 
   public async uploadMedia(file: File): Promise<TaonStorageObject> {

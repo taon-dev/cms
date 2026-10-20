@@ -3,6 +3,7 @@ import {
   Column,
   JoinTable,
   ManyToMany,
+  OneToOne,
   CustomColumn,
   PrimaryGeneratedColumn,
   Taon,
@@ -12,6 +13,8 @@ import {
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 import { TaonPermissionEntity } from '@taon-dev/session/src';
+
+import { TaonCmsApplicationHookEntity } from '../taon-cms-application-hook/taon-cms-application-hook.entity';
 
 import { TaonCmsContentDefaultsValues } from './taon-cms-content.constants';
 import { TaonCmsContentType } from './taon-cms-content.models';
@@ -56,6 +59,14 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   })
   //#endregion
   relatedPosts: TaonCmsContentEntity[];
+
+  //#region @websql
+  @OneToOne(
+    () => TaonCmsApplicationHookEntity,
+    applicationHook => applicationHook.content,
+  )
+  //#endregion
+  applicationHook: TaonCmsApplicationHookEntity | null;
 
   //#region @websql
   @ManyToMany(() => TaonPermissionEntity)

@@ -14,12 +14,16 @@ import { TaonEntity, TaonMigration, TaonRepository } from 'taon/src';
 
 export const TaonSessionCoreGroups = {
   ...TaonSessionCoreGroupsBase,
-  TestPostsManager: 'test-posts-managers',
+  Manager: 'manager',
 };
 
 export const TaonSessionCoreRoles = {
   ...TaonSessionCoreRolesBase,
-  TestEditor: 'test-editor',
+  /**
+   * Can manage roles and permissions assigned directly to users.
+   * Does NOT allow changing user groups.
+   */
+  PostsManager: 'posts-manager',
 };
 
 export const TaonSessionCorePermissions = {
@@ -59,7 +63,7 @@ export class TaonAuthContextHasAccess extends TaonAuthContextHasAccessBase {
     //#region @websqlFunc
     return (
       this.context.isSuperUser ||
-      this.context.isInGroup(TaonSessionCoreGroups.TestPostsManager)
+      this.context.hasRole(TaonSessionCoreRoles.PostsManager)
     );
     //#endregion
   }
@@ -68,7 +72,11 @@ export class TaonAuthContextHasAccess extends TaonAuthContextHasAccessBase {
 @TaonRepository({
   className: 'TaonAuthContextRepository',
 })
-export class TaonAuthContextRepository extends TaonAuthContextRepositoryBase<TaonSessionCoreAuthorization> {
+export class TaonAuthContextRepository extends TaonAuthContextRepositoryBase<
+  TaonSessionCoreAuthorization,
+  // @ts-ignore
+  TaonAuthContextEntity
+> {
   // @ts-ignore
   entityClassResolveFn = () => TaonAuthContextEntity;
 }
@@ -95,10 +103,7 @@ export class CmsContext_1791132517217_initial
 
           // Normal customers receive no administrative roles by default.
           [TaonSessionCoreGroups.Customers]: [],
-          // Normal customers receive no administrative roles by default.
-          [TaonSessionCoreGroups.TestPostsManager]: [
-            TaonSessionCoreRoles.TestEditor,
-          ],
+          [TaonSessionCoreGroups.Manager]: [TaonSessionCoreRoles.PostsManager],
         },
 
         rolesAndPermissions: {
@@ -108,7 +113,7 @@ export class CmsContext_1791132517217_initial
             TaonSessionCorePermissions.ManageUserRoles,
             TaonSessionCorePermissions.ManageUserPermissions,
           ],
-
+          [TaonSessionCoreRoles.PostsManager]: [],
           [TaonSessionCoreRoles.UserManager]: [
             TaonSessionCorePermissions.ViewUsers,
             TaonSessionCorePermissions.ManageUsers,

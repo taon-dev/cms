@@ -126,6 +126,44 @@
         </button>
       }
     </section>
+    <section class="application-hook" aria-labelledby="application-hook-heading">
+      <h2 id="application-hook-heading">Application Hook</h2>
+      @if (applicationHooksLoading()) {
+        <p role="status">Loading application hooks...</p>
+      } @else if (applicationHooksError()) {
+        <p class="error" role="alert">{{ applicationHooksError() }}</p>
+        <button mat-button type="button" [disabled]="busy() || dialogOpen()" (click)="loadApplicationHooks()">Try again</button>
+      } @else {
+        <mat-checkbox
+          [checked]="useAsApplicationHook()"
+          [disabled]="busy() || dialogOpen()"
+          (change)="setUseAsApplicationHook($event.checked)">
+          Use as application hook
+        </mat-checkbox>
+        @if (useAsApplicationHook()) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Application Hook</mat-label>
+            <mat-select
+              [value]="selectedApplicationHook()"
+              [disabled]="busy() || dialogOpen()"
+              (selectionChange)="selectedApplicationHook.set($event.value)">
+              @for (applicationHook of applicationHooks(); track applicationHook.id) {
+                <mat-option
+                  [value]="applicationHook.hook"
+                  [disabled]="applicationHookInUseByAnotherPost(applicationHook)">
+                  {{ applicationHookLabel(applicationHook.hook) }}
+                  @if (applicationHookInUseByAnotherPost(applicationHook)) {
+                    (in use by post #{{ applicationHook.contentId }})
+                  }
+                </mat-option>
+              } @empty {
+                <mat-option [disabled]="true">No application hooks configured</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+      }
+    </section>
     <section class="post-permissions" aria-labelledby="post-permissions-heading">
       <h2 id="post-permissions-heading">Allow Read only with Permissions</h2>
       @if (permissionsLoading()) {

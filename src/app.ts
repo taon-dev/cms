@@ -51,6 +51,7 @@ import {
   TaonCmsAbstractContext,
 } from '@taon-dev/cms/src';
 import { TaonCmsContentApiService } from '@taon-dev/cms/src'; // @browser
+import { TaonCmsApplicationHook } from '@taon-dev/cms/src';
 import { Translation, TranslationManager } from '@taon-dev/i18n/src';
 // TranslationManager.globalDefautlLanguageOverride = 'pl-PL';
 import { TranslateDirective } from '@taon-dev/i18n/src'; // @browser
@@ -83,7 +84,14 @@ import {
   TaonDraggableButtonPanelComponent,
 } from '@taon-dev/ui/src'; // @browser
 import { providePrimeNG } from 'primeng/config'; // @browser
-import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
 import {
   Taon,
   TaonBaseContext,
@@ -124,6 +132,7 @@ import { ENV_ANGULAR_NODE_APP_BUILD_PWA_DISABLE_SERVICE_WORKER } from './lib/env
 //#endregion
 
 //#region constants
+
 //#region constants
 console.log('🚀 [ TAON IS STARTING ]');
 const DEFAULT_PASSWORD = DEFAULT_SESSION_PASSWORD;
@@ -226,6 +235,11 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP, {
           <!-- <taon-session [config]="config" /> -->
         </mat-card-content>
       </mat-card>
+      @if (hookExampleContent()) {
+        <div
+          class="m-2 p-4"
+          [innerHTML]="hookExampleContent()"></div>
+      }
       <router-outlet></router-outlet>
     }
   `,
@@ -240,7 +254,16 @@ export class CmsApp implements OnInit {
 
   readonly t = t.for(this);
 
-  taonCmsContentApiService = inject(TaonCmsContentApiService);
+  taonCmsContentApiService = inject<
+    TaonCmsContentApiService<TaonCmsApplicationHook>
+  >(TaonCmsContentApiService);
+
+  hookExampleContent = toSignal(
+    this.taonCmsContentApiService.getPublicContentByHook(
+      TaonCmsApplicationHook.FOOTER_ABOUT,
+    ),
+    { initialValue: '' },
+  );
 
   config: TaonSessionConfig = {
     // linkToDashboard: '/',

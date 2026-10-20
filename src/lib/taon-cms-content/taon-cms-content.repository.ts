@@ -4,6 +4,8 @@ import { In, Raw } from 'taon-typeorm/src';
 import type { EntityManager } from 'taon-typeorm/src';
 import { TaonPermissionEntity } from '@taon-dev/session/src';
 
+import { TaonCmsApplicationHookEntity } from '../taon-cms-application-hook/taon-cms-application-hook.entity';
+import type { TaonCmsApplicationHook } from '../taon-cms-application-hooks';
 import { TaonCmsCategoryRepository } from '../taon-cms-category/taon-cms-category.repository';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 import { TaonCmsContentRevisionRepository } from '../taon-cms-content-revision/taon-cms-content-revision.repository';
@@ -75,6 +77,11 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       await this.taonCmsContentTagRepository.replaceTags(content.id, tagIds, manager);
       await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
       await this.replacePermissions(content.id, permissionIds, [], manager);
+      await this.replaceApplicationHook(
+        content.id,
+        input.applicationHook ?? null,
+        manager,
+      );
       await this.taonCmsContentRevisionRepository.recordContent(
         content,
         { ...fields, tagIds, relatedPostIds, permissionIds },
@@ -114,6 +121,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         input.expectedVersion,
         { ...fields, tagIds, relatedPostIds, permissionIds },
         manager,
+        input.applicationHook,
       );
     });
     //#endregion
@@ -217,6 +225,29 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async listApplicationHooks(): Promise<TaonCmsApplicationHookEntity[]> {
+    //#region @websqlFunc
+    return this.connection
+      .getRepository(TaonCmsApplicationHookEntity)
+      .find({ order: { hook: 'ASC' } });
+    //#endregion
+  }
+
+  async getContentByHook(hook: string): Promise<string> {
+    //#region @websqlFunc
+    if (!hook) {
+      contentError('Application hook is required.');
+    }
+    const applicationHook = await this.connection
+      .getRepository(TaonCmsApplicationHookEntity)
+      .findOne({
+        where: { hook: hook as TaonCmsApplicationHook },
+        relations: { content: true },
+      });
+    return applicationHook?.content?.body ?? '';
+    //#endregion
+  }
+
   async addRelatedPost(
     id: number,
     relatedPostId: number,
@@ -272,7 +303,11 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       .getRepository<TaonCmsContentEntity>(this.target)
       .findOne({
         where: { id },
-        relations: { relatedPosts: true, permissions: true },
+        relations: {
+          relatedPosts: true,
+          permissions: true,
+          applicationHook: true,
+        },
       });
     if (!content) {
       contentError(`Content ${id} does not exist.`, 404);
@@ -448,11 +483,46 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  private async replaceApplicationHook(
+    contentId: number,
+    hook: TaonCmsApplicationHook | null,
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const repository = manager.getRepository(TaonCmsApplicationHookEntity);
+    const current = await repository.findOneBy({ contentId });
+    if (hook === null) {
+      if (current) {
+        current.contentId = null;
+        await repository.save(current);
+      }
+      return;
+    }
+    const target = await repository.findOneBy({ hook });
+    if (!target) {
+      contentError(`Application hook "${hook}" is not configured.`, 404);
+    }
+    if (target.contentId !== null && target.contentId !== contentId) {
+      contentError(`Application hook "${hook}" is already in use.`, 409);
+    }
+    if (current?.id === target.id) {
+      return;
+    }
+    if (current) {
+      current.contentId = null;
+      await repository.save(current);
+    }
+    target.contentId = contentId;
+    await repository.save(target);
+    //#endregion
+  }
+
   private async commitUpdate(
     current: TaonCmsContentEntity,
     expectedVersion: number,
     snapshot: TaonCmsContentSnapshot,
     manager: EntityManager,
+    applicationHook?: TaonCmsApplicationHook | null,
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     if (current.version !== expectedVersion) {
@@ -498,6 +568,13 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       current.permissions.map(permission => permission.id),
       manager,
     );
+    if (applicationHook !== undefined) {
+      await this.replaceApplicationHook(
+        current.id,
+        applicationHook,
+        manager,
+      );
+    }
     const updated = await this.requireContent(current.id, manager);
     await this.taonCmsContentRevisionRepository.recordContent(
       updated,

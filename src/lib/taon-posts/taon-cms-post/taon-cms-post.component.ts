@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +25,8 @@ import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
 import { Observable, Subscription, finalize } from 'rxjs';
 
+import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
+import type { TaonCmsApplicationHook } from '../../taon-cms-application-hooks';
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
@@ -43,6 +46,7 @@ import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatButtonModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
     MatRadioModule,
@@ -125,6 +129,17 @@ export class TaonCmsPostComponent {
 
   readonly relatedPostsError = signal('');
 
+  readonly applicationHooks = signal<TaonCmsApplicationHookEntity[]>([]);
+
+  readonly applicationHooksLoading = signal(false);
+
+  readonly applicationHooksError = signal('');
+
+  readonly useAsApplicationHook = signal(false);
+
+  readonly selectedApplicationHook =
+    signal<TaonCmsApplicationHook | null>(null);
+
   readonly permissions = signal<TaonPermissionEntity[]>([]);
 
   readonly permissionsLoading = signal(false);
@@ -158,6 +173,9 @@ export class TaonCmsPostComponent {
       !!this.draft().slug.trim() &&
       !this.relatedPostsLoading() &&
       !this.relatedPostsError() &&
+      !this.applicationHooksLoading() &&
+      !this.applicationHooksError() &&
+      (!this.useAsApplicationHook() || !!this.selectedApplicationHook()) &&
       !this.permissionsLoading() &&
       !this.permissionsError(),
   );
@@ -177,6 +195,8 @@ export class TaonCmsPostComponent {
 
   private relatedPostsLoad?: Subscription;
 
+  private applicationHooksLoad?: Subscription;
+
   private permissionsLoad?: Subscription;
   //#endregion
 
@@ -188,7 +208,10 @@ export class TaonCmsPostComponent {
     });
     effect(() => {
       if (this.editing()) {
-        untracked(() => this.loadPermissionOptions());
+        untracked(() => {
+          this.loadApplicationHooks();
+          this.loadPermissionOptions();
+        });
       }
     });
   }
@@ -276,6 +299,54 @@ export class TaonCmsPostComponent {
       return;
     }
     this.relatedPosts.update(posts => posts.filter(post => post.id !== id));
+  }
+  //#endregion
+
+  //#region methods / application hooks
+  loadApplicationHooks(): void {
+    if (this.applicationHooksLoading()) {
+      return;
+    }
+    this.applicationHooksLoading.set(true);
+    this.applicationHooksError.set('');
+    this.applicationHooksLoad = this.api
+      .listApplicationHooks()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.applicationHooksLoading.set(false)),
+      )
+      .subscribe({
+        next: hooks => {
+          this.applicationHooks.set(hooks);
+          this.setApplicationHookSelection(this.currentPost(), hooks);
+        },
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-post] Unable to load application hooks',
+            error,
+          );
+          this.applicationHooksError.set(
+            'Application hooks could not be loaded. Please try again.',
+          );
+        },
+      });
+  }
+
+  setUseAsApplicationHook(enabled: boolean): void {
+    this.useAsApplicationHook.set(enabled);
+  }
+
+  applicationHookInUseByAnotherPost(
+    applicationHook: TaonCmsApplicationHookEntity,
+  ): boolean {
+    return (
+      applicationHook.contentId !== null &&
+      applicationHook.contentId !== this.currentPost()?.id
+    );
+  }
+
+  applicationHookLabel(hook: TaonCmsApplicationHook): string {
+    return hook.split('-').join('_').toUpperCase();
   }
   //#endregion
 
@@ -470,6 +541,9 @@ export class TaonCmsPostComponent {
           ...this.draft(),
           relatedPostIds: this.relatedPosts().map(post => post.id),
           permissionIds: this.permissions().map(permission => permission.id),
+          applicationHook: this.useAsApplicationHook()
+            ? this.selectedApplicationHook()
+            : null,
         }),
       );
     } else {
@@ -583,6 +657,9 @@ export class TaonCmsPostComponent {
       ...this.draft(),
       relatedPostIds: this.relatedPosts().map(related => related.id),
       permissionIds: this.permissions().map(permission => permission.id),
+      applicationHook: this.useAsApplicationHook()
+        ? this.selectedApplicationHook()
+        : null,
       expectedVersion: post.version,
     };
   }
@@ -601,15 +678,19 @@ export class TaonCmsPostComponent {
   //#region methods / set post
   private setPost(post: TaonCmsContentEntity | null): void {
     this.relatedPostsLoad?.unsubscribe();
+    this.applicationHooksLoad?.unsubscribe();
     this.permissionsLoad?.unsubscribe();
     this.relatedPostsLoading.set(false);
     this.relatedPostsError.set('');
+    this.applicationHooksLoading.set(false);
+    this.applicationHooksError.set('');
     this.permissionsLoading.set(false);
     this.permissionsError.set('');
     this.currentPost.set(post);
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);
     this.selectedPermissionId.set(null);
+    this.setApplicationHookSelection(post, this.applicationHooks());
     this.draft.set({
       type: post?.type ?? TaonCmsContentType.Normal,
       title: post?.title ?? '',
@@ -636,6 +717,19 @@ export class TaonCmsPostComponent {
     }
   }
   //#endregion
+
+  private setApplicationHookSelection(
+    post: TaonCmsContentEntity | null,
+    hooks: TaonCmsApplicationHookEntity[],
+  ): void {
+    const assignedHook =
+      post?.applicationHook !== undefined
+        ? post.applicationHook?.hook
+        : hooks.find(applicationHook => applicationHook.contentId === post?.id)
+            ?.hook;
+    this.useAsApplicationHook.set(!!assignedHook);
+    this.selectedApplicationHook.set(assignedHook ?? null);
+  }
 
   //#region methods / accept post
   private acceptPost(post: TaonCmsContentEntity): void {
