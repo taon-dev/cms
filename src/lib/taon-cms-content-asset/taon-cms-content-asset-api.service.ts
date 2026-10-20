@@ -8,17 +8,17 @@ import { TaonCmsContentAssetController } from './taon-cms-content-asset.controll
 
 @Injectable()
 export class TaonCmsContentAssetApiService extends TaonBaseAngularService {
-  private taonCmsContentAssetController = this.injectController(TaonCmsContentAssetController);
+  protected readonly taonCmsContentAssetController = this.injectController(
+    TaonCmsContentAssetController,
+  );
 
   public get allMyEntities$(): Observable<TaonCmsContentAssetEntity[]> {
-    return this.taonCmsContentAssetController.getAll().request!().observable.pipe(
-      map(res => res.body?.json),
-    );
+    return this.taonCmsContentAssetController.getAll()
+      .request!().observable.pipe(map(res => res.body?.json));
   }
 
-  public helloWorld(user:string): Observable<string> {
-    return this.taonCmsContentAssetController.helloWord(user).request!().observable.pipe(
-      map(res => res.responseText as string),
-    );
+  public helloWorld(user: string): Observable<string> {
+    return this.taonCmsContentAssetController.helloWord(user)
+      .request!().observable.pipe(map(res => res.responseText as string));
   }
 }

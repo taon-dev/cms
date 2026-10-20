@@ -8,7 +8,7 @@ import { TaonCmsContentTagController } from './taon-cms-content-tag.controller';
 
 @Injectable()
 export class TaonCmsContentTagApiService extends TaonBaseAngularService {
-  private taonCmsContentTagController = this.injectController(
+  protected readonly taonCmsContentTagController = this.injectController(
     TaonCmsContentTagController,
   );
 

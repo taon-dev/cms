@@ -8,7 +8,7 @@ import { TaonCmsCommentController } from './taon-cms-comment.controller';
 
 @Injectable()
 export class TaonCmsCommentApiService extends TaonBaseAngularService {
-  private taonCmsCommentController = this.injectController(TaonCmsCommentController);
+  protected readonly taonCmsCommentController = this.injectController(TaonCmsCommentController);
 
   public get allMyEntities$(): Observable<TaonCmsCommentEntity[]> {
     return this.taonCmsCommentController.getAll().request!().observable.pipe(

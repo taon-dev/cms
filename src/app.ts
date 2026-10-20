@@ -44,17 +44,24 @@ import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import Aura from '@primeng/themes/aura'; // @browser
 import {
+  CmsContext_1791132517217_initial,
   MIGRATIONS_CLASSES_FOR_CmsContext,
+  TaonAuthContextEntity,
+  TaonAuthContextRepository,
   TaonCmsAbstractContext,
 } from '@taon-dev/cms/src';
-import {
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID,
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET,
-  ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS,
-} from './lib/env';
+import { TaonCmsContentApiService } from '@taon-dev/cms/src'; // @browser
 import { Translation, TranslationManager } from '@taon-dev/i18n/src';
 // TranslationManager.globalDefautlLanguageOverride = 'pl-PL';
 import { TranslateDirective } from '@taon-dev/i18n/src'; // @browser
+import {
+  TaonAuthContextHasAccess,
+  TaonAuthorizationSchema,
+  TaonSessionCoreAuthorization,
+  TaonSessionCoreGroups,
+  TaonSessionCorePermissions,
+  TaonSessionCoreRoles,
+} from '@taon-dev/session/src';
 import {
   TaonSessionButtonComponent,
   TaonSessionComponent,
@@ -70,6 +77,7 @@ import {
   TaonSessionUserRepository,
   TaonSessionUserUtils,
 } from '@taon-dev/session/src';
+import { MIGRATIONS_CLASSES_FOR_SessionContext } from '@taon-dev/session/src';
 import {
   TaonBaselineBackofficeOutletName,
   TaonDraggableButtonPanelComponent,
@@ -105,6 +113,11 @@ import {
 import { Utils, UtilsOs } from 'tnp-core/src';
 
 import { HOST_CONFIG } from './app.hosts';
+import {
+  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID,
+  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET,
+  ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS,
+} from './lib/env';
 import { ENV_ANGULAR_NODE_APP_BUILD_PWA_DISABLE_SERVICE_WORKER } from './lib/env/env.angular-node-app';
 // @placeholder-for-imports
 
@@ -146,54 +159,95 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP, {
     MatTabsModule,
     RouterModule,
     TaonDraggableButtonPanelComponent,
-    TaonSessionComponent,
     TaonSessionButtonComponent,
-    JsonPipe,
   ],
-  // // Uncomment to have simples template
+  providers: [TaonCmsContentApiService],
   template: `
     @if (itemsLoaded()) {
       <mat-card class="m-2">
         <mat-card-content>
-          <h3>Basic app info</h3>
-          Name: taon-jwt-cookie-header-session<br />
-          Angular version: {{ angularVersion }}<br />
-          Taon backend: {{ taonMode }}<br />
+          <h3>{{ t.gettext('Basic app info') }}</h3>
+          {{ t.gettext('Name') }}: taon-jwt-cookie-header-session<br />
+          {{
+            t.gettext('Angular version: [[ version ]]', {
+              version: angularVersion,
+            })
+          }}<br />
+          {{ t.gettext('Taon backend: [[ mode ]]', { mode: taonMode }) }}<br />
           <div class="flex  flex-row items-center justify-center">
-            <taon-session-button [config]="config" />
+            <button
+              mat-icon-button
+              (click)="openDialog(200, 200)">
+              <mat-icon>settings</mat-icon>
+            </button>
 
-            <taon-draggable-button-panel
-              title="Taon Admin"
-              [outlet]="outlet"
-              [basePath]="basePath">
-              <router-outlet [name]="outlet" />
-            </taon-draggable-button-panel>
+            <taon-session-button
+              [config]="config"
+              [displayDashboardButton]="true"
+              (context)="context = $event" />
+
+            @if (hasAccessToViewTaonAdminButton) {
+              <ng-template #headerCenterTemplate>
+                <span
+                  class="inline-block w-2 h-2 rounded-full mr-2"
+                  [class.bg-green-500]="context.user"
+                  [class.bg-red-500]="!context.user">
+                </span>
+
+                {{
+                  context.user
+                    ? t.gettext(
+                        'Hello [[ username ]]',
+                        {
+                          username: context.user.username,
+                        },
+                        'header-taon-admin'
+                      )
+                    : t.gettext('Please login to use Taon Admin')
+                }}
+              </ng-template>
+
+              <taon-draggable-button-panel
+                title="Taon Admin"
+                [headerCenterTemplate]="headerCenterTemplate"
+                [autoHideIcon]="false"
+                [outlet]="outlet"
+                [context]="context"
+                [basePath]="basePath">
+                <router-outlet [name]="outlet" />
+              </taon-draggable-button-panel>
+            }
           </div>
         </mat-card-content>
       </mat-card>
 
       <mat-card class="m-2">
         <mat-card-content>
-          Test
           <!-- <taon-session [config]="config" /> -->
         </mat-card-content>
       </mat-card>
       <router-outlet></router-outlet>
     }
   `,
+  // <footer
+  //       class="text-center p-4 w-full select-none"
+  //       (click)="taonAdminService.enableDeveloperIf5Timetap()">
+  //       Copyright <strong>taon-jwt-cookie-header-session</strong> {{ year }}
+  //     </footer>
 })
 export class CmsApp implements OnInit {
-  t = t.for(this);
-  outlet = TaonBaselineBackofficeOutletName;
+  /**Required for proper theme*/
+
+  readonly t = t.for(this);
+
+  taonCmsContentApiService = inject(TaonCmsContentApiService);
+
   config: TaonSessionConfig = {
     // linkToDashboard: '/',
     // defaultEmail: DEFAULT_EMAIL,
     // defaultPassword: DEFAULT_PASSWORD,
   };
 
-  exampleUserTitle = this.t.signal.gettext('Example users from backend API:');
-
-  /**Required for proper theme*/
   theme = inject(TaonThemeService);
 
   taonAdminService = inject(TaonAdminService);
@@ -212,23 +266,23 @@ export class CmsApp implements OnInit {
 
   angularVersion = VERSION.full;
 
+  outlet = TaonBaselineBackofficeOutletName;
+
   forceShowBaseRootApp = false;
 
   basePath!: string;
 
   private refresh = new BehaviorSubject<void>(undefined);
 
+  get hasAccessToViewTaonAdminButton(): boolean {
+    return this.context?.hasAccess?.toViewTaonAdminButton;
+  }
+
   get activePath(): string {
     return globalThis?.location.pathname?.split('?')[0];
   }
 
-  navItems =
-    CmsClientRoutes.length <= 1
-      ? []
-      : CmsClientRoutes.filter(r => r.path !== undefined).map(r => ({
-          path: r.path === '' ? '/' : `/${r.path}`,
-          label: r.path === '' ? 'Home' : `${r.path}`,
-        }));
+  public readonly context: TaonAuthContextEntity;
 
   openDialog(
     enterAnimationDuration: string | number,
@@ -249,7 +303,7 @@ export class CmsApp implements OnInit {
     //Add 'implements OnInit' to the class.
     console.log(globalThis?.location.pathname);
     // TODO set below from 1000 to zero in production
-    void Taon.removeLoader(1000).then(() => {
+    Taon.removeLoader().then(() => {
       this.itemsLoaded.set(true);
     });
   }
@@ -263,7 +317,7 @@ export class CmsApp implements OnInit {
       return;
     }
     this.forceShowBaseRootApp = false;
-    void this.router.navigateByUrl(item.path);
+    this.router.navigateByUrl(item.path);
   }
 }
 //#endregion
@@ -372,6 +426,7 @@ class TaonSessionProviderOverride extends TaonSessionProvider {
       ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID;
 
     this.login.defaultEmail = DEFAULT_EMAIL;
+    this.linkSocialAccountEmail = true;
   }
 
   //#region @backend
@@ -400,13 +455,22 @@ var CmsContext = Taon.createContext(() => ({
     TaonBaseContext,
   },
   migrations: {
+    CmsContext_1791132517217_initial,
     ...MIGRATIONS_CLASSES_FOR_CmsContext,
   },
   providers: {
     [ClassHelpers.getName(TaonSessionProvider)]: TaonSessionProviderOverride,
   },
+  entities: {
+    [ClassHelpers.getName(TaonAuthContextEntity)]: TaonAuthContextEntity,
+  },
+  repositories: {
+    [ClassHelpers.getName(TaonAuthContextRepository)]:
+      TaonAuthContextRepository,
+  },
   logs: {
     // db
+    migrations: true,
   },
   database: true,
   disabledRealtime: true,

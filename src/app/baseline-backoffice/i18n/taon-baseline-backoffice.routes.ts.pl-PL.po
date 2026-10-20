@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:28
+msgid "Sudo"
+msgstr ""
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:38
+msgid "Users"
+msgstr ""
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:49
+msgid "Sessions"
+msgstr ""
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:60
+msgid "Authorization"
+msgstr ""
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:71
+msgid "Emails"
+msgstr ""

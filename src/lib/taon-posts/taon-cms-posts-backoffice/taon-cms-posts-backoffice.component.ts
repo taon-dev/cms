@@ -59,7 +59,7 @@ export class TaonCmsPostsBackofficeComponent {
   private readonly cancelLoad$ = new Subject<void>();
 
   public get crud() {
-    return this.taonCmsContentApiService.taonCmsContentController;
+    return this.taonCmsContentApiService.crudController;
   }
 
   readonly columns: MtxGridColumn[] = [

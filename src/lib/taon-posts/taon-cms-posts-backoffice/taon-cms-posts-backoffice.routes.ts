@@ -12,9 +12,8 @@ const resolvePost: ResolveFn<TaonCmsContentEntity> = async route => {
   if (!Number.isSafeInteger(id) || id <= 0) {
     throw new Error('Invalid Post ID');
   }
-  const apiService = inject(TaonCmsContentApiService);
-  const post = (await apiService.taonCmsContentController.getBy(id).request())
-    .body.json;
+  const taonCmsContentApiService = inject(TaonCmsContentApiService);
+  const post = await taonCmsContentApiService.getById(id);
   if (!post) {
     throw new Error('Post not found');
   }

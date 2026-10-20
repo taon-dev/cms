@@ -10,6 +10,7 @@ import {
   PUT,
   DELETE,
   Body,
+  Models,
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
@@ -21,7 +22,10 @@ import type {
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
 } from './taon-cms-content.models';
-import type { TaonPermissionEntity } from '@taon-dev/session/src';
+import {
+  TaonSessionRepository,
+  type TaonPermissionEntity,
+} from '@taon-dev/session/src';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 //#endregion
 
@@ -39,14 +43,43 @@ import { TaonCmsContentRepository } from './taon-cms-content.repository';
     'listPermissions',
     'addRelatedPost',
     'deleteRelatedPost',
-    'paginationQuery'
+    'paginationQuery',
   ],
 })
 export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsContentEntity> {
   entityClassResolveFn: () => typeof TaonCmsContentEntity = () =>
     TaonCmsContentEntity;
 
-  taonCmsContentRepository = this.injectCustomRepo(TaonCmsContentRepository);
+  private readonly taonCmsContentRepository = this.injectCustomRepo(
+    TaonCmsContentRepository,
+  );
+
+  private readonly taonSessionRepository = this.injectCustomRepo(
+    TaonSessionRepository,
+  );
+
+  protected async beforeEachRequest({
+    req,
+    res,
+  }: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>): Promise<void> {
+    await this.taonSessionRepository.throwIfNotAuthenticated({ req, res });
+  }
+
+  //#region get by id
+  @GET()
+  getBySlug(@Query(`slug`) slug: string): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => {
+      const model = await this.db.findOne({
+        where: {
+          slug,
+        },
+      });
+      return model;
+    };
+    //#endregion
+  }
+  //#endregion
 
   @POST()
   createContent(
@@ -113,9 +146,12 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     @Query('expectedVersion') expectedVersion: number,
   ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
-    return async () => this.taonCmsContentRepository.addRelatedPost(
-      id, relatedPostId, expectedVersion,
-    );
+    return async () =>
+      this.taonCmsContentRepository.addRelatedPost(
+        id,
+        relatedPostId,
+        expectedVersion,
+      );
     //#endregion
   }
 
@@ -126,9 +162,12 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     @Query('expectedVersion') expectedVersion: number,
   ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
-    return async () => this.taonCmsContentRepository.deleteRelatedPost(
-      id, relatedPostId, expectedVersion,
-    );
+    return async () =>
+      this.taonCmsContentRepository.deleteRelatedPost(
+        id,
+        relatedPostId,
+        expectedVersion,
+      );
     //#endregion
   }
 

@@ -1,6 +1,15 @@
 //#region imports
 import { Routes } from '@angular/router';
-import { adminLazyRoute } from '@taon-dev/ui/src';
+import type { TaonAuthContextEntity } from '@taon-dev/cms/src';
+import { Translation } from '@taon-dev/i18n/src';
+import { adminLazyRoute as adminLazyRouteBase } from '@taon-dev/ui/src';
+import { Taon } from 'taon/src';
+//#endregion
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
+
+const adminLazyRoute = adminLazyRouteBase<TaonAuthContextEntity>;
+
 //#endregion
 
 export const TaonBaselineBackofficeRoutes: Routes = [
@@ -13,8 +22,10 @@ export const TaonBaselineBackofficeRoutes: Routes = [
 
     children: [
       adminLazyRoute({
+        isVisible: ({ context }) =>
+          context?.isSuperUser || context?.isLocalhostBackend,
         path: 'sudo',
-        menuItem: 'Sudo',
+        menuItem: t.gettext('Sudo'),
         color: 'red',
         icon: 'supervisor_account',
         expandable: false,
@@ -22,8 +33,9 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           import('@taon-dev/sudo/src').then(m => m.TaonSudoBackofficeRoutes),
       }),
       adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toViewUsers,
         path: 'users',
-        menuItem: 'Users',
+        menuItem: t.gettext('Users'),
         icon: 'manage_accounts',
         expandable: false,
         loader: () =>
@@ -32,8 +44,9 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toViewSessions,
         path: 'session',
-        menuItem: 'Sessions',
+        menuItem: t.gettext('Sessions'),
         expandable: false,
         icon: 'login',
         loader: () =>
@@ -42,8 +55,9 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toViewAuthorization,
         path: 'authorization',
-        menuItem: 'Authorization',
+        menuItem: t.gettext('Authorization'),
         icon: 'apps',
         expandable: true,
         loader: () =>
@@ -52,8 +66,9 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toViewEmail,
         path: 'emails',
-        menuItem: 'Emails',
+        menuItem: t.gettext('Emails'),
         expandable: false,
         icon: 'email',
         loader: () =>

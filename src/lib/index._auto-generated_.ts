@@ -3,12 +3,11 @@
 // This disable this auto generate file.
 // set property "shouldGenerateAutogenIndexFile: false" 
 // in taon.jsonc of your project. 
-export * from './app.data'; 
 export * from './build-info._auto-generated_'; 
-export * from './my-organization-proj'; 
 export * from './start-cli'; 
+export * from './taon-cms-application-hooks'; 
 export * from './taon-cms.abstract.context'; 
-export * from './i18n/lib.translation'; 
+export * from './decorators/taon-cms-authorization'; 
 export * from './taon-cms-assets-backoffice/taon-cms-assets-backoffice.component'; // @browser
 export * from './taon-cms-assets-backoffice/taon-cms-assets-backoffice.routes'; // @browser
 export * from './taon-cms-backoffice/taon-cms-backoffice.component'; // @browser

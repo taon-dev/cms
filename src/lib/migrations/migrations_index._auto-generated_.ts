@@ -1,7 +1,7 @@
 // THIS FILE IS GENERATED - DO NOT MODIFY
-import { CmsContext_1791132517216_initial } from './1791132517216_initial';
+import { CmsContext_1792506757808_applicaitonHooks } from './1792506757808_applicaitonHooks';
 // THIS FILE IS GENERATED - DO NOT MODIFY
 export const MIGRATIONS_CLASSES_FOR_CmsContext = {
-  /* 04-10-2026 18:48:37 */ CmsContext_1791132517216_initial,
+  /* 20-10-2026 16:32:37 */ CmsContext_1792506757808_applicaitonHooks,
 };
 // THIS FILE IS GENERATED - DO NOT MODIFY

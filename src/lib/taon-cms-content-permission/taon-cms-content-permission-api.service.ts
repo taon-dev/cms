@@ -8,17 +8,17 @@ import { TaonCmsContentPermissionController } from './taon-cms-content-permissio
 
 @Injectable()
 export class TaonCmsContentPermissionApiService extends TaonBaseAngularService {
-  private taonCmsContentPermissionController = this.injectController(TaonCmsContentPermissionController);
+  protected readonly taonCmsContentPermissionController = this.injectController(
+    TaonCmsContentPermissionController,
+  );
 
   public get allMyEntities$(): Observable<TaonCmsContentPermissionEntity[]> {
-    return this.taonCmsContentPermissionController.getAll().request!().observable.pipe(
-      map(res => res.body?.json),
-    );
+    return this.taonCmsContentPermissionController.getAll()
+      .request!().observable.pipe(map(res => res.body?.json));
   }
 
-  public helloWorld(user:string): Observable<string> {
-    return this.taonCmsContentPermissionController.helloWord(user).request!().observable.pipe(
-      map(res => res.responseText as string),
-    );
+  public helloWorld(user: string): Observable<string> {
+    return this.taonCmsContentPermissionController.helloWord(user)
+      .request!().observable.pipe(map(res => res.responseText as string));
   }
 }

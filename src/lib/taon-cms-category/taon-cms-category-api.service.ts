@@ -8,7 +8,7 @@ import { TaonCmsCategoryController } from './taon-cms-category.controller';
 
 @Injectable()
 export class TaonCmsCategoryApiService extends TaonBaseAngularService {
-  private taonCmsCategoryController = this.injectController(
+  protected readonly taonCmsCategoryController = this.injectController(
     TaonCmsCategoryController,
   );
 

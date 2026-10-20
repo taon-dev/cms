@@ -1,31 +1,56 @@
 //#region imports
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import type { TaonPermissionEntity } from '@taon-dev/session/src';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Taon, TaonBaseAngularService, TaonStorageObject } from 'taon/src';
 
+import { TaonCmsApplicationHook } from '../taon-cms-application-hooks';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 
 import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
 import { TaonCmsContentController } from './taon-cms-content.controller';
 import type { TaonCmsContentEntity } from './taon-cms-content.entity';
-import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import type {
   TaonCmsCreateContent,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
 } from './taon-cms-content.models';
+
 //#endregion
 
 @Injectable()
-export class TaonCmsContentApiService extends TaonBaseAngularService {
-  public readonly taonCmsContentController = this.injectController(
+export class TaonCmsContentApiService<
+  HOOKS extends TaonCmsApplicationHook = TaonCmsApplicationHook,
+> extends TaonBaseAngularService {
+  protected readonly taonCmsContentController = this.injectController(
     TaonCmsContentController,
   );
 
-  public readonly taonCmsContentStorageController = this.injectController(
+  protected readonly taonCmsContentStorageController = this.injectController(
     TaonCmsContentStorageController,
   );
+
+  public get crudController(): TaonCmsContentController {
+    return this.taonCmsContentController;
+  }
+
+  public async getById(id: number): Promise<TaonCmsContentEntity> {
+    return (await this.taonCmsContentController.getBy(id).request()).body.json;
+  }
+
+  public async getBySlug(slug: string): Promise<TaonCmsContentEntity> {
+    return (await this.taonCmsContentController.getBySlug(slug).request()).body
+      .json;
+  }
+
+  public getContentByHook(hook: HOOKS): Observable<string> {
+    // if(hook === 'footer-about') {
+
+    // }
+    // TODO
+    return of('');
+  }
 
   public async uploadMedia(file: File): Promise<TaonStorageObject> {
     const formData = new FormData();

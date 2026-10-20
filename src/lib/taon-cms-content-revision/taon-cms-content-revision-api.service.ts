@@ -12,17 +12,18 @@ import { TaonCmsContentRevisionController } from './taon-cms-content-revision.co
 
 @Injectable()
 export class TaonCmsContentRevisionApiService extends TaonBaseAngularService {
-  private readonly contentController = this.injectController(
+  protected readonly contentController = this.injectController(
     TaonCmsContentController,
   );
 
-  private taonCmsContentRevisionController = this.injectController(
+  protected readonly taonCmsContentRevisionController = this.injectController(
     TaonCmsContentRevisionController,
   );
 
   public listRevisions(id: number): Observable<TaonCmsContentRevisionEntity[]> {
-    return this.contentController.listRevisions(id)
-      .request!().observable.pipe(map(res => res.body.json));
+    return this.contentController.listRevisions(id).request!().observable.pipe(
+      map(res => res.body.json),
+    );
   }
 
   public restoreContent(
