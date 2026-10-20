@@ -33,6 +33,14 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           import('@taon-dev/sudo/src').then(m => m.TaonSudoBackofficeRoutes),
       }),
       adminLazyRoute({
+        path: 'cms',
+        menuItem: 'CMS',
+        expandable: true,
+        icon: 'content_copy',
+        loader: () =>
+          import('@taon-dev/cms/src').then(m => m.TaonCmsBackofficeRoutes),
+      }),
+      adminLazyRoute({
         isDisabled: ({ context }) => !context?.hasAccess.toViewUsers,
         path: 'users',
         menuItem: t.gettext('Users'),
@@ -75,14 +83,6 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           import('@taon-dev/emails/src').then(
             m => m.TaonEmailsBackofficeRoutes,
           ),
-      }),
-      adminLazyRoute({
-        path: 'cms',
-        menuItem: 'CMS',
-        expandable: true,
-        icon: 'content_copy',
-        loader: () =>
-          import('@taon-dev/cms/src').then(m => m.TaonCmsBackofficeRoutes),
       }),
     ],
   },
