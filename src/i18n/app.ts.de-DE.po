@@ -28,3 +28,15 @@ msgstr "Hallo [[ username ]]"
 #: src/app.ts:215
 msgid "Please login to use Taon Admin"
 msgstr "Bitte loggen Sie sich bei Taon Admin an"
+
+#: src/app.ts:241
+msgid "Example hook content"
+msgstr ""
+
+#: src/app.ts:252
+msgid "Private Video 1"
+msgstr ""
+
+#: src/app.ts:259
+msgid "Your browser does not support video playback."
+msgstr ""

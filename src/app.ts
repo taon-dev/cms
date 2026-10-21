@@ -238,7 +238,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP, {
 
       <mat-card class="m-2">
         <mat-card-content>
-        <h3>{{ t.gettext('Example hook content') }}</h3>
+          <h3>{{ t.gettext('Example hook content') }}</h3>
           @if (hookExampleContent()) {
             <div
               class="m-2 p-4"
