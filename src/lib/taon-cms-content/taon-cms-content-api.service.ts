@@ -54,10 +54,20 @@ export class TaonCmsContentApiService<
   //#endregion
 
   //#region API / get video link by slug
-  public async getVideoLinkBySlug(slug: string): Promise<string> {
-    return (
-      await this.taonCmsContentController.getVideoLinkBySlug(slug).request()
-    ).body.text;
+  /**
+   * Get link to private video
+   */
+  public getVideoLinkBySlug(slug: string): Observable<string> {
+    return this.taonCmsContentController
+      .getVideoLinkBySlug(slug)
+      .request()
+      .observable.pipe(
+        map(res => res.body.text),
+        catchError(err => {
+          console.error(err);
+          return of('');
+        }),
+      );
   }
   //#endregion
 
@@ -72,10 +82,17 @@ export class TaonCmsContentApiService<
   //#endregion
 
   //#region API / get audio link by slug
-  public async getAudioLinkBySlug(slug: string): Promise<string> {
-    return (
-      await this.taonCmsContentController.getAudioLinkBySlug(slug).request()
-    ).body.text;
+  public getAudioLinkBySlug(slug: string): Observable<string> {
+    return this.taonCmsContentController
+      .getAudioLinkBySlug(slug)
+      .request()
+      .observable.pipe(
+        map(res => res.body.text),
+        catchError(err => {
+          console.error(err);
+          return of('');
+        }),
+      );
   }
   //#endregion
 

@@ -25,7 +25,7 @@ import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
 import { Translation } from '@taon-dev/i18n/src';
-import { Observable, Subscription, finalize } from 'rxjs';
+import { Observable, Subscription, finalize, firstValueFrom, take } from 'rxjs';
 import { Taon } from 'taon/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
@@ -81,9 +81,7 @@ export class TaonCmsPostComponent {
     'A short introduction...',
   );
 
-  readonly placeholderTitle = this.t.signal.gettext(
-    'Title',
-  );
+  readonly placeholderTitle = this.t.signal.gettext('Title');
 
   readonly placeholderTellYourStory =
     this.t.signal.gettext('Tell your story...');
@@ -685,9 +683,9 @@ export class TaonCmsPostComponent {
   ): Promise<string> {
     switch (type) {
       case TaonCmsContentType.Video:
-        return this.api.getVideoLinkBySlug(slug);
+        return firstValueFrom(this.api.getVideoLinkBySlug(slug));
       case TaonCmsContentType.Audio:
-        return this.api.getAudioLinkBySlug(slug);
+        return firstValueFrom(this.api.getAudioLinkBySlug(slug));
       case TaonCmsContentType.Attachment:
         return this.api.getAttachmentLinkBySlug(slug);
       default:

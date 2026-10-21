@@ -235,11 +235,33 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP, {
           <!-- <taon-session [config]="config" /> -->
         </mat-card-content>
       </mat-card>
-      @if (hookExampleContent()) {
-        <div
-          class="m-2 p-4"
-          [innerHTML]="hookExampleContent()"></div>
-      }
+
+      <mat-card class="m-2">
+        <mat-card-content>
+        <h3>{{ t.gettext('Example hook content') }}</h3>
+          @if (hookExampleContent()) {
+            <div
+              class="m-2 p-4"
+              [innerHTML]="hookExampleContent()"></div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="m-2">
+        <mat-card-content>
+          <h3>{{ t.gettext('Private Video 1') }}</h3>
+          <br />
+          @if (privateVideo1()) {
+            <video
+              controls
+              preload="metadata"
+              [src]="privateVideo1()">
+              {{ t.gettext('Your browser does not support video playback.') }}
+            </video>
+          }
+        </mat-card-content>
+      </mat-card>
+
       <router-outlet></router-outlet>
     }
   `,
@@ -262,6 +284,11 @@ export class CmsApp implements OnInit {
     this.taonCmsContentApiService.getPublicContentByHook(
       TaonCmsApplicationHook.FOOTER_ABOUT,
     ),
+    { initialValue: '' },
+  );
+
+  privateVideo1 = toSignal(
+    this.taonCmsContentApiService.getVideoLinkBySlug('aaaa'),
     { initialValue: '' },
   );
 

@@ -24,10 +24,15 @@ export const TaonSessionCoreRoles = {
    * Does NOT allow changing user groups.
    */
   PostsManager: 'posts-manager',
+
+  PremiumUser1: 'premium-user-1',
+  PremiumUser2: 'premium-user-2',
 };
 
 export const TaonSessionCorePermissions = {
   ...TaonSessionCorePermissionsBase,
+  ViewPrivateVideo1: 'view-private-video-1',
+  ViewPrivateVideo2: 'view-private-video-2',
 };
 
 export interface TaonSessionCoreAuthorization extends TaonSessionCoreAuthorizationBase {
@@ -114,6 +119,12 @@ export class CmsContext_1791132517217_initial
             TaonSessionCorePermissions.ManageUserPermissions,
           ],
           [TaonSessionCoreRoles.PostsManager]: [],
+          [TaonSessionCoreRoles.PremiumUser1]: [
+            TaonSessionCorePermissions.ViewPrivateVideo1,
+          ],
+          [TaonSessionCoreRoles.PremiumUser2]: [
+            TaonSessionCorePermissions.ViewPrivateVideo2,
+          ],
           [TaonSessionCoreRoles.UserManager]: [
             TaonSessionCorePermissions.ViewUsers,
             TaonSessionCorePermissions.ManageUsers,
