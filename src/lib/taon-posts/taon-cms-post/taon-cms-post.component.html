@@ -37,6 +37,14 @@
             (click)="publish()">
             Publish
           </button>
+        } @else {
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="unpublish()">
+            Unpublish
+          </button>
         }
         <button
           mat-button
@@ -58,7 +66,7 @@
     </div>
     @if (busy()) {
       <span role="status">{{
-        uploading() ? 'Uploading...' : 'Saving...'
+        uploading() ? 'Uploading... ' + uploadProgress() + '%' : 'Saving...'
       }}</span>
     }
   </header>
@@ -133,6 +141,12 @@
         class="media-attachment"
         aria-labelledby="media-attachment-heading">
         <h2 id="media-attachment-heading">{{ media.heading }}</h2>
+        @if (uploading()) {
+          <mat-progress-bar
+            mode="determinate"
+            [value]="uploadProgress()"
+            aria-label="Media upload progress" />
+        }
         @if (draft()[media.key]; as key) {
           @if (mediaPreviewLoading()) {
             <p role="status">Loading media preview...</p>
@@ -147,12 +161,14 @@
           @if (media.type === 'video' && mediaPreviewUrl()) {
             <video
               controls
+              preload="none"
               [src]="mediaPreviewUrl()">
               Your browser does not support video playback.
             </video>
           } @else if (media.type === 'audio' && mediaPreviewUrl()) {
             <audio
               controls
+              preload="none"
               [src]="mediaPreviewUrl()">
               Your browser does not support audio playback.
             </audio>
@@ -257,9 +273,7 @@
       <section
         class="application-hook"
         aria-labelledby="application-hook-heading">
-        <h2 id="application-hook-heading">
-          Application Hook
-        </h2>
+        <h2 id="application-hook-heading">Application Hook</h2>
         @if (applicationHooksLoading()) {
           <p role="status">Loading application hooks...</p>
         } @else if (applicationHooksError()) {
@@ -320,6 +334,12 @@
       class="post-permissions"
       aria-labelledby="post-permissions-heading">
       <h2 id="post-permissions-heading">Allow Read only with Permissions</h2>
+      @if (permissionSource(); as source) {
+        <p role="note">
+          Permissions are inherited from #{{ source.id }} - {{ source.title }}.
+          Edit the source post to change them.
+        </p>
+      }
       @if (permissionsLoading()) {
         <p role="status">Loading assigned permissions...</p>
       } @else if (permissionsError()) {
@@ -344,7 +364,7 @@
                 mat-icon-button
                 type="button"
                 [attr.aria-label]="'Remove permission ' + permission.name"
-                [disabled]="busy() || dialogOpen()"
+                [disabled]="busy() || dialogOpen() || !!permissionSource()"
                 (click)="removePermission(permission.id)">
                 <mat-icon>close</mat-icon>
               </button>
@@ -375,7 +395,10 @@
               <mat-select
                 [value]="selectedPermissionId()"
                 [disabled]="
-                  busy() || dialogOpen() || permissionOptionsLoading()
+                  busy() ||
+                  dialogOpen() ||
+                  permissionOptionsLoading() ||
+                  !!permissionSource()
                 "
                 (selectionChange)="selectedPermissionId.set($event.value)">
                 @for (
@@ -395,12 +418,25 @@
             <button
               mat-button
               type="button"
-              [disabled]="busy() || dialogOpen() || !selectedPermissionId()"
+              [disabled]="
+                busy() ||
+                dialogOpen() ||
+                !selectedPermissionId() ||
+                !!permissionSource()
+              "
               (click)="addPermission()">
               <mat-icon>add</mat-icon> Assign permission
             </button>
           </div>
         }
+      }
+      @if (!permissionSource()) {
+        <mat-checkbox
+          [checked]="applyPermissionsToRelatedPosts()"
+          [disabled]="busy() || dialogOpen()"
+          (change)="applyPermissionsToRelatedPosts.set($event.checked)">
+          Apply permissions to related posts
+        </mat-checkbox>
       }
     </section>
   } @else if (currentPost(); as post) {
@@ -424,12 +460,14 @@
         } @else if (media.type === 'video' && mediaPreviewUrl()) {
           <video
             controls
+            preload="none"
             [src]="mediaPreviewUrl()">
             Your browser does not support video playback.
           </video>
         } @else if (media.type === 'audio' && mediaPreviewUrl()) {
           <audio
             controls
+            preload="none"
             [src]="mediaPreviewUrl()">
             Your browser does not support audio playback.
           </audio>

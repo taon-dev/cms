@@ -70,6 +70,23 @@ selected key, not the stored file, so revision history remains usable. Files
 uploaded to discarded drafts are also retained. Upload failures display an
 error and keep the draft intact.
 
+All post uploads (including Replace) display a determinate Material progress bar
+and the actual transferred percentage, starting at 0%. An XHR transport adapter
+adds browser upload events to the existing Taon request pipeline and storage
+upload endpoint; authentication middleware, retries, and response decoding stay
+in that pipeline. 100% transferred is not treated as server success: the draft
+key changes only after a valid successful response. Failure clears progress,
+shows an error, and retains the previous file. Upload state resets after every
+attempt. Both Assets and Post video/audio players use `preload="none"` and direct
+storage URLs: rendering a preview does not initiate media downloading. Manual
+playback still uses the storage endpoint's existing HTTP Range support.
+
+Publish and Unpublish are mutually exclusive. Unpublish sends a version-checked
+partial update with `status: 'draft'` only. It does not save unsaved editor
+changes, restore content, delete files, or remove revisions; publication history
+and the previous publication timestamp are retained. Public hook reads, media
+URL issuance, and unsigned storage downloads check the current publication state.
+
 `TaonCmsContentApiService` exposes private and public
 `getVideoLinkBySlug`/`getPublicVideoLinkBySlug`,
 `getAudioLinkBySlug`/`getPublicAudioLinkBySlug`, and
@@ -89,6 +106,32 @@ buttons. Add related post opens `TaonRelatedPostChooserComponent`
 and already selected posts are excluded. Links are one-way and changes are staged
 until Save or Publish; Cancel discards them, including on new posts.
 
+Below **Allow Read only with Permissions**, **Apply permissions to related posts**
+enables live permission inheritance along this post's outgoing related links.
+It defaults to off. Related posts show the effective permissions using the
+existing chooser, disable permission changes, and identify the source post.
+Changing the source's permissions immediately affects subsequent backend access
+checks; no inherited permission IDs are copied to children. Existing independent
+permissions remain dormant while inheritance is active and become effective
+again when the source disables inheritance or removes the related link.
+Inheritance is transitive: a child passing permissions to its own related posts
+passes its effective source permissions.
+
+Related links remain a general many-to-many graph. Only enabled inheritance
+edges must form a forest: multiple sources for a child and inheritance cycles
+fail with HTTP 409. Create, update, related-link mutations, and restore validate
+this graph transactionally at serializable isolation. Attempts to change a
+child's independent permission IDs while it inherits also fail with HTTP 409.
+The backend resolves effective permissions for hook content, media URL issuance,
+and public storage policy. Super-user access retains its existing bypass.
+`listPermissions(id)` returns effective permissions;
+`getPermissionConfiguration(id)` additionally identifies the live source.
+Create/update accept `applyPermissionsToRelatedPosts`, which is also revisioned.
+Older snapshots preserve the current flag when it was not yet stored.
+Run `CmsContext_1792579000000_postPermissionInheritance` (registered in the CMS
+migration exports) before deployment to add the boolean column with default
+false. A deployment using schema synchronization can create it from the entity.
+
 Revert opens `TaonCmsRevisionChooserComponent`, which lists revisions through
 `TaonCmsContentRevisionApiService.listRevisions` and restores through
 `restoreContent`. The service calls the existing content-controller endpoints;
@@ -96,9 +139,13 @@ no revision snapshots are copied in the UI. Legacy revisions without a complete
 snapshot are shown but cannot be selected. Failed operations keep the editor or
 revision dialog open and show an error.
 
-Focused Vitest tests cover content defaults/validation, media persistence and
-revision orchestration, uploads, and editor state/template wiring. Editor tests
-use real Angular signals with mocked injection, not a rendered TestBed DOM.
+Run `node --test src/tests/cms-posts.test.cjs` for the focused Posts regression
+suite using the workspace's existing TypeScript, TypeORM, SQL.js, RxJS, and Angular
+dependencies. It exercises actual SQLite transactions/relations, inheritance and
+rollback, publication/access policy, upload events and failures, and editor state.
+Editor tests use real Angular signals with mocked injection, not a rendered
+TestBed DOM. The test loader transpiles the isomorphic sources without launching
+a Taon application.
 
 ## Content API
 

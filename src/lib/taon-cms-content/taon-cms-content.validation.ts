@@ -48,7 +48,11 @@ export function validateContentInput(
     }
   }
   for (const field of [
-    'body', 'excerpt', 'videoKey', 'audioKey', 'attachmentKey',
+    'body',
+    'excerpt',
+    'videoKey',
+    'audioKey',
+    'attachmentKey',
   ] as const) {
     if (
       input[field] !== undefined &&
@@ -62,6 +66,12 @@ export function validateContentInput(
     if (input[field] !== undefined && input[field] !== null) {
       requireContentId(input[field], field);
     }
+  }
+  if (
+    input.applyPermissionsToRelatedPosts !== undefined &&
+    typeof input.applyPermissionsToRelatedPosts !== 'boolean'
+  ) {
+    contentError('applyPermissionsToRelatedPosts must be a boolean.');
   }
   if (
     input.status !== undefined &&

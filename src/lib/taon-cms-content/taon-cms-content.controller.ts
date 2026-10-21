@@ -33,6 +33,7 @@ import type {
   TaonCmsCreateContent,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
+  TaonCmsPermissionConfiguration,
 } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
@@ -40,6 +41,7 @@ import { contentError } from './taon-cms-content.validation';
 //#endregion
 
 @TaonController<TaonCmsContentController>({
+  //#region controller options
   className: 'TaonCmsContentController',
   allowedMethods: [
     'getAll',
@@ -51,6 +53,7 @@ import { contentError } from './taon-cms-content.validation';
     'listRevisions',
     'listRelatedPosts',
     'listPermissions',
+    'getPermissionConfiguration',
     'listApplicationHooks',
     'getContentByHook',
     'getPublicContentByHook',
@@ -64,9 +67,9 @@ import { contentError } from './taon-cms-content.validation';
     'deleteRelatedPost',
     'paginationQuery',
   ],
+  //#endregion
 })
 export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsContentEntity> {
-
   //#region fields & getters
   entityClassResolveFn: () => typeof TaonCmsContentEntity = () =>
     TaonCmsContentEntity;
@@ -108,7 +111,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     if (
       methodConfig.methodName === 'getVideoLinkBySlug' ||
       methodConfig.methodName === 'getAudioLinkBySlug' ||
-      methodConfig.methodName === 'getAttachmentLinkBySlug'
+      methodConfig.methodName === 'getAttachmentLinkBySlug' ||
+      methodConfig.methodName === 'getContentByHook'
     ) {
       return;
     }
@@ -210,24 +214,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     ) {
       contentError('The media file was not found in storage.', 404);
     }
-    const isPublic =
-      content!.status === 'published' && content!.permissions.length === 0;
-    if (publicOnly && !isPublic) {
-      contentError('This content is not publicly accessible.', 403);
-    }
-    if (!publicOnly) {
-      const context = await this.taonAuthContextRepository.getContext(
-        req.userId,
-        req.sessionId,
-      );
-      const userPermissionCodes = new Set<string>(context?.permissions ?? []);
-      const hasPermission = content!.permissions.some(permission =>
-        userPermissionCodes.has(permission.code),
-      );
-      if (!context?.isSuperUser && !isPublic && !hasPermission) {
-        contentError('You do not have access to this content.', 403);
-      }
-    }
+    await this.requireReadAccess(content!, publicOnly, req);
 
     const isPrivate = !publicOnly;
     const token = isPrivate
@@ -245,6 +232,39 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     });
     //#endregion
   }
+
+  //#region methods / require read access
+  private async requireReadAccess(
+    content: TaonCmsContentEntity,
+    publicOnly: boolean,
+    req: ExpressRequest,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const { permissions } =
+      await this.taonCmsContentRepository.getPermissionConfiguration(
+        content.id,
+      );
+    const isPublic = content.status === 'published' && permissions.length === 0;
+    if (publicOnly) {
+      if (!isPublic) {
+        contentError('This content is not publicly accessible.', 403);
+      }
+    } else {
+      const context = await this.taonAuthContextRepository.getContext(
+        req.userId,
+        req.sessionId,
+      );
+      const userPermissionCodes = new Set<string>(context?.permissions ?? []);
+      const hasPermission = permissions.some(permission =>
+        userPermissionCodes.has(permission.code),
+      );
+      if (!context?.isSuperUser && !isPublic && !hasPermission) {
+        contentError('You do not have access to this content.', 403);
+      }
+    }
+    //#endregion
+  }
+  //#endregion
   //#endregion
 
   //#region methods / get by id
@@ -333,6 +353,18 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   }
   //#endregion
 
+  //#region methods / get permission configuration
+  @GET()
+  getPermissionConfiguration(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsPermissionConfiguration> {
+    //#region @websqlFunc
+    return async () =>
+      this.taonCmsContentRepository.getPermissionConfiguration(id);
+    //#endregion
+  }
+  //#endregion
+
   //#region methods / list application hooks
   @GET()
   listApplicationHooks(): Taon.Response<TaonCmsApplicationHookEntity[]> {
@@ -346,7 +378,15 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getContentByHook(@Query('hook') hook: string): Taon.Response<string> {
     //#region @websqlFunc
-    return async () => this.taonCmsContentRepository.getContentByHook(hook);
+    return async req => {
+      const content =
+        await this.taonCmsContentRepository.getContentForHook(hook);
+      if (!content) {
+        return '';
+      }
+      await this.requireReadAccess(content, false, req);
+      return content.body ?? '';
+    };
     //#endregion
   }
   //#endregion
@@ -355,7 +395,15 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getPublicContentByHook(@Query('hook') hook: string): Taon.Response<string> {
     //#region @websqlFunc
-    return async () => this.taonCmsContentRepository.getContentByHook(hook);
+    return async req => {
+      const content =
+        await this.taonCmsContentRepository.getContentForHook(hook);
+      if (!content) {
+        return '';
+      }
+      await this.requireReadAccess(content, true, req);
+      return content.body ?? '';
+    };
     //#endregion
   }
   //#endregion

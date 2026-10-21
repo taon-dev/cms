@@ -20,6 +20,7 @@ import type {
   TaonCmsCreateContent,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
+  TaonCmsPermissionConfiguration,
 } from './taon-cms-content.models';
 import {
   contentError,
@@ -55,7 +56,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     validateContentInput(input, true);
-    return this.connection.transaction(async manager => {
+    return this.connection.transaction('SERIALIZABLE', async manager => {
       const fields = this.contentFields(input);
       const tagIds = [...new Set(input.tagIds ?? [])];
       const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
@@ -80,6 +81,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         manager,
       );
       await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
+      await this.validatePermissionInheritance(manager);
       await this.replacePermissions(content.id, permissionIds, [], manager);
       await this.replaceApplicationHook(
         content.id,
@@ -104,7 +106,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     requireContentId(id);
     validateContentInput(input);
     requireContentVersion(input.expectedVersion);
-    return this.connection.transaction(async manager => {
+    return this.connection.transaction('SERIALIZABLE', async manager => {
       const current = await this.requireContent(id, manager);
       const snapshot = await this.snapshotOf(current, manager);
       const fields = this.contentFields(input, snapshot);
@@ -151,7 +153,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     }
     requireContentVersion(input.revisionNumber, 'revisionNumber');
     requireContentVersion(input.expectedVersion);
-    return this.connection.transaction(async manager => {
+    return this.connection.transaction('SERIALIZABLE', async manager => {
       const current = await this.requireContent(id, manager);
       const revision =
         await this.taonCmsContentRevisionRepository.requireRevision(
@@ -227,9 +229,122 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   async listPermissions(id: number): Promise<TaonPermissionEntity[]> {
     //#region @websqlFunc
     requireContentId(id);
-    return this.connection.transaction(
-      async manager => (await this.requireContent(id, manager)).permissions,
+    return (await this.getPermissionConfiguration(id)).permissions;
+    //#endregion
+  }
+
+  async getPermissionConfiguration(
+    id: number,
+  ): Promise<TaonCmsPermissionConfiguration> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager => {
+      const post = await this.requireContent(id, manager);
+      return this.resolvePermissionConfiguration(post, manager);
+    });
+    //#endregion
+  }
+
+  private async resolvePermissionConfiguration(
+    post: TaonCmsContentEntity,
+    manager: EntityManager,
+  ): Promise<TaonCmsPermissionConfiguration> {
+    //#region @websqlFunc
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    let source = post;
+    const visited = new Set<number>();
+    while (true) {
+      if (visited.has(source.id)) {
+        contentError('Permission inheritance contains a cycle.', 409);
+      }
+      visited.add(source.id);
+      const parents = await repository.find({
+        where: {
+          applyPermissionsToRelatedPosts: true,
+          relatedPosts: { id: source.id },
+        },
+        relations: { permissions: true },
+      });
+      if (parents.length > 1) {
+        contentError(
+          'A post cannot inherit permissions from multiple sources.',
+          409,
+        );
+      }
+      if (!parents.length) {
+        return {
+          permissions: source.permissions,
+          source:
+            source.id === post.id
+              ? null
+              : { id: source.id, title: source.title },
+        };
+      }
+      source = parents[0];
+    }
+    //#endregion
+  }
+
+  private async validatePermissionInheritance(
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const parents = await manager
+      .getRepository<TaonCmsContentEntity>(this.target)
+      .find({
+        where: { applyPermissionsToRelatedPosts: true },
+        relations: { relatedPosts: true },
+      });
+    const sources = new Map<number, number>();
+    for (const parent of parents) {
+      for (const child of parent.relatedPosts) {
+        if (sources.has(child.id)) {
+          contentError(
+            `Content ${child.id} would inherit permissions from multiple sources.`,
+            409,
+          );
+        }
+        sources.set(child.id, parent.id);
+      }
+    }
+    for (const id of sources.keys()) {
+      const visited = new Set<number>();
+      let current: number | undefined = id;
+      while (current !== undefined) {
+        if (visited.has(current)) {
+          contentError('Permission inheritance cannot contain cycles.', 409);
+        }
+        visited.add(current);
+        current = sources.get(current);
+      }
+    }
+    //#endregion
+  }
+
+  private async requireOwnPermissionEdit(
+    id: number,
+    permissionIds: number[],
+    current: TaonCmsContentEntity,
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const configuration = await this.resolvePermissionConfiguration(
+      current,
+      manager,
     );
+    const ownIds = new Set(
+      current.permissions.map(permission => permission.id),
+    );
+    if (
+      configuration.source &&
+      (ownIds.size !== new Set(permissionIds).size ||
+        permissionIds.some(permissionId => !ownIds.has(permissionId)))
+    ) {
+      contentError(
+        `Content ${id} inherits permissions; edit the source post instead.`,
+        409,
+      );
+    }
     //#endregion
   }
 
@@ -243,6 +358,12 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
 
   async getContentByHook(hook: string): Promise<string> {
     //#region @websqlFunc
+    return (await this.getContentForHook(hook))?.body ?? '';
+    //#endregion
+  }
+
+  async getContentForHook(hook: string): Promise<TaonCmsContentEntity | null> {
+    //#region @websqlFunc
     if (!hook) {
       contentError('Application hook is required.');
     }
@@ -250,9 +371,9 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       .getRepository(TaonCmsApplicationHookEntity)
       .findOne({
         where: { hook: hook as TaonCmsApplicationHook },
-        relations: { content: true },
+        relations: { content: { permissions: true } },
       });
-    return applicationHook?.content?.body ?? '';
+    return applicationHook?.content ?? null;
     //#endregion
   }
 
@@ -281,13 +402,19 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         where: [{ videoKey: key }, { audioKey: key }, { attachmentKey: key }],
         relations: { permissions: true },
       });
-    return (
-      contents.length > 0 &&
-      contents.every(
-        content =>
-          content.status === 'published' && content.permissions.length === 0,
-      )
-    );
+    if (!contents.length) {
+      return false;
+    }
+    for (const content of contents) {
+      if (
+        content.status !== 'published' ||
+        (await this.getPermissionConfiguration(content.id)).permissions.length >
+          0
+      ) {
+        return false;
+      }
+    }
+    return true;
     //#endregion
   }
   //#endregion
@@ -325,7 +452,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     if (id === relatedPostId) {
       contentError('A post cannot relate to itself.');
     }
-    return this.connection.transaction(async manager => {
+    return this.connection.transaction('SERIALIZABLE', async manager => {
       const current = await this.requireContent(id, manager);
       await this.requireContent(relatedPostId, manager);
       const snapshot = await this.snapshotOf(current, manager);
@@ -405,6 +532,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
           : input.authorUserId,
       status: input.status ?? current?.status ?? 'draft',
       publishedAt: publishedAt === null ? null : new Date(publishedAt),
+      applyPermissionsToRelatedPosts:
+        input.applyPermissionsToRelatedPosts ??
+        current?.applyPermissionsToRelatedPosts ??
+        false,
     };
   }
 
@@ -591,6 +722,12 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     if (current.version !== expectedVersion) {
       contentError('Content has changed. Reload it before editing.', 409);
     }
+    await this.requireOwnPermissionEdit(
+      current.id,
+      snapshot.permissionIds,
+      current,
+      manager,
+    );
     await this.validateReferences(
       snapshot,
       snapshot.tagIds,
@@ -632,6 +769,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       current.relatedPosts.map(post => post.id),
       manager,
     );
+    await this.validatePermissionInheritance(manager);
     await this.replacePermissions(
       current.id,
       [...new Set(snapshot.permissionIds ?? [])],

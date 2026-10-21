@@ -51,6 +51,7 @@ export * from './taon-cms-content/taon-cms-content.repository';
 export * from './taon-cms-content/taon-cms-content.subscriber'; 
 export * from './taon-cms-content/taon-cms-content.utils'; 
 export * from './taon-cms-content/taon-cms-content.validation'; 
+export * from './taon-cms-content/taon-cms-upload-progress'; 
 export * from './taon-cms-content-asset/taon-cms-content-asset-api.service'; // @browser
 export * from './taon-cms-content-asset/taon-cms-content-asset.abstract.context'; 
 export * from './taon-cms-content-asset/taon-cms-content-asset.constants'; 

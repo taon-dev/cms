@@ -1,3 +1,5 @@
+import { TaonPermissionEntity } from '@taon-dev/session/src';
+
 export enum TaonCmsContentType {
   Normal = 'normal',
   Video = 'video',
@@ -23,6 +25,12 @@ export interface TaonCmsContentFields {
   authorUserId: number | null;
   status: 'draft' | 'published' | 'archived';
   publishedAt: Date | null;
+  applyPermissionsToRelatedPosts: boolean;
+}
+
+export interface TaonCmsPermissionConfiguration {
+  permissions: TaonPermissionEntity[];
+  source: { id: number; title: string } | null;
 }
 
 export interface TaonCmsCreateContent

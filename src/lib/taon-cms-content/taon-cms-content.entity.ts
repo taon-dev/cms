@@ -79,6 +79,11 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   permissions: TaonPermissionEntity[];
 
   //#region @websql
+  @Column({ type: 'boolean', default: false })
+  //#endregion
+  applyPermissionsToRelatedPosts: boolean = false;
+
+  //#region @websql
   @Column({ type: 'text', nullable: true })
   //#endregion
   excerpt: string | null;

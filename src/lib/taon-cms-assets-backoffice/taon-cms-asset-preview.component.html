@@ -16,7 +16,7 @@
     @case ('video') {
       <video
         controls
-        preload="metadata"
+        preload="none"
         [src]="url()"
         (error)="playbackError()">
         Your browser does not support video playback.
@@ -25,7 +25,7 @@
     @case ('audio') {
       <audio
         controls
-        preload="metadata"
+        preload="none"
         [src]="url()"
         (error)="playbackError()">
         Your browser does not support audio playback.

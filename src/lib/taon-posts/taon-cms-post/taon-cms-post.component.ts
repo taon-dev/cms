@@ -18,6 +18,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { TaonPermissionApiService } from '@taon-dev/session/src';
@@ -49,6 +50,7 @@ import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
+    MatProgressBarModule,
     MatRadioModule,
     MatSelectModule,
     TaonCmsEditableDirective,
@@ -119,6 +121,8 @@ export class TaonCmsPostComponent {
 
   readonly uploading = signal(false);
 
+  readonly uploadProgress = signal(0);
+
   readonly mediaPreviewUrl = signal('');
 
   readonly mediaPreviewLoading = signal(false);
@@ -160,6 +164,12 @@ export class TaonCmsPostComponent {
   );
 
   readonly permissions = signal<TaonPermissionEntity[]>([]);
+
+  readonly applyPermissionsToRelatedPosts = signal(false);
+
+  readonly permissionSource = signal<{ id: number; title: string } | null>(
+    null,
+  );
 
   readonly permissionsLoading = signal(false);
 
@@ -447,7 +457,7 @@ export class TaonCmsPostComponent {
 
   //#region methods / load permissions
   loadPermissions(): void {
-    if (this.busy() || this.permissionsLoading()) {
+    if (this.permissionsLoading()) {
       return;
     }
     const post = this.requirePost();
@@ -457,13 +467,16 @@ export class TaonCmsPostComponent {
     this.permissionsLoading.set(true);
     this.permissionsError.set('');
     this.permissionsLoad = this.api
-      .listPermissions(post.id)
+      .getPermissionConfiguration(post.id)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.permissionsLoading.set(false)),
       )
       .subscribe({
-        next: permissions => this.permissions.set(permissions),
+        next: configuration => {
+          this.permissions.set(configuration.permissions);
+          this.permissionSource.set(configuration.source);
+        },
         error: (error: unknown) => {
           console.error('[taon-cms-post] Unable to load permissions', error);
           this.permissionsError.set(
@@ -476,7 +489,14 @@ export class TaonCmsPostComponent {
 
   //#region methods / add permission
   addPermission(): void {
-    if (!this.editing() || this.busy() || this.dialogOpen()) {
+    if (
+      !this.editing() ||
+      this.busy() ||
+      this.dialogOpen() ||
+      this.permissionSource() ||
+      this.permissionsLoading() ||
+      this.permissionsError()
+    ) {
       return;
     }
     const permissionId = this.selectedPermissionId();
@@ -492,7 +512,14 @@ export class TaonCmsPostComponent {
 
   //#region methods / remove permission
   removePermission(id: number): void {
-    if (!this.editing() || this.busy() || this.dialogOpen()) {
+    if (
+      !this.editing() ||
+      this.busy() ||
+      this.dialogOpen() ||
+      this.permissionSource() ||
+      this.permissionsLoading() ||
+      this.permissionsError()
+    ) {
       return;
     }
     this.permissions.update(items =>
@@ -559,9 +586,14 @@ export class TaonCmsPostComponent {
     const draft = this.draft();
     this.busy.set(true);
     this.uploading.set(true);
+    this.uploadProgress.set(0);
     this.error.set('');
     try {
-      const object = await this.api.uploadMedia(file);
+      const object = await this.api.uploadMedia(file, percentage => {
+        if (!this.destroyRef.destroyed) {
+          this.uploadProgress.set(percentage);
+        }
+      });
       if (!this.destroyRef.destroyed && this.draft() === draft) {
         const fileName = object.fileName || file.name;
         this.mediaFileNames.update(names => ({
@@ -583,6 +615,7 @@ export class TaonCmsPostComponent {
     } finally {
       this.busy.set(false);
       this.uploading.set(false);
+      this.uploadProgress.set(0);
       input.value = '';
     }
   }
@@ -715,6 +748,7 @@ export class TaonCmsPostComponent {
           ...this.draft(),
           relatedPostIds: this.relatedPosts().map(post => post.id),
           permissionIds: this.permissions().map(permission => permission.id),
+          applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
           applicationHook: this.useAsApplicationHook()
             ? this.selectedApplicationHook()
             : null,
@@ -756,6 +790,28 @@ export class TaonCmsPostComponent {
         }),
       );
     }
+  }
+  //#endregion
+
+  //#region methods / unpublish
+  unpublish(): void {
+    const post = this.currentPost();
+    if (
+      !post ||
+      post.status !== 'published' ||
+      this.busy() ||
+      this.dialogOpen() ||
+      this.mode() === 'view-clean' ||
+      this.mode() === 'add'
+    ) {
+      return;
+    }
+    this.persist(
+      this.api.updateContent(post.id, {
+        expectedVersion: post.version,
+        status: 'draft',
+      }),
+    );
   }
   //#endregion
 
@@ -830,7 +886,12 @@ export class TaonCmsPostComponent {
     return {
       ...this.draft(),
       relatedPostIds: this.relatedPosts().map(related => related.id),
-      permissionIds: this.permissions().map(permission => permission.id),
+      ...(this.permissionSource()
+        ? {}
+        : {
+            permissionIds: this.permissions().map(permission => permission.id),
+          }),
+      applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
       applicationHook: this.useAsApplicationHook()
         ? this.selectedApplicationHook()
         : null,
@@ -866,6 +927,10 @@ export class TaonCmsPostComponent {
     this.currentPost.set(post);
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);
+    this.permissionSource.set(null);
+    this.applyPermissionsToRelatedPosts.set(
+      post?.applyPermissionsToRelatedPosts ?? false,
+    );
     this.selectedPermissionId.set(null);
     this.setApplicationHookSelection(post, this.applicationHooks());
     this.draft.set({
@@ -885,11 +950,7 @@ export class TaonCmsPostComponent {
     ) {
       this.loadRelatedPosts();
     }
-    if (
-      post &&
-      post.permissions === undefined &&
-      this.mode() !== 'view-clean'
-    ) {
+    if (post && this.mode() !== 'view-clean') {
       this.loadPermissions();
     }
   }
