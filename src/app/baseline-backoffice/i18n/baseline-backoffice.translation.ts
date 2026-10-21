@@ -3,9 +3,11 @@ import { CoreModels } from 'tnp-core/src';
 
 // join interface type here
 import { EnUsTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs } from './taon-baseline-backoffice.routes.ts.en-US.i18n.data';
-import { PlPlTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs } from './taon-baseline-backoffice.routes.ts.pl-PL.i18n.data';;
+import { PlPlTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs } from './taon-baseline-backoffice.routes.ts.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs } from './taon-baseline-backoffice.routes.ts.de-DE.i18n.data';;
 export type BaselineBackofficeOverride = CoreModels.DeepPartial<EnUsTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs 
-| PlPlTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs>;
+| PlPlTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs 
+| DeDeTraslationOverrideSrcAppBaselineBackofficeTaonBaselineBackofficeRoutesTs>;
 
  // THIS FILE IS GENERATED - DO NOT MODIFY
         

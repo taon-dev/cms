@@ -9,7 +9,7 @@
   },
   "version": "v21",
   "shouldGenerateAutogenIndexFile": true,
-  "generateTranslationsFor": ["en-US", "pl-PL"],
+  "generateTranslationsFor": ["en-US", "pl-PL", "de-DE"],
   "isomorphicDependenciesForNpmLib": [
     "@taon-dev/session",
     "@taon-dev/e-commerce",
