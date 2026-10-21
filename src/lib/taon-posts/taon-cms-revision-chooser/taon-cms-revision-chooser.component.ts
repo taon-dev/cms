@@ -14,11 +14,15 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { Translation } from '@taon-dev/i18n/src';
 import { finalize } from 'rxjs';
+import { Taon } from 'taon/src';
 
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import { TaonCmsContentRevisionApiService } from '../../taon-cms-content-revision/taon-cms-content-revision-api.service';
 import type { TaonCmsContentRevisionEntity } from '../../taon-cms-content-revision/taon-cms-content-revision.entity';
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 @Component({
   selector: 'taon-cms-revision-chooser',
@@ -29,6 +33,8 @@ import type { TaonCmsContentRevisionEntity } from '../../taon-cms-content-revisi
   providers: [TaonCmsContentRevisionApiService],
 })
 export class TaonCmsRevisionChooserComponent {
+  readonly t = t.for(this);
+
   readonly post = inject<TaonCmsContentEntity>(MAT_DIALOG_DATA);
   readonly revisions = signal<TaonCmsContentRevisionEntity[]>([]);
   readonly selected = signal<number | null>(null);
@@ -53,18 +59,27 @@ export class TaonCmsRevisionChooserComponent {
     this.selected.set(null);
     this.loading.set(true);
     this.error.set('');
-    this.api.listRevisions(this.post.id).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.loading.set(false)),
-    ).subscribe({
-      next: revisions => this.revisions.set(
-        [...revisions].sort((a, b) => b.revisionNumber - a.revisionNumber),
-      ),
-      error: (error: unknown) => {
-        console.error('[taon-cms-revision-chooser] Unable to load revisions', error);
-        this.error.set('Revisions could not be loaded. Please try again.');
-      },
-    });
+    this.api
+      .listRevisions(this.post.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        next: revisions =>
+          this.revisions.set(
+            [...revisions].sort((a, b) => b.revisionNumber - a.revisionNumber),
+          ),
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-revision-chooser] Unable to load revisions',
+            error,
+          );
+          this.error.set(
+            this.t.gettext('Revisions could not be loaded. Please try again.'),
+          );
+        },
+      });
   }
 
   apply(): void {
@@ -73,27 +88,34 @@ export class TaonCmsRevisionChooserComponent {
       return;
     }
     if (revisionNumber === null) {
-      this.error.set('Select a revision to restore.');
+      this.error.set(this.t.gettext('Select a revision to restore.'));
       return;
     }
     this.applying.set(true);
     this.error.set('');
-    this.api.restoreContent(this.post.id, {
-      revisionNumber,
-      expectedVersion: this.post.version,
-    }).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.applying.set(false)),
-    ).subscribe({
-      next: post => this.ref.close(post),
-      error: (error: unknown) => {
-        console.error('[taon-cms-revision-chooser] Unable to restore revision', error);
-        this.error.set(
-          'The revision could not be restored. If the post changed, close and ' +
-          'reopen it to load its latest version.',
-        );
-      },
-    });
+    this.api
+      .restoreContent(this.post.id, {
+        revisionNumber,
+        expectedVersion: this.post.version,
+      })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.applying.set(false)),
+      )
+      .subscribe({
+        next: post => this.ref.close(post),
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-revision-chooser] Unable to restore revision',
+            error,
+          );
+          this.error.set(
+            this.t.gettext(
+              'The revision could not be restored. If the post changed, close and reopen it to load its latest version.',
+            ),
+          );
+        },
+      });
   }
 
   cancel(): void {

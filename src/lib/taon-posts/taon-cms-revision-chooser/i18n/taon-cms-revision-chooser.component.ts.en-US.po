@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:79
+msgid "Revisions could not be loaded. Please try again."
+msgstr "Revisions could not be loaded. Please try again."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:91
+msgid "Select a revision to restore."
+msgstr "Select a revision to restore."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:113
+msgid "The revision could not be restored. If the post changed, close and reopen it to load its latest version."
+msgstr "The revision could not be restored. If the post changed, close and reopen it to load its latest version."

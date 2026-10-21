@@ -24,7 +24,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
+import { Translation } from '@taon-dev/i18n/src';
 import { Observable, Subscription, finalize } from 'rxjs';
+import { Taon } from 'taon/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
 import type { TaonCmsApplicationHook } from '../../taon-cms-application-hooks';
@@ -39,6 +41,8 @@ import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/ta
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 //#endregion
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 @Component({
   selector: 'taon-cms-post',
@@ -58,6 +62,8 @@ import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
   providers: [TaonCmsContentApiService, TaonPermissionApiService],
 })
 export class TaonCmsPostComponent {
+  readonly t = t.for(this);
+
   //#region fields and getters
   readonly post = input<TaonCmsContentEntity | null>(null);
 
@@ -71,6 +77,17 @@ export class TaonCmsPostComponent {
 
   readonly currentPost = signal<TaonCmsContentEntity | null>(null);
 
+  readonly placeholderShortIntro = this.t.signal.gettext(
+    'A short introduction...',
+  );
+
+  readonly placeholderTitle = this.t.signal.gettext(
+    'Title',
+  );
+
+  readonly placeholderTellYourStory =
+    this.t.signal.gettext('Tell your story...');
+
   readonly draft = signal<TaonCmsPostDraft>({
     type: TaonCmsContentType.Normal,
     title: '',
@@ -83,32 +100,38 @@ export class TaonCmsPostComponent {
   });
 
   readonly postTypes = [
-    { value: TaonCmsContentType.Normal, label: 'Normal post' },
-    { value: TaonCmsContentType.Video, label: 'Video post' },
-    { value: TaonCmsContentType.Audio, label: 'Audio post' },
-    { value: TaonCmsContentType.Attachment, label: 'Attachment post' },
+    {
+      value: TaonCmsContentType.Normal,
+      label: this.t.gettext('Normal post'),
+    },
+    { value: TaonCmsContentType.Video, label: this.t.gettext('Video post') },
+    { value: TaonCmsContentType.Audio, label: this.t.gettext('Audio post') },
+    {
+      value: TaonCmsContentType.Attachment,
+      label: this.t.gettext('Attachment post'),
+    },
   ];
 
   private readonly mediaAttachments = [
     {
       type: TaonCmsContentType.Video,
       key: 'videoKey',
-      heading: 'Video Attachment',
-      uploadLabel: 'Upload video',
+      heading: this.t.gettext('Video Attachment'),
+      uploadLabel: this.t.gettext('Upload video'),
       accept: 'video/*',
     },
     {
       type: TaonCmsContentType.Audio,
       key: 'audioKey',
-      heading: 'Audio Attachment',
-      uploadLabel: 'Upload audio',
+      heading: this.t.gettext('Audio Attachment'),
+      uploadLabel: this.t.gettext('Upload audio'),
       accept: 'audio/*',
     },
     {
       type: TaonCmsContentType.Attachment,
       key: 'attachmentKey',
-      heading: 'File Attachment',
-      uploadLabel: 'Upload file',
+      heading: this.t.gettext('File Attachment'),
+      uploadLabel: this.t.gettext('Upload file'),
       accept: '',
     },
   ] as const;
@@ -306,7 +329,9 @@ export class TaonCmsPostComponent {
             !this.destroyRef.destroyed
           ) {
             this.mediaPreviewError.set(
-              'Media preview could not be loaded. Please reopen the editor to try again.',
+              this.t.gettext(
+                'Media preview could not be loaded. Please reopen the editor to try again.',
+              ),
             );
           }
         })
@@ -344,7 +369,9 @@ export class TaonCmsPostComponent {
         error: (error: unknown) => {
           console.error('[taon-cms-post] Unable to load related posts', error);
           this.relatedPostsError.set(
-            'Related posts could not be loaded. Please try again.',
+            this.t.gettext(
+              'Related posts could not be loaded. Please try again.',
+            ),
           );
         },
       });
@@ -431,7 +458,9 @@ export class TaonCmsPostComponent {
             error,
           );
           this.applicationHooksError.set(
-            'Application hooks could not be loaded. Please try again.',
+            this.t.gettext(
+              'Application hooks could not be loaded. Please try again.',
+            ),
           );
         },
       });
@@ -480,7 +509,9 @@ export class TaonCmsPostComponent {
         error: (error: unknown) => {
           console.error('[taon-cms-post] Unable to load permissions', error);
           this.permissionsError.set(
-            'Permissions could not be loaded. Please try again.',
+            this.t.gettext(
+              'Permissions could not be loaded. Please try again.',
+            ),
           );
         },
       });
@@ -551,7 +582,9 @@ export class TaonCmsPostComponent {
             error,
           );
           this.permissionOptionsError.set(
-            'Available permissions could not be loaded. Please try again.',
+            this.t.gettext(
+              'Available permissions could not be loaded. Please try again.',
+            ),
           );
         },
       });
@@ -570,7 +603,7 @@ export class TaonCmsPostComponent {
   //#region methods / file selected
   async fileSelected(event: Event): Promise<void> {
     if (!(event.target instanceof HTMLInputElement)) {
-      this.error.set('Unable to read the selected media file.');
+      this.error.set(this.t.gettext('Unable to read the selected media file.'));
       return;
     }
     const input = event.target;
@@ -611,7 +644,9 @@ export class TaonCmsPostComponent {
       }
     } catch (error: unknown) {
       console.error('[taon-cms-post] Unable to upload media', error);
-      this.error.set('The media could not be uploaded. Please try again.');
+      this.error.set(
+        this.t.gettext('The media could not be uploaded. Please try again.'),
+      );
     } finally {
       this.busy.set(false);
       this.uploading.set(false);
@@ -739,7 +774,7 @@ export class TaonCmsPostComponent {
       return;
     }
     if (!this.canSave()) {
-      this.error.set('A title and slug are required.');
+      this.error.set(this.t.gettext('A title and slug are required.'));
       return;
     }
     if (this.mode() === 'add') {
@@ -775,7 +810,7 @@ export class TaonCmsPostComponent {
       return;
     }
     if (this.editing() && !this.canSave()) {
-      this.error.set('A title and slug are required.');
+      this.error.set(this.t.gettext('A title and slug are required.'));
       return;
     }
     const post = this.requirePost();
@@ -863,10 +898,11 @@ export class TaonCmsPostComponent {
     this.dialogOpen.set(true);
     const ref = this.dialog.open(TaonConfirmDialogComponent, {
       data: {
-        title: 'Delete post?',
-        message:
+        title: this.t.gettext('Delete post?'),
+        message: this.t.gettext(
           'This archives the post. It can be restored from its revisions.',
-        confirmText: 'Delete',
+        ),
+        confirmText: this.t.gettext('Delete'),
       },
     });
     ref
@@ -904,7 +940,7 @@ export class TaonCmsPostComponent {
   private requirePost(): TaonCmsContentEntity | null {
     const post = this.currentPost();
     if (!post) {
-      this.error.set('No post is loaded.');
+      this.error.set(this.t.gettext('No post is loaded.'));
     }
     return post;
   }
@@ -1003,8 +1039,9 @@ export class TaonCmsPostComponent {
         error: (error: unknown) => {
           console.error('[taon-cms-post] Unable to save post', error);
           this.error.set(
-            'The post could not be saved. Check the slug and your connection. ' +
-              'If another user changed it, close and reopen the post before retrying.',
+            this.t.gettext(
+              'The post could not be saved. Check the slug and your connection. If another user changed it, close and reopen the post before retrying.',
+            ),
           );
         },
       });

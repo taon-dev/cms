@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.ts:78
+msgid "The asset could not be opened. Please retry."
+msgstr "Das Asset konnte nicht geöffnet werden."
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.ts:90
+msgid "Playback failed or the preview link expired. Please retry."
+msgstr "Die Wiedergabe ist fehlgeschlagen oder der Vorschauverbindung ist abgelaufen."

@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:28
+msgid "Posts"
+msgstr "Posts"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:37
+msgid "Assets"
+msgstr "Assets"

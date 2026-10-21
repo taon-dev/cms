@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:2
+msgid "Loading asset preview..."
+msgstr "Wciążając przegląd aktywów..."
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:11
+msgid "Retry preview"
+msgstr "Wystarczy ponownie przejrzeć"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:22
+msgid "Your browser does not support video playback."
+msgstr "Twoja przeglądarka nie obsługuje odtwarzania wideo."
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:31
+msgid "Your browser does not support audio playback."
+msgstr "Twoja przeglądarka nie obsługuje odtwarzania dźwięku."

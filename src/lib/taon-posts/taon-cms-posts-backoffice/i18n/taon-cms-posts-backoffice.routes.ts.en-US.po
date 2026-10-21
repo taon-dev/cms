@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.routes.ts:17
+msgid "Invalid Post ID"
+msgstr "Invalid Post ID"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.routes.ts:22
+msgid "Post not found"
+msgstr "Post not found"

@@ -134,7 +134,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getVideoLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'video', false, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'video', false, req, t);
     //#endregion
   }
 
@@ -142,7 +143,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getPublicVideoLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'video', true, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'video', true, req, t);
     //#endregion
   }
   //#endregion
@@ -151,7 +153,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getAudioLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'audio', false, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'audio', false, req, t);
     //#endregion
   }
   //#endregion
@@ -160,7 +163,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getPublicAudioLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'audio', true, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'audio', true, req, t);
     //#endregion
   }
   //#endregion
@@ -169,7 +173,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getAttachmentLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'attachment', false, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'attachment', false, req, t);
     //#endregion
   }
   //#endregion
@@ -180,7 +185,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     @Query('slug') slug: string,
   ): Taon.Response<string> {
     //#region @websqlFunc
-    return req => this.getMediaLinkBySlug(slug, 'attachment', true, req);
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'attachment', true, req, t);
     //#endregion
   }
   //#endregion
@@ -192,12 +198,13 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     type: 'video' | 'audio' | 'attachment',
     publicOnly: boolean,
     req: ExpressRequest,
+    t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
   ): Promise<string> {
     //#region @websqlFunc
     const content =
       await this.taonCmsContentRepository.getContentBySlugForMedia(slug);
     if (!content) {
-      contentError('Content was not found.', 404);
+      contentError(t.gettext('Content was not found.'), 404);
     }
     const field =
       type === 'video'
@@ -207,14 +214,17 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
           : 'attachmentKey';
     const key = content![field];
     if (!key) {
-      contentError(`Content has no ${type} media.`, 404);
+      contentError(
+        t.gettext('Content has no [[ type ]] media.', { type }),
+        404,
+      );
     }
     if (
       !(await this.taonCmsContentStorageController.isMediaObjectAvailable(key!))
     ) {
-      contentError('The media file was not found in storage.', 404);
+      contentError(t.gettext('The media file was not found in storage.'), 404);
     }
-    await this.requireReadAccess(content!, publicOnly, req);
+    await this.requireReadAccess(content!, publicOnly, req, t);
 
     const isPrivate = !publicOnly;
     const token = isPrivate
@@ -238,6 +248,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     content: TaonCmsContentEntity,
     publicOnly: boolean,
     req: ExpressRequest,
+    t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
   ): Promise<void> {
     //#region @websqlFunc
     const { permissions } =
@@ -247,7 +258,10 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     const isPublic = content.status === 'published' && permissions.length === 0;
     if (publicOnly) {
       if (!isPublic) {
-        contentError('This content is not publicly accessible.', 403);
+        contentError(
+          t.gettext('This content is not publicly accessible.'),
+          403,
+        );
       }
     } else {
       const context = await this.taonAuthContextRepository.getContext(
@@ -259,7 +273,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
         userPermissionCodes.has(permission.code),
       );
       if (!context?.isSuperUser && !isPublic && !hasPermission) {
-        contentError('You do not have access to this content.', 403);
+        contentError(t.gettext('You do not have access to this content.'), 403);
       }
     }
     //#endregion
@@ -378,13 +392,13 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getContentByHook(@Query('hook') hook: string): Taon.Response<string> {
     //#region @websqlFunc
-    return async req => {
+    return async (req, _res, { t }) => {
       const content =
         await this.taonCmsContentRepository.getContentForHook(hook);
       if (!content) {
         return '';
       }
-      await this.requireReadAccess(content, false, req);
+      await this.requireReadAccess(content, false, req, t);
       return content.body ?? '';
     };
     //#endregion
@@ -395,13 +409,13 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @GET()
   getPublicContentByHook(@Query('hook') hook: string): Taon.Response<string> {
     //#region @websqlFunc
-    return async req => {
+    return async (req, _res, { t }) => {
       const content =
         await this.taonCmsContentRepository.getContentForHook(hook);
       if (!content) {
         return '';
       }
-      await this.requireReadAccess(content, true, req);
+      await this.requireReadAccess(content, true, req, t);
       return content.body ?? '';
     };
     //#endregion

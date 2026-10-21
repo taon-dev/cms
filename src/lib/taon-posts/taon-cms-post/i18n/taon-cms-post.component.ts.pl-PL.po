@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:80
+msgid "A short introduction..."
+msgstr "Krótkie wprowadzenie"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:84
+msgid "Title"
+msgstr "Tytuł"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:89
+msgid "Tell your story..."
+msgstr "Opowiedz nam twoją historię..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:105
+msgid "Normal post"
+msgstr "Normalny post"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:107
+msgid "Video post"
+msgstr "Wideo post"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:108
+msgid "Audio post"
+msgstr "Audio post"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:111
+msgid "Attachment post"
+msgstr "Załącznik post"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:119
+msgid "Video Attachment"
+msgstr "Przyłączenie do filmu"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:120
+msgid "Upload video"
+msgstr "Wstępuj do wideo"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:126
+msgid "Audio Attachment"
+msgstr "Przyłączenie do dźwięku"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:127
+msgid "Upload audio"
+msgstr "/Przesłanie dźwięku"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:133
+msgid "File Attachment"
+msgstr "Przyłączenie plików"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:134
+msgid "Upload file"
+msgstr "Wstąpienie pliku"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:332
+msgid "Media preview could not be loaded. Please reopen the editor to try again."
+msgstr "Przejrzenie mediów nie mogło być załadowane. Proszę ponownie otworzyć redaktor, aby spróbować ponownie."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:372
+msgid "Related posts could not be loaded. Please try again."
+msgstr "Nie można było założyć powiązanych postów."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:461
+msgid "Application hooks could not be loaded. Please try again."
+msgstr "Nie można było założyć haków aplikacyjnych."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:512
+msgid "Permissions could not be loaded. Please try again."
+msgstr "Nie mogliśmy założyć pozwolenia."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:585
+msgid "Available permissions could not be loaded. Please try again."
+msgstr "Dostępne uprawnienia nie mogły być załadowane."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:606
+msgid "Unable to read the selected media file."
+msgstr "Nie można przeczytać wybranych plików multimedialnych."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:648
+msgid "The media could not be uploaded. Please try again."
+msgstr "Media nie mogły zostać przesłane."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:777
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:813
+msgid "A title and slug are required."
+msgstr "Potrzebny jest tytuł i strzał."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:901
+msgid "Delete post?"
+msgstr "Wymazać wiadomość?"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:902
+msgid "This archives the post. It can be restored from its revisions."
+msgstr "To archiwum, który można odtworzyć z jego zmian."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:905
+msgid "Delete"
+msgstr "Usunięcie"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:943
+msgid "No post is loaded."
+msgstr "Żaden posterunek nie jest załadowany."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1042
+msgid "The post could not be saved. Check the slug and your connection. If another user changed it, close and reopen the post before retrying."
+msgstr "Jeśli inny użytkownik zmienił, zamknij i ponownie otwórz połączenie przed ponownym próbą."

@@ -14,10 +14,14 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { Translation } from '@taon-dev/i18n/src';
 import { finalize } from 'rxjs';
+import { Taon } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 export interface TaonRelatedPostChooserData {
   postId?: number;
@@ -33,6 +37,8 @@ export interface TaonRelatedPostChooserData {
   providers: [TaonCmsContentApiService],
 })
 export class TaonRelatedPostChooserComponent {
+  readonly t = t.for(this);
+
   readonly data = inject<TaonRelatedPostChooserData>(MAT_DIALOG_DATA);
   readonly posts = signal<TaonCmsContentEntity[]>([]);
   readonly selected = signal<number | null>(null);
@@ -41,10 +47,11 @@ export class TaonRelatedPostChooserComponent {
   readonly error = signal('');
   readonly filteredPosts = computed(() => {
     const query = this.query().trim().toLowerCase();
-    return this.posts().filter(post =>
-      post.id !== this.data.postId &&
-      !this.data.excludedIds.includes(post.id) &&
-      `${post.id} ${post.title} ${post.slug}`.toLowerCase().includes(query),
+    return this.posts().filter(
+      post =>
+        post.id !== this.data.postId &&
+        !this.data.excludedIds.includes(post.id) &&
+        `${post.id} ${post.title} ${post.slug}`.toLowerCase().includes(query),
     );
   });
 
@@ -73,8 +80,13 @@ export class TaonRelatedPostChooserComponent {
       .subscribe({
         next: posts => this.posts.set(posts),
         error: (error: unknown) => {
-          console.error('[taon-related-post-chooser] Unable to load posts', error);
-          this.error.set('Posts could not be loaded. Please try again.');
+          console.error(
+            '[taon-related-post-chooser] Unable to load posts',
+            error,
+          );
+          this.error.set(
+            this.t.gettext('Posts could not be loaded. Please try again.'),
+          );
         },
       });
   }
@@ -92,7 +104,7 @@ export class TaonRelatedPostChooserComponent {
     }
     const post = this.filteredPosts().find(post => post.id === this.selected());
     if (!post) {
-      this.error.set('Select a related post.');
+      this.error.set(this.t.gettext('Select a related post.'));
       return;
     }
     this.ref.close(post);

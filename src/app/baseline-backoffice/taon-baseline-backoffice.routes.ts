@@ -34,7 +34,7 @@ export const TaonBaselineBackofficeRoutes: Routes = [
       }),
       adminLazyRoute({
         path: 'cms',
-        menuItem: 'CMS',
+        menuItem: t.gettext('CMS'),
         expandable: true,
         icon: 'content_copy',
         loader: () =>

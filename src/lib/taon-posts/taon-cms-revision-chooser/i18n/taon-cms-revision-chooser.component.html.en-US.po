@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:1
+msgid "Restore a revision"
+msgstr "Restore a revision"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:4
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:5
+msgid "Restoring replaces the post, including its status, with the selected revision."
+msgstr "Restoring replaces the post, including its status, with the selected revision."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:67
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:74
+msgid "Apply"
+msgstr "Apply"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:11
+msgid "Loading revisions..."
+msgstr "Loading revisions..."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:23
+msgid "Revision [[ revisionNumber ]]"
+msgstr "Revision [[ revisionNumber ]]"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:33
+msgid "User [[ userId ]]"
+msgstr "User [[ userId ]]"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:39
+msgid "Legacy revision - cannot be restored"
+msgstr "Legacy revision - cannot be restored"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:43
+msgid "No revisions are available."
+msgstr "No revisions are available."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:54
+msgid "Reload revisions"
+msgstr "Reload revisions"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:58
+msgid "Restoring..."
+msgstr "Restoring..."

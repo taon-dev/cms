@@ -6,25 +6,25 @@ msgstr ""
 
 #: src/app.ts:178
 msgid "Basic app info"
-msgstr ""
+msgstr "Basic app info"
 
 #: src/app.ts:179
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: src/app.ts:181
 msgid "Angular version: [[ version ]]"
-msgstr ""
+msgstr "Angular version: [[ version ]]"
 
 #: src/app.ts:185
 msgid "Taon backend: [[ mode ]]"
-msgstr ""
+msgstr "Taon backend: [[ mode ]]"
 
 #: src/app.ts:208
 msgctxt "header-taon-admin"
 msgid "Hello [[ username ]]"
-msgstr ""
+msgstr "Hello [[ username ]]"
 
 #: src/app.ts:215
 msgid "Please login to use Taon Admin"
-msgstr ""
+msgstr "Please login to use Taon Admin"

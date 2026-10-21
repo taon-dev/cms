@@ -1,0 +1,177 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:4
+msgid "New draft"
+msgstr "New draft"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
+msgid "Add"
+msgstr "Add"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
+msgid "Save"
+msgstr "Save"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:20
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:28
+msgid "Edit"
+msgstr "Edit"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:38
+msgid "Publish"
+msgstr "Publish"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:46
+msgid "Unpublish"
+msgstr "Unpublish"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:54
+msgid "Revert"
+msgstr "Revert"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:62
+msgid "Delete"
+msgstr "Delete"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:70
+msgid "Uploading... "
+msgstr "Uploading... "
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:71
+msgid "Saving..."
+msgstr "Saving..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:133
+msgid "URL slug"
+msgstr "URL slug"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:154
+msgid "Loading media preview..."
+msgstr "Loading media preview..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:168
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:491
+msgid "Your browser does not support video playback."
+msgstr "Your browser does not support video playback."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:175
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:498
+msgid "Your browser does not support audio playback."
+msgstr "Your browser does not support audio playback."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:180
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:503
+msgid "Attached file: [[ fileName ]]"
+msgstr "Attached file: [[ fileName ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:188
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:511
+msgid "Download or open"
+msgstr "Download or open"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:204
+msgid "Replace"
+msgstr "Replace"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:211
+msgid "Remove"
+msgstr "Remove"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:234
+msgid "Related posts"
+msgstr "Related posts"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:236
+msgid "Loading related posts..."
+msgstr "Loading related posts..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:248
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:302
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:378
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:413
+msgid "Try again"
+msgstr "Try again"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:259
+msgid "Remove related post [[ title ]]"
+msgstr "Remove related post [[ title ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:269
+msgid "No related posts yet."
+msgstr "No related posts yet."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:277
+msgid "Add related post"
+msgstr "Add related post"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:287
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:315
+msgid "Application Hook"
+msgstr "Application Hook"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:290
+msgid "Loading application hooks..."
+msgstr "Loading application hooks..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:309
+msgid "Use as application hook"
+msgstr "Use as application hook"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:332
+msgid "(in use by post # [[ postId ]])"
+msgstr "(in use by post # [[ postId ]])"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:340
+msgid "No application hooks configured"
+msgstr "No application hooks configured"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:353
+msgid "Allow Read only with Permissions"
+msgstr "Allow Read only with Permissions"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:358
+msgid "Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them."
+msgstr "Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:366
+msgid "Loading assigned permissions..."
+msgstr "Loading assigned permissions..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:389
+msgid "Remove permission [[ name ]]"
+msgstr "Remove permission [[ name ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:399
+msgid "No permissions assigned."
+msgstr "No permissions assigned."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:420
+msgid "Permission"
+msgstr "Permission"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:439
+msgid "No permissions available"
+msgstr "No permissions available"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:454
+msgid "Assign permission"
+msgstr "Assign permission"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:464
+msgid "Apply permissions to related posts"
+msgstr "Apply permissions to related posts"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:479
+msgid "Loading media..."
+msgstr "Loading media..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:518
+msgid "No post is loaded."
+msgstr "No post is loaded."

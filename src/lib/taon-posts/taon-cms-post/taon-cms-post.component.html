@@ -1,7 +1,7 @@
 @if (mode() !== 'view-clean') {
   <header class="post-actions">
     <span class="post-status">{{
-      mode() === 'add' ? 'New draft' : currentPost()?.status
+      mode() === 'add' ? t.gettext('New draft') : currentPost()?.status
     }}</span>
     <div class="buttons">
       @if (editing()) {
@@ -10,14 +10,14 @@
           type="button"
           [disabled]="busy() || dialogOpen() || !canSave()"
           (click)="save()">
-          {{ mode() === 'add' ? 'Add' : 'Save' }}
+          {{ mode() === 'add' ? t.gettext('Add') : t.gettext('Save') }}
         </button>
         <button
           mat-button
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="cancel()">
-          Cancel
+          {{ t.gettext('Cancel') }}
         </button>
       } @else if (currentPost()) {
         <button
@@ -25,7 +25,7 @@
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="edit()">
-          <mat-icon>edit</mat-icon> Edit
+          <mat-icon>edit</mat-icon> {{ t.gettext('Edit') }}
         </button>
       }
       @if (mode() !== 'add' && currentPost()) {
@@ -35,7 +35,7 @@
             type="button"
             [disabled]="busy() || dialogOpen() || (editing() && !canSave())"
             (click)="publish()">
-            Publish
+            {{ t.gettext('Publish') }}
           </button>
         } @else {
           <button
@@ -43,7 +43,7 @@
             type="button"
             [disabled]="busy() || dialogOpen()"
             (click)="unpublish()">
-            Unpublish
+            {{ t.gettext('Unpublish') }}
           </button>
         }
         <button
@@ -51,7 +51,7 @@
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="revert()">
-          <mat-icon>history</mat-icon> Revert
+          <mat-icon>history</mat-icon> {{ t.gettext('Revert') }}
         </button>
         @if (currentPost()?.status !== 'archived') {
           <button
@@ -59,14 +59,16 @@
             type="button"
             [disabled]="busy() || dialogOpen()"
             (click)="delete()">
-            <mat-icon>delete</mat-icon> Delete
+            <mat-icon>delete</mat-icon> {{ t.gettext('Delete') }}
           </button>
         }
       }
     </div>
     @if (busy()) {
       <span role="status">{{
-        uploading() ? 'Uploading... ' + uploadProgress() + '%' : 'Saving...'
+        uploading()
+          ? t.gettext('Uploading... ') + uploadProgress() + '%'
+          : t.gettext('Saving...')
       }}</span>
     }
   </header>
@@ -85,7 +87,7 @@
   @if (editing()) {
     <mat-radio-group
       class="post-type-selector"
-      aria-label="Post type"
+      [attr.aria-label]="t.gettext('Post type')"
       [value]="draft().type"
       [disabled]="busy() || dialogOpen()"
       (change)="updateDraft('type', $event.value)">
@@ -99,9 +101,9 @@
       class="post-title editable"
       contenteditable="true"
       role="textbox"
-      aria-label="Post title"
+      [attr.aria-label]="t.gettext('Post title')"
       aria-required="true"
-      data-placeholder="Title"
+      [attr.data-placeholder]="placeholderTitle()"
       [attr.contenteditable]="!busy() && !dialogOpen()"
       [taonCmsEditableSingleLine]="true"
       [taonCmsEditable]="draft().title"
@@ -110,9 +112,9 @@
       class="post-excerpt editable"
       contenteditable="true"
       role="textbox"
-      aria-label="Post excerpt"
+      [attr.aria-label]="t.gettext('Post excerpt')"
       aria-multiline="true"
-      data-placeholder="A short introduction..."
+      [attr.data-placeholder]="placeholderShortIntro()"
       [attr.contenteditable]="!busy() && !dialogOpen()"
       [taonCmsEditable]="draft().excerpt"
       (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
@@ -120,21 +122,21 @@
       class="post-body editable"
       contenteditable="true"
       role="textbox"
-      aria-label="Post body"
+      [attr.aria-label]="t.gettext('Post body')"
       aria-multiline="true"
-      data-placeholder="Tell your story..."
+      [attr.data-placeholder]="placeholderTellYourStory()"
       [attr.contenteditable]="!busy() && !dialogOpen()"
       taonCmsEditableFormat="html"
       [taonCmsEditable]="draft().body"
       (taonCmsEditableChange)="updateDraft('body', $event)"></div>
     <label class="slug-field">
-      <span>URL slug</span>
+      <span>{{ t.gettext('URL slug') }}</span>
       <input
-        aria-label="URL slug"
+        [attr.aria-label]="t.gettext('URL slug')"
         [value]="draft().slug"
         [disabled]="busy() || dialogOpen()"
         (input)="updateSlug($event)"
-        placeholder="my-post" />
+        [placeholder]="t.gettext('my-post')" />
     </label>
     @if (mediaAttachment(); as media) {
       <section
@@ -145,11 +147,11 @@
           <mat-progress-bar
             mode="determinate"
             [value]="uploadProgress()"
-            aria-label="Media upload progress" />
+            [attr.aria-label]="t.gettext('Media upload progress')" />
         }
         @if (draft()[media.key]; as key) {
           @if (mediaPreviewLoading()) {
-            <p role="status">Loading media preview...</p>
+            <p role="status">{{ t.gettext('Loading media preview...') }}</p>
           }
           @if (mediaPreviewError()) {
             <p
@@ -163,23 +165,27 @@
               controls
               preload="none"
               [src]="mediaPreviewUrl()">
-              Your browser does not support video playback.
+              {{ t.gettext('Your browser does not support video playback.') }}
             </video>
           } @else if (media.type === 'audio' && mediaPreviewUrl()) {
             <audio
               controls
               preload="none"
               [src]="mediaPreviewUrl()">
-              Your browser does not support audio playback.
+              {{ t.gettext('Your browser does not support audio playback.') }}
             </audio>
           } @else if (media.type === 'attachment' && mediaPreviewUrl()) {
             <p>
-              Attached file: {{ mediaFileName(key) }}
+              {{
+                t.gettext('Attached file: [[ fileName ]]', {
+                  fileName: mediaFileName(key),
+                })
+              }}
               <a
                 [href]="mediaPreviewUrl()"
                 target="_blank"
                 rel="noopener"
-                >Download or open</a
+                >{{ t.gettext('Download or open') }}</a
               >
             </p>
           }
@@ -195,14 +201,14 @@
             type="button"
             [disabled]="busy() || dialogOpen()"
             (click)="mediaInput.click()">
-            Replace
+            {{ t.gettext('Replace') }}
           </button>
           <button
             mat-button
             type="button"
             [disabled]="busy() || dialogOpen()"
             (click)="removeMedia()">
-            Remove
+            {{ t.gettext('Remove') }}
           </button>
         } @else {
           <input
@@ -225,9 +231,9 @@
     <section
       class="related-posts"
       aria-labelledby="related-posts-heading">
-      <h2 id="related-posts-heading">Related posts</h2>
+      <h2 id="related-posts-heading">{{ t.gettext('Related posts') }}</h2>
       @if (relatedPostsLoading()) {
-        <p role="status">Loading related posts...</p>
+        <p role="status">{{ t.gettext('Loading related posts...') }}</p>
       } @else if (relatedPostsError()) {
         <p
           class="error"
@@ -239,7 +245,7 @@
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="loadRelatedPosts()">
-          Try again
+          {{ t.gettext('Try again') }}
         </button>
       } @else {
         <ul>
@@ -249,14 +255,18 @@
               <button
                 mat-icon-button
                 type="button"
-                [attr.aria-label]="'Remove related post ' + post.title"
+                [attr.aria-label]="
+                  t.gettext('Remove related post [[ title ]]', {
+                    title: post.title,
+                  })
+                "
                 [disabled]="busy() || dialogOpen()"
                 (click)="removeRelatedPost(post.id)">
                 <mat-icon>close</mat-icon>
               </button>
             </li>
           } @empty {
-            <li>No related posts yet.</li>
+            <li>{{ t.gettext('No related posts yet.') }}</li>
           }
         </ul>
         <button
@@ -264,7 +274,7 @@
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="addRelatedPost()">
-          <mat-icon>add</mat-icon> Add related post
+          <mat-icon>add</mat-icon> {{ t.gettext('Add related post') }}
         </button>
       }
     </section>
@@ -273,9 +283,11 @@
       <section
         class="application-hook"
         aria-labelledby="application-hook-heading">
-        <h2 id="application-hook-heading">Application Hook</h2>
+        <h2 id="application-hook-heading">
+          {{ t.gettext('Application Hook') }}
+        </h2>
         @if (applicationHooksLoading()) {
-          <p role="status">Loading application hooks...</p>
+          <p role="status">{{ t.gettext('Loading application hooks...') }}</p>
         } @else if (applicationHooksError()) {
           <p
             class="error"
@@ -287,20 +299,20 @@
             type="button"
             [disabled]="busy() || dialogOpen()"
             (click)="loadApplicationHooks()">
-            Try again
+            {{ t.gettext('Try again') }}
           </button>
         } @else {
           <mat-checkbox
             [checked]="useAsApplicationHook()"
             [disabled]="busy() || dialogOpen()"
             (change)="setUseAsApplicationHook($event.checked)">
-            Use as application hook
+            {{ t.gettext('Use as application hook') }}
           </mat-checkbox>
           @if (useAsApplicationHook()) {
             <mat-form-field
               appearance="outline"
               subscriptSizing="dynamic">
-              <mat-label>Application Hook</mat-label>
+              <mat-label>{{ t.gettext('Application Hook') }}</mat-label>
               <mat-select
                 [value]="selectedApplicationHook()"
                 [disabled]="busy() || dialogOpen()"
@@ -316,13 +328,17 @@
                     ">
                     {{ applicationHookLabel(applicationHook.hook) }}
                     @if (applicationHookInUseByAnotherPost(applicationHook)) {
-                      (in use by post #{{ applicationHook.contentId }})
+                      {{
+                        t.gettext('(in use by post # [[ postId ]])', {
+                          postId: applicationHook.contentId,
+                        })
+                      }}
                     }
                   </mat-option>
                 } @empty {
-                  <mat-option [disabled]="true"
-                    >No application hooks configured</mat-option
-                  >
+                  <mat-option [disabled]="true">{{
+                    t.gettext('No application hooks configured')
+                  }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
@@ -333,15 +349,21 @@
     <section
       class="post-permissions"
       aria-labelledby="post-permissions-heading">
-      <h2 id="post-permissions-heading">Allow Read only with Permissions</h2>
+      <h2 id="post-permissions-heading">
+        {{ t.gettext('Allow Read only with Permissions') }}
+      </h2>
       @if (permissionSource(); as source) {
         <p role="note">
-          Permissions are inherited from #{{ source.id }} - {{ source.title }}.
-          Edit the source post to change them.
+          {{
+            t.gettext(
+              'Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them.',
+              { postId: source.id, title: source.title }
+            )
+          }}
         </p>
       }
       @if (permissionsLoading()) {
-        <p role="status">Loading assigned permissions...</p>
+        <p role="status">{{ t.gettext('Loading assigned permissions...') }}</p>
       } @else if (permissionsError()) {
         <p
           class="error"
@@ -353,7 +375,7 @@
           type="button"
           [disabled]="busy() || dialogOpen()"
           (click)="loadPermissions()">
-          Try again
+          {{ t.gettext('Try again') }}
         </button>
       } @else {
         <ul>
@@ -363,14 +385,18 @@
               <button
                 mat-icon-button
                 type="button"
-                [attr.aria-label]="'Remove permission ' + permission.name"
+                [attr.aria-label]="
+                  t.gettext('Remove permission [[ name ]]', {
+                    name: permission.name,
+                  })
+                "
                 [disabled]="busy() || dialogOpen() || !!permissionSource()"
                 (click)="removePermission(permission.id)">
                 <mat-icon>close</mat-icon>
               </button>
             </li>
           } @empty {
-            <li>No permissions assigned.</li>
+            <li>{{ t.gettext('No permissions assigned.') }}</li>
           }
         </ul>
         @if (permissionOptionsError()) {
@@ -384,14 +410,14 @@
             type="button"
             [disabled]="busy() || dialogOpen() || permissionOptionsLoading()"
             (click)="loadPermissionOptions()">
-            Try again
+            {{ t.gettext('Try again') }}
           </button>
         } @else {
           <div class="permission-assignment">
             <mat-form-field
               appearance="outline"
               subscriptSizing="dynamic">
-              <mat-label>Permission</mat-label>
+              <mat-label>{{ t.gettext('Permission') }}</mat-label>
               <mat-select
                 [value]="selectedPermissionId()"
                 [disabled]="
@@ -409,9 +435,9 @@
                     >{{ permission.name }} ({{ permission.code }})</mat-option
                   >
                 } @empty {
-                  <mat-option [disabled]="true"
-                    >No permissions available</mat-option
-                  >
+                  <mat-option [disabled]="true">{{
+                    t.gettext('No permissions available')
+                  }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
@@ -425,7 +451,7 @@
                 !!permissionSource()
               "
               (click)="addPermission()">
-              <mat-icon>add</mat-icon> Assign permission
+              <mat-icon>add</mat-icon> {{ t.gettext('Assign permission') }}
             </button>
           </div>
         }
@@ -435,7 +461,7 @@
           [checked]="applyPermissionsToRelatedPosts()"
           [disabled]="busy() || dialogOpen()"
           (change)="applyPermissionsToRelatedPosts.set($event.checked)">
-          Apply permissions to related posts
+          {{ t.gettext('Apply permissions to related posts') }}
         </mat-checkbox>
       }
     </section>
@@ -450,7 +476,7 @@
     @if (mediaAttachment(); as media) {
       @if (draft()[media.key]; as key) {
         @if (mediaPreviewLoading()) {
-          <p role="status">Loading media...</p>
+          <p role="status">{{ t.gettext('Loading media...') }}</p>
         } @else if (mediaPreviewError()) {
           <p
             class="error"
@@ -462,29 +488,33 @@
             controls
             preload="none"
             [src]="mediaPreviewUrl()">
-            Your browser does not support video playback.
+            {{ t.gettext('Your browser does not support video playback.') }}
           </video>
         } @else if (media.type === 'audio' && mediaPreviewUrl()) {
           <audio
             controls
             preload="none"
             [src]="mediaPreviewUrl()">
-            Your browser does not support audio playback.
+            {{ t.gettext('Your browser does not support audio playback.') }}
           </audio>
         } @else if (media.type === 'attachment' && mediaPreviewUrl()) {
           <p>
-            Attached file: {{ mediaFileName(key) }}
+            {{
+              t.gettext('Attached file: [[ fileName ]]', {
+                fileName: mediaFileName(key),
+              })
+            }}
             <a
               [href]="mediaPreviewUrl()"
               target="_blank"
               rel="noopener"
-              >Download or open</a
+              >{{ t.gettext('Download or open') }}</a
             >
           </p>
         }
       }
     }
   } @else {
-    <p role="status">No post is loaded.</p>
+    <p role="status">{{ t.gettext('No post is loaded.') }}</p>
   }
 </article>

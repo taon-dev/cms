@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:55
+msgid "File Name"
+msgstr "File Name"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:57
+msgid "Content Type"
+msgstr "Content Type"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:94
+msgid "Assets could not be loaded. Please try reloading."
+msgstr "Assets could not be loaded. Please try reloading."

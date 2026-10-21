@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/app/cms-example/cms-example.component.html:2
+msgid "CMS example works!"
+msgstr "CMS-Beispiel funktioniert!"

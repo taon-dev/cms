@@ -7,10 +7,14 @@ import {
   TaonBackofficeNotificationsComponent,
 } from '@taon-dev/ui/src';
 import { HttpResponseError, RestErrorResponseWrapper } from 'ng2-rest/src';
+import { Translation } from '@taon-dev/i18n/src';
+import { Taon } from 'taon/src';
 
 import { TaonBaselineBackofficeOutletName } from './taon-baseline-backoffice.models';
 import { TaonBaselineBackofficeRoutes } from './taon-baseline-backoffice.routes';
 //#endregion
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 @Component({
   selector: 'app-taon-baseline-backoffice',
@@ -25,7 +29,9 @@ import { TaonBaselineBackofficeRoutes } from './taon-baseline-backoffice.routes'
   ],
 })
 export class TaonBaselineBackofficeComponent {
-  title = 'Application Title';
+  readonly t = t.for(this);
+
+  title = this.t.gettext('Application Title');
 
   get adminRoutes() {
     return TaonBaselineBackofficeRoutes[0].children;

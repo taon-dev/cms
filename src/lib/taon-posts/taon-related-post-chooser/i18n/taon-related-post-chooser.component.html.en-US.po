@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:1
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:54
+msgid "Add related post"
+msgstr "Add related post"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:4
+msgid "Search posts"
+msgstr "Search posts"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
+msgid "Loading posts..."
+msgstr "Loading posts..."
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:24
+msgid "Try again"
+msgstr "Try again"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
+msgid "No matching posts available."
+msgstr "No matching posts available."

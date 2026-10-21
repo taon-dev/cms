@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:1
+msgid "CMS assets"
+msgstr "CMS assets"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:7
+msgid "Reload assets"
+msgstr "Reload assets"
+
+#: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:10
+msgid "Loading assets..."
+msgstr "Loading assets..."

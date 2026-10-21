@@ -1,0 +1,177 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:4
+msgid "New draft"
+msgstr "Neuer Entwurf"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
+msgid "Save"
+msgstr "- Ich habe es nicht getan."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:20
+msgid "Cancel"
+msgstr "Abrufen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:28
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:38
+msgid "Publish"
+msgstr "Veröffentlichung"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:46
+msgid "Unpublish"
+msgstr "Nicht veröffentlicht"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:54
+msgid "Revert"
+msgstr "Zurück"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:62
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:70
+msgid "Uploading... "
+msgstr "- Ich lade..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:71
+msgid "Saving..."
+msgstr "Ich spare..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:133
+msgid "URL slug"
+msgstr "URL-Schläger"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:154
+msgid "Loading media preview..."
+msgstr "Die Medien-Vorsicht lädt..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:168
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:491
+msgid "Your browser does not support video playback."
+msgstr "Ihr Browser unterstützt das Wiedergeben von Videos nicht."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:175
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:498
+msgid "Your browser does not support audio playback."
+msgstr "Ihr Browser unterstützt das Wiedergeben von Audio nicht."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:180
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:503
+msgid "Attached file: [[ fileName ]]"
+msgstr "Beigefügte Datei: [[ fileName ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:188
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:511
+msgid "Download or open"
+msgstr "Download oder Öffnen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:204
+msgid "Replace"
+msgstr "Ersetzen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:211
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:234
+msgid "Related posts"
+msgstr "Verwandte Beiträge"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:236
+msgid "Loading related posts..."
+msgstr "Verwandte Posts laden..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:248
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:302
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:378
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:413
+msgid "Try again"
+msgstr "Versuchen Sie es noch mal."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:259
+msgid "Remove related post [[ title ]]"
+msgstr "Verwandte Bezeichnung entfernen [[ title ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:269
+msgid "No related posts yet."
+msgstr "Keine verwandten Beiträge noch."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:277
+msgid "Add related post"
+msgstr "Verwandte Beiträge hinzufügen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:287
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:315
+msgid "Application Hook"
+msgstr "Anwendungshaken"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:290
+msgid "Loading application hooks..."
+msgstr "Lade Anwendungshaken..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:309
+msgid "Use as application hook"
+msgstr "Verwendung als Anwendungshaken"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:332
+msgid "(in use by post # [[ postId ]])"
+msgstr "(In Anwendungsbereich von Post # [[ postId ]])"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:340
+msgid "No application hooks configured"
+msgstr "Keine Anwendungshaken konfiguriert"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:353
+msgid "Allow Read only with Permissions"
+msgstr "Erlaubt nur mit Erlaubnissen zu lesen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:358
+msgid "Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them."
+msgstr "Die Genehmigungen sind von #[[ postId ]] - [[ title ]] ererbt."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:366
+msgid "Loading assigned permissions..."
+msgstr "Lade zugeteilte Berechtigungen..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:389
+msgid "Remove permission [[ name ]]"
+msgstr "Entfernen Sie die Genehmigung [[ name ]]"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:399
+msgid "No permissions assigned."
+msgstr "Keine Berechtigungen zugewiesen."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:420
+msgid "Permission"
+msgstr "Erlaubnis"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:439
+msgid "No permissions available"
+msgstr "Keine Berechtigungen verfügbar"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:454
+msgid "Assign permission"
+msgstr "Berechtigung zuzuweisen"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:464
+msgid "Apply permissions to related posts"
+msgstr "Berechtigungen für verwandte Posts anwenden"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:479
+msgid "Loading media..."
+msgstr "Die Medien laden..."
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:518
+msgid "No post is loaded."
+msgstr "Keine Post ist geladen."

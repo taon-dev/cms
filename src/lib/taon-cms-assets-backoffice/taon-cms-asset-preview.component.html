@@ -1,5 +1,5 @@
 @if (loading()) {
-  <p role="status">Loading asset preview...</p>
+  <p role="status">{{ t.gettext('Loading asset preview...') }}</p>
 }
 @if (error()) {
   <p role="alert">{{ error() }}</p>
@@ -8,7 +8,7 @@
     type="button"
     [disabled]="loading()"
     (click)="reload()">
-    Retry preview
+    {{ t.gettext('Retry preview') }}
   </button>
 }
 @if (url()) {
@@ -19,7 +19,7 @@
         preload="none"
         [src]="url()"
         (error)="playbackError()">
-        Your browser does not support video playback.
+        {{ t.gettext('Your browser does not support video playback.') }}
       </video>
     }
     @case ('audio') {
@@ -28,7 +28,7 @@
         preload="none"
         [src]="url()"
         (error)="playbackError()">
-        Your browser does not support audio playback.
+        {{ t.gettext('Your browser does not support audio playback.') }}
       </audio>
     }
     @default {

@@ -10,13 +10,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MtxGridColumn } from '@ng-matero/extensions/grid';
 import { TaonDatatableComponent } from '@taon-dev/ui/src';
+import { Translation } from '@taon-dev/i18n/src';
 import { finalize, map } from 'rxjs';
-import type { TaonStorageObject as TaonStorageObjectBase } from 'taon/src';
+import {
+  Taon,
+  type TaonStorageObject as TaonStorageObjectBase,
+} from 'taon/src';
 import { _ } from 'tnp-core/src';
 
 import { TaonCmsContentApiService } from '../taon-cms-content/taon-cms-content-api.service';
 
 import { TaonCmsAssetPreviewComponent } from './taon-cms-asset-preview.component';
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 type TaonStorageObject = TaonStorageObjectBase & { keyVisible?: string };
 
@@ -32,6 +38,8 @@ type TaonStorageObject = TaonStorageObjectBase & { keyVisible?: string };
   templateUrl: './taon-cms-assets-backoffice.component.html',
 })
 export class TaonCmsAssetsBackofficeComponent implements OnInit {
+  readonly t = t.for(this);
+
   private readonly api = inject(TaonCmsContentApiService);
 
   private readonly destroyRef = inject(DestroyRef);
@@ -44,8 +52,12 @@ export class TaonCmsAssetsBackofficeComponent implements OnInit {
 
   readonly columns: MtxGridColumn[] = [
     { header: 'ID', field: 'keyVisible', sortable: true, showExpand: true },
-    { header: 'File Name', field: 'fileName', sortable: true },
-    { header: 'Content Type', field: 'contentType', sortable: true },
+    { header: this.t.gettext('File Name'), field: 'fileName', sortable: true },
+    {
+      header: this.t.gettext('Content Type'),
+      field: 'contentType',
+      sortable: true,
+    },
   ];
 
   ngOnInit(): void {
@@ -78,7 +90,9 @@ export class TaonCmsAssetsBackofficeComponent implements OnInit {
             '[taon-cms-assets-backoffice] Unable to load assets',
             error,
           );
-          this.error.set('Assets could not be loaded. Please try reloading.');
+          this.error.set(
+            this.t.gettext('Assets could not be loaded. Please try reloading.'),
+          );
         },
       });
   }

@@ -8,9 +8,12 @@ import {
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import type { TaonStorageObject } from 'taon/src';
+import { Translation } from '@taon-dev/i18n/src';
+import { Taon, type TaonStorageObject } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../taon-cms-content/taon-cms-content-api.service';
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 @Component({
   selector: 'taon-cms-asset-preview',
@@ -20,6 +23,8 @@ import { TaonCmsContentApiService } from '../taon-cms-content/taon-cms-content-a
   templateUrl: './taon-cms-asset-preview.component.html',
 })
 export class TaonCmsAssetPreviewComponent implements OnInit {
+  readonly t = t.for(this);
+
   @Input({ required: true })
   asset!: TaonStorageObject;
 
@@ -69,7 +74,9 @@ export class TaonCmsAssetPreviewComponent implements OnInit {
           '[taon-cms-asset-preview] Unable to load asset URL',
           error,
         );
-        this.error.set('The asset could not be opened. Please retry.');
+        this.error.set(
+          this.t.gettext('The asset could not be opened. Please retry.'),
+        );
       }
     } finally {
       if (!this.destroyRef.destroyed) {
@@ -80,7 +87,9 @@ export class TaonCmsAssetPreviewComponent implements OnInit {
 
   playbackError(): void {
     this.error.set(
-      'Playback failed or the preview link expired. Please retry.',
+      this.t.gettext(
+        'Playback failed or the preview link expired. Please retry.',
+      ),
     );
   }
 }

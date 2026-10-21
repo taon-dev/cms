@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:73
+msgid "Title"
+msgstr "Tytuł"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:74
+msgid "Status"
+msgstr "Status"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:76
+msgid "Actions"
+msgstr "Akcje"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:83
+msgid "Edit post"
+msgstr "Wymienić post"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:89
+msgid "Post details"
+msgstr "Szczegóły przesyłania"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:95
+msgid "Delete (archive) post"
+msgstr "Wykrycie (archiwy)"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:123
+msgid "The Post details route is unavailable."
+msgstr "Szczegółowa trasa jest niedostępna."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:136
+msgid "Delete post?"
+msgstr "Wymazać wiadomość?"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:137
+msgid "This archives the post. It can be restored from its revisions."
+msgstr "To archiwum, który można odtworzyć z jego zmian."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:140
+msgid "Delete"
+msgstr "Usunięcie"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:166
+msgid "The post could not be deleted. Refresh the table before retrying."
+msgstr "Nie można było usunąć pozycji."

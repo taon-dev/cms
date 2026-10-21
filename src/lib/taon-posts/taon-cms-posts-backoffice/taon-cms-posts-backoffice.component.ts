@@ -18,13 +18,17 @@ import {
   TaonConfirmDialogComponent,
   TaonDatatableComponent,
 } from '@taon-dev/ui/src';
+import { Translation } from '@taon-dev/i18n/src';
 import { Subject, finalize, takeUntil } from 'rxjs';
+import { Taon } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import { TaonCmsPostEditDialogComponent } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
 import type { TaonCmsPostEditDialogData } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
 //#endregion
+
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 @Component({
   selector: 'app-taon-cms-posts-backoffice',
@@ -35,6 +39,8 @@ import type { TaonCmsPostEditDialogData } from '../taon-cms-post-edit-dialog/tao
   providers: [TaonCmsContentApiService],
 })
 export class TaonCmsPostsBackofficeComponent {
+  readonly t = t.for(this);
+
   @ViewChild(TaonDatatableComponent)
   readonly datatable!: TaonDatatableComponent;
 
@@ -64,29 +70,29 @@ export class TaonCmsPostsBackofficeComponent {
 
   readonly columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id', sortable: true },
-    { header: 'Title', field: 'title', sortable: true },
-    { header: 'Status', field: 'status', sortable: true },
+    { header: this.t.gettext('Title'), field: 'title', sortable: true },
+    { header: this.t.gettext('Status'), field: 'status', sortable: true },
     {
-      header: 'Actions',
+      header: this.t.gettext('Actions'),
       field: 'actions',
       type: 'button',
       buttons: [
         {
           type: 'icon',
           icon: 'edit',
-          tooltip: 'Edit post',
+          tooltip: this.t.gettext('Edit post'),
           click: (post: TaonCmsContentEntity) => this.edit(post),
         },
         {
           type: 'icon',
           icon: 'open_in_new',
-          tooltip: 'Post details',
+          tooltip: this.t.gettext('Post details'),
           click: (post: TaonCmsContentEntity) => this.openDetails(post),
         },
         {
           type: 'icon',
           icon: 'delete',
-          tooltip: 'Delete (archive) post',
+          tooltip: this.t.gettext('Delete (archive) post'),
           disabled: (post: TaonCmsContentEntity) =>
             post.status === 'archived' || this.deleting() !== null,
           click: (post: TaonCmsContentEntity) => this.delete(post),
@@ -114,7 +120,7 @@ export class TaonCmsPostsBackofficeComponent {
   openDetails(post: TaonCmsContentEntity): void {
     const postsRoute = this.route.parent;
     if (!postsRoute) {
-      this.error.set('The Post details route is unavailable.');
+      this.error.set(this.t.gettext('The Post details route is unavailable.'));
       return;
     }
     void this.router.navigate([post.id], { relativeTo: postsRoute });
@@ -127,10 +133,11 @@ export class TaonCmsPostsBackofficeComponent {
     this.deleting.set(post.id);
     const ref = this.dialog.open(TaonConfirmDialogComponent, {
       data: {
-        title: 'Delete post?',
-        message:
+        title: this.t.gettext('Delete post?'),
+        message: this.t.gettext(
           'This archives the post. It can be restored from its revisions.',
-        confirmText: 'Delete',
+        ),
+        confirmText: this.t.gettext('Delete'),
       },
     });
     ref
@@ -156,7 +163,9 @@ export class TaonCmsPostsBackofficeComponent {
                 error,
               );
               this.error.set(
-                'The post could not be deleted. Refresh the table before retrying.',
+                this.t.gettext(
+                  'The post could not be deleted. Refresh the table before retrying.',
+                ),
               );
             },
           });

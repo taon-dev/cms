@@ -1,13 +1,13 @@
-<h1>CMS assets</h1>
+<h1>{{ t.gettext('CMS assets') }}</h1>
 <button
   mat-button
   type="button"
   [disabled]="loading()"
   (click)="reload()">
-  Reload assets
+  {{ t.gettext('Reload assets') }}
 </button>
 @if (loading()) {
-  <p role="status">Loading assets...</p>
+  <p role="status">{{ t.gettext('Loading assets...') }}</p>
 }
 @if (error()) {
   <p role="alert">{{ error() }}</p>

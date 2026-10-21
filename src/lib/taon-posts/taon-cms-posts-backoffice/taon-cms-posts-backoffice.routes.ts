@@ -2,20 +2,24 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 import { ResolveFn } from '@angular/router';
+import { Translation } from '@taon-dev/i18n/src';
+import { Taon } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 //#endregion
 
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
+
 const resolvePost: ResolveFn<TaonCmsContentEntity> = async route => {
   const id = Number(route.paramMap.get('id'));
   if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new Error('Invalid Post ID');
+    throw new Error(t.gettext('Invalid Post ID'));
   }
   const taonCmsContentApiService = inject(TaonCmsContentApiService);
   const post = await taonCmsContentApiService.getById(id);
   if (!post) {
-    throw new Error('Post not found');
+    throw new Error(t.gettext('Post not found'));
   }
   return post;
 };

@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:73
+msgid "Title"
+msgstr "Title"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:74
+msgid "Status"
+msgstr "Status"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:76
+msgid "Actions"
+msgstr "Actions"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:83
+msgid "Edit post"
+msgstr "Edit post"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:89
+msgid "Post details"
+msgstr "Post details"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:95
+msgid "Delete (archive) post"
+msgstr "Delete (archive) post"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:123
+msgid "The Post details route is unavailable."
+msgstr "The Post details route is unavailable."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:136
+msgid "Delete post?"
+msgstr "Delete post?"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:137
+msgid "This archives the post. It can be restored from its revisions."
+msgstr "This archives the post. It can be restored from its revisions."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:140
+msgid "Delete"
+msgstr "Delete"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:166
+msgid "The post could not be deleted. Refresh the table before retrying."
+msgstr "The post could not be deleted. Refresh the table before retrying."

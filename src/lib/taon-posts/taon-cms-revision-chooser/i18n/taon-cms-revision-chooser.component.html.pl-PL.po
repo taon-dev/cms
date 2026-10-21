@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:1
+msgid "Restore a revision"
+msgstr "Przywrócić przegląd"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:4
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:5
+msgid "Restoring replaces the post, including its status, with the selected revision."
+msgstr "Wprowadzenie w życie zastępuje pozycję, w tym jej status, wybranym przeglądem."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:67
+msgid "Cancel"
+msgstr "Odwołanie"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:74
+msgid "Apply"
+msgstr "Wykorzystanie"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:11
+msgid "Loading revisions..."
+msgstr "Ładowanie przeglądów..."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:23
+msgid "Revision [[ revisionNumber ]]"
+msgstr "Rewizja ONINTERPOLACJA0POSZYTOW [[ revisionNumber ]]"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:33
+msgid "User [[ userId ]]"
+msgstr "Użytkownik [[ userId ]]"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:39
+msgid "Legacy revision - cannot be restored"
+msgstr "Wyrzeczenie dziedzictwa - nie może być przywrócone"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:43
+msgid "No revisions are available."
+msgstr "Nie ma dostępnych zmian."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:54
+msgid "Reload revisions"
+msgstr "Przeładowanie przeglądów"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:58
+msgid "Restoring..."
+msgstr "Odbudowa..."

@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.component.html:15
+msgid "Taon Admin v1.0"
+msgstr "Taon Admin v1.0"
+
+#: src/app/baseline-backoffice/taon-baseline-backoffice.component.html:21
+msgid "Fixed content here"
+msgstr "Festhalt hier"

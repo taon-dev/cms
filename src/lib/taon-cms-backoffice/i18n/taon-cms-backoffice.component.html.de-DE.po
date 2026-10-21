@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.component.html:4
+msgid "In CMS you can manage content and settings for your website."
+msgstr "In CMS können Sie Inhalte und Einstellungen für Ihre Website verwalten."

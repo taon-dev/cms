@@ -1,11 +1,14 @@
 //#region imports
 import { Routes } from '@angular/router';
+import { Translation } from '@taon-dev/i18n/src';
 import { adminLazyRoute as adminLazyRouteBase } from '@taon-dev/ui/src';
+import { Taon } from 'taon/src';
 
 import type { TaonAuthContextEntity } from '../decorators/taon-cms-authorization';
 //#endregion
 
 const adminLazyRoute = adminLazyRouteBase<TaonAuthContextEntity>;
+const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
 export const TaonCmsBackofficeRoutes: Routes = [
   {
@@ -22,7 +25,7 @@ export const TaonCmsBackofficeRoutes: Routes = [
           return !context?.hasAccess.toManagePosts;
         },
         path: 'posts',
-        menuItem: 'Posts',
+        menuItem: t.gettext('Posts'),
         expandable: true,
         icon: 'edit',
         loader: () =>
@@ -31,7 +34,7 @@ export const TaonCmsBackofficeRoutes: Routes = [
       adminLazyRoute({
         isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
         path: 'assets',
-        menuItem: 'Assets',
+        menuItem: t.gettext('Assets'),
         expandable: false,
         icon: 'perm_media',
         loader: () =>

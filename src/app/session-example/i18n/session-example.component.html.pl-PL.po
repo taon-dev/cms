@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/app/session-example/session-example.component.html:2
+msgid "Session example works!"
+msgstr "Sesiowy przykład działa!"

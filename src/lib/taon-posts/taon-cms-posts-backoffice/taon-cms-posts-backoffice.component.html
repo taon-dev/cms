@@ -1,6 +1,6 @@
-<h1>CMS posts</h1>
+<h1>{{ t.gettext('CMS posts') }}</h1>
 @if (loading()) {
-  <p role="status">Loading posts...</p>
+  <p role="status">{{ t.gettext('Loading posts...') }}</p>
 }
 @if (error()) {
   <p role="alert">{{ error() }}</p>

@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:88
+msgid "Posts could not be loaded. Please try again."
+msgstr "Die Posten konnten nicht geladen werden."
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:107
+msgid "Select a related post."
+msgstr "Wählen Sie einen verwandten Posten aus."
