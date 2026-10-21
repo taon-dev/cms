@@ -17,10 +17,7 @@ Files are never fetched as blobs or buffered by the page. Collapsing a row
 destroys its preview/player. Listing and private URL issuance require the same
 authenticated `toManagePosts` permission as CMS uploads. Failed list, URL, and
 playback operations display errors with reload/retry controls.
-
-Run the focused rendered-component, API wiring, and access-control tests with
-`vitest run --config vitest.assets.config.ts`, or `npm run test:assets` after
-Taon generates the package configuration.
+ 
 
 ## Posts UI
 
@@ -171,10 +168,4 @@ for archive-based deletion. Media uses the post's existing permissions; it does
 not add separate video, audio, or attachment permissions. The content storage
 controller exposes only uploads and token/public-policy-validated downloads;
 physical file deletion remains unavailable through this controller.
-
-Run the focused content tests with `npm run test:content`
-after Taon generates the package configuration, or directly with
-`vitest run --config vitest.content.config.ts`. The source-test configuration
-mocks Taon's context injection and storage transport, and tests the real content
-repositories with an in-memory manager. These are unit tests, not SQL/ORM
-metadata or end-to-end storage tests.
+ 
