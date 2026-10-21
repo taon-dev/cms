@@ -52,7 +52,11 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
     t,
   }: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentStorageController>): Promise<void> {
     //#region @backendFunc
-    if (methodConfig.methodName !== 'uploadFormDataToServer') {
+    if (
+      !['uploadFormDataToServer', 'list', 'getPrivateUrl'].includes(
+        methodConfig.methodName,
+      )
+    ) {
       return;
     }
     await this.taonSessionRepository.throwIfNotAuthenticated({ req, res });
@@ -125,7 +129,11 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
     token?: string;
     download?: boolean;
   }): string {
-    //#region @backendFunc
+    //#region @websqlFunc
+    if (!this.ctx) {
+      console.trace(`[buildStorageDownloadUrl] accessing without context`);
+      return;
+    }
     const isLocalhost =
       this.ctx.frontendHostUri.origin.includes('://localhost:');
 

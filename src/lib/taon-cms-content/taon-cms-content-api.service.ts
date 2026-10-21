@@ -120,6 +120,19 @@ export class TaonCmsContentApiService<
     return objects[0];
   }
 
+  public listAssets(): Observable<TaonStorageObject[]> {
+    return this.taonCmsContentStorageController.list({})
+      .request().observable.pipe(map(res => res.body.json));
+  }
+
+  public async getAssetUrl(key: string): Promise<string> {
+    return (
+      await this.taonCmsContentStorageController
+        .getPrivateUrl(key, { expiresInSeconds: 5 * 60 })
+        .request()
+    ).body.text;
+  }
+
   public createContent(
     input: TaonCmsCreateContent,
   ): Observable<TaonCmsContentEntity> {

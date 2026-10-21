@@ -1,5 +1,27 @@
 # cms
 
+## Assets UI
+
+The CMS Assets page lists existing files using
+`TaonCmsContentStorageController.list({})`, without an assets repository or
+separate listing endpoint. The shared `taon-datatable` displays ID (`key`),
+File Name (`fileName`), and Content Type (`contentType`), with client-side
+search, sorting, and pagination. Reload assets fetches the current storage list.
+
+Expanding a row requests a fresh five-minute signed URL through the existing
+storage controller's `getPrivateUrl`. Video and audio MIME types use native
+players with controls; other types display a download link labeled with the
+original filename (or the key when no filename is stored). Attachments use
+`download=true` so the streaming endpoint returns attachment disposition.
+Files are never fetched as blobs or buffered by the page. Collapsing a row
+destroys its preview/player. Listing and private URL issuance require the same
+authenticated `toManagePosts` permission as CMS uploads. Failed list, URL, and
+playback operations display errors with reload/retry controls.
+
+Run the focused rendered-component, API wiring, and access-control tests with
+`vitest run --config vitest.assets.config.ts`, or `npm run test:assets` after
+Taon generates the package configuration.
+
 ## Posts UI
 
 `TaonCmsPostsBackofficeComponent` displays posts in `taon-datatable`, with

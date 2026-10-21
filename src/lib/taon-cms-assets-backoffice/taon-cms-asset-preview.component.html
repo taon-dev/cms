@@ -1,0 +1,44 @@
+@if (loading()) {
+  <p role="status">Loading asset preview...</p>
+}
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+  <button
+    mat-button
+    type="button"
+    [disabled]="loading()"
+    (click)="reload()">
+    Retry preview
+  </button>
+}
+@if (url()) {
+  @switch (previewKind) {
+    @case ('video') {
+      <video
+        controls
+        preload="metadata"
+        [src]="url()"
+        (error)="playbackError()">
+        Your browser does not support video playback.
+      </video>
+    }
+    @case ('audio') {
+      <audio
+        controls
+        preload="metadata"
+        [src]="url()"
+        (error)="playbackError()">
+        Your browser does not support audio playback.
+      </audio>
+    }
+    @default {
+      <a
+        [href]="url()"
+        [attr.download]="asset.fileName"
+        target="_blank"
+        rel="noopener">
+        {{ asset.fileName || asset.key }}
+      </a>
+    }
+  }
+}

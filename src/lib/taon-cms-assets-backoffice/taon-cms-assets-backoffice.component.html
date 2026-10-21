@@ -1,0 +1,29 @@
+<h1>CMS assets</h1>
+<button
+  mat-button
+  type="button"
+  [disabled]="loading()"
+  (click)="reload()">
+  Reload assets
+</button>
+@if (loading()) {
+  <p role="status">Loading assets...</p>
+}
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+
+<ng-template
+  #preview
+  let-asset>
+  <taon-cms-asset-preview [asset]="asset" />
+</ng-template>
+
+<taon-datatable
+  [data]="assets()"
+  [columns]="columns"
+  [allowedColumns]="['key', 'fileName', 'contentType']"
+  [hideAddButton]="true"
+  [expansionTemplate]="preview"
+  searchMode="advanced">
+</taon-datatable>
