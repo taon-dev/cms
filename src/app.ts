@@ -79,6 +79,7 @@ import {
   TaonSessionUserUtils,
 } from '@taon-dev/session/src';
 import { MIGRATIONS_CLASSES_FOR_SessionContext } from '@taon-dev/session/src';
+import { TaonSudoAbstractContext } from '@taon-dev/sudo/src';
 import {
   TaonBaselineBackofficeOutletName,
   TaonDraggableButtonPanelComponent,
@@ -502,6 +503,7 @@ var CmsContext = Taon.createContext(() => ({
   ...HOST_CONFIG['CmsContext'],
   contexts: {
     TaonCmsAbstractContext,
+    TaonSudoAbstractContext,
     TaonBaseContext,
   },
   migrations: {

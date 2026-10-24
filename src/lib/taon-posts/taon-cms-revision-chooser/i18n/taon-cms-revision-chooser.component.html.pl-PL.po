@@ -6,7 +6,7 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:1
 msgid "Restore a revision"
-msgstr "Przywrócić przegląd"
+msgstr "Przywróć starszą wersje"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:4
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:5

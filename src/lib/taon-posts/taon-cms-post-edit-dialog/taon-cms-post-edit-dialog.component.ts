@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  HostListener,
   inject,
   viewChild,
 } from '@angular/core';
@@ -41,9 +42,17 @@ export class TaonCmsPostEditDialogComponent {
   readonly t = t.for(this);
 
   readonly data = inject<TaonCmsPostEditDialogData>(MAT_DIALOG_DATA);
+
   readonly editor = viewChild(TaonCmsPostComponent);
+
   readonly changed = new EventEmitter<TaonCmsContentEntity>();
+
   private readonly ref = inject(MatDialogRef<TaonCmsPostEditDialogComponent>);
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.ref.close();
+  }
 
   close(): void {
     if (!this.editor()?.busy() && !this.editor()?.dialogOpen()) {

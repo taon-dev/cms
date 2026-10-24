@@ -28,7 +28,7 @@ export const TaonBaselineBackofficeRoutes: Routes = [
         menuItem: t.gettext('Sudo'),
         color: 'red',
         icon: 'supervisor_account',
-        expandable: false,
+        expandable: true,
         loader: () =>
           import('@taon-dev/sudo/src').then(m => m.TaonSudoBackofficeRoutes),
       }),

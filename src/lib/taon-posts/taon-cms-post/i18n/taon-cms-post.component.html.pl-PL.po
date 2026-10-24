@@ -22,7 +22,7 @@ msgstr "Anuluj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:28
 msgid "Edit"
-msgstr "Wybierz"
+msgstr "Edytuj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:38
 msgid "Publish"

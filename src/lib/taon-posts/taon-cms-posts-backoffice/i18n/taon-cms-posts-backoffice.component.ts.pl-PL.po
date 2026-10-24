@@ -18,15 +18,15 @@ msgstr "Akcje"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:83
 msgid "Edit post"
-msgstr "Wymienić post"
+msgstr "Edytuj artykuł"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:89
 msgid "Post details"
-msgstr "Szczegóły przesyłania"
+msgstr "Szczegóły artykułu"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:95
 msgid "Delete (archive) post"
-msgstr "Wykrycie (archiwy)"
+msgstr "Usuń (zarchwizuj) post"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:123
 msgid "The Post details route is unavailable."

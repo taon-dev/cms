@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  HostListener,
   inject,
   signal,
 } from '@angular/core';
@@ -36,20 +37,33 @@ export class TaonCmsRevisionChooserComponent {
   readonly t = t.for(this);
 
   readonly post = inject<TaonCmsContentEntity>(MAT_DIALOG_DATA);
+
   readonly revisions = signal<TaonCmsContentRevisionEntity[]>([]);
+
   readonly selected = signal<number | null>(null);
+
   readonly loading = signal(false);
+
   readonly applying = signal(false);
+
   readonly error = signal('');
 
   private readonly api = inject(TaonCmsContentRevisionApiService);
+
   private readonly ref = inject(
     MatDialogRef<TaonCmsRevisionChooserComponent, TaonCmsContentEntity>,
   );
+
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.load();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscape(event: KeyboardEvent): void {
+    event.stopPropagation();
+    this.ref.close();
   }
 
   load(): void {
