@@ -4,46 +4,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:73
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:69
 msgid "Title"
 msgstr "Tytuł"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:74
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:70
 msgid "Status"
 msgstr "Status"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:76
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:72
 msgid "Actions"
 msgstr "Akcje"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:83
-msgid "Edit post"
-msgstr "Edytuj artykuł"
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:79
+msgid "Duplicate post"
+msgstr "Duplikuj post"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:89
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:86
 msgid "Post details"
 msgstr "Szczegóły artykułu"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:95
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:92
 msgid "Delete (archive) post"
 msgstr "Usuń (zarchwizuj) post"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:123
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:120
 msgid "The Post details route is unavailable."
 msgstr "Szczegółowa trasa jest niedostępna."
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:136
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:146
+msgid "The post could not be duplicated. Please try again."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:161
 msgid "Delete post?"
 msgstr "Wymazać wiadomość?"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:137
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:162
 msgid "This archives the post. It can be restored from its revisions."
 msgstr "To archiwum, który można odtworzyć z jego zmian."
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:140
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:165
 msgid "Delete"
 msgstr "Usunięcie"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:166
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:191
 msgid "The post could not be deleted. Refresh the table before retrying."
 msgstr "Nie można było usunąć pozycji."

@@ -1,10 +1,8 @@
 //#region imports
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  OnInit,
   ViewChild,
   inject,
   signal,
@@ -19,13 +17,11 @@ import {
   TaonDatatableComponent,
 } from '@taon-dev/ui/src';
 import { Translation } from '@taon-dev/i18n/src';
-import { Subject, finalize, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs';
 import { Taon } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
-import { TaonCmsPostEditDialogComponent } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
-import type { TaonCmsPostEditDialogData } from '../taon-cms-post-edit-dialog/taon-cms-post-edit-dialog.component';
 //#endregion
 
 const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
@@ -52,6 +48,8 @@ export class TaonCmsPostsBackofficeComponent {
 
   readonly deleting = signal<number | null>(null);
 
+  readonly duplicating = signal(false);
+
   readonly error = signal('');
 
   private readonly dialog = inject(MatDialog);
@@ -61,8 +59,6 @@ export class TaonCmsPostsBackofficeComponent {
   private readonly router = inject(Router);
 
   private readonly destroyRef = inject(DestroyRef);
-
-  private readonly cancelLoad$ = new Subject<void>();
 
   public get crud() {
     return this.taonCmsContentApiService.crudController;
@@ -79,9 +75,10 @@ export class TaonCmsPostsBackofficeComponent {
       buttons: [
         {
           type: 'icon',
-          icon: 'edit',
-          tooltip: this.t.gettext('Edit post'),
-          click: (post: TaonCmsContentEntity) => this.edit(post),
+          icon: 'content_copy',
+          tooltip: this.t.gettext('Duplicate post'),
+          disabled: () => this.duplicating(),
+          click: (post: TaonCmsContentEntity) => this.duplicate(post),
         },
         {
           type: 'icon',
@@ -110,20 +107,48 @@ export class TaonCmsPostsBackofficeComponent {
   }
 
   add(): void {
-    this.openEditor({ mode: 'add' });
-  }
-
-  edit(post: TaonCmsContentEntity): void {
-    this.openEditor({ mode: 'edit', post });
+    this.openPost('new');
   }
 
   openDetails(post: TaonCmsContentEntity): void {
+    this.openPost(post.id);
+  }
+
+  private openPost(id: number | 'new'): void {
     const postsRoute = this.route.parent;
     if (!postsRoute) {
       this.error.set(this.t.gettext('The Post details route is unavailable.'));
       return;
     }
-    void this.router.navigate([post.id], { relativeTo: postsRoute });
+    void this.router.navigate([id], { relativeTo: postsRoute });
+  }
+
+  duplicate(post: TaonCmsContentEntity): void {
+    if (this.duplicating()) {
+      return;
+    }
+    this.duplicating.set(true);
+    this.error.set('');
+    this.taonCmsContentApiService
+      .duplicateContent(post.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.duplicating.set(false)),
+      )
+      .subscribe({
+        next: duplicate => this.openDetails(duplicate),
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-posts-backoffice] Unable to duplicate post',
+            error,
+          );
+          this.error.set(
+            this.t.gettext(
+              'The post could not be duplicated. Please try again.',
+            ),
+          );
+        },
+      });
   }
 
   delete(post: TaonCmsContentEntity): void {
@@ -170,20 +195,5 @@ export class TaonCmsPostsBackofficeComponent {
             },
           });
       });
-  }
-
-  private openEditor(data: TaonCmsPostEditDialogData): void {
-    const ref = this.dialog.open(TaonCmsPostEditDialogComponent, {
-      data,
-      width: '100vw',
-      height: '100dvh',
-      maxWidth: '100vw',
-      maxHeight: '100dvh',
-      disableClose: true,
-      autoFocus: 'first-tabbable',
-    });
-    ref.componentInstance.changed
-      .pipe(takeUntil(ref.afterClosed()), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.reload());
   }
 }

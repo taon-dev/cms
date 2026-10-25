@@ -210,6 +210,13 @@ export class TaonCmsContentApiService<
   }
   //#endregion
 
+  //#region API / duplicate content
+  public duplicateContent(id: number): Observable<TaonCmsContentEntity> {
+    return this.taonCmsContentController.duplicateContent(id)
+      .request!().observable.pipe(map(res => res.body.json));
+  }
+  //#endregion
+
   //#region API / update content
   public updateContent(
     id: number,

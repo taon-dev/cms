@@ -34,6 +34,14 @@ export const TaonCmsPostsBackofficeRoutes: Routes = [
       ),
   },
   {
+    path: 'new',
+    data: { hideInNavigation: true, createPost: true },
+    loadComponent: () =>
+      import('../taon-cms-post-details-page/taon-cms-post-details-page.component').then(
+        m => m.TaonCmsPostDetailsPageComponent,
+      ),
+  },
+  {
     path: ':id',
     data: { hideInNavigation: true },
     providers: [TaonCmsContentApiService],

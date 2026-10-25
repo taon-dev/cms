@@ -21,12 +21,23 @@ playback operations display errors with reload/retry controls.
 
 ## Posts UI
 
-`TaonCmsPostsBackofficeComponent` displays posts in `taon-datatable`, with
-add/edit actions opening a fullscreen `TaonCmsPostEditDialogComponent`.
-The dialog delegates all rendering and editing to `TaonCmsPostComponent`.
-The table reloads after each successful create, save, publish, restore, or
-archive. It uses `getAll` with the datatable's client-side filtering, sorting,
+`TaonCmsPostsBackofficeComponent` displays posts in `taon-datatable`.
+Create navigates to `/cms/posts/new`, reusing `TaonCmsPostComponent` in `add`
+mode without an ID. Saving opens the created post; cancelling returns to the
+list. `/cms/posts/:id` loads an existing post with its current view/edit controls.
+The list uses `getAll` with the datatable's client-side filtering, sorting,
 and pagination; archived posts remain visible so they can be restored.
+
+The list's Duplicate icon and the post's Duplicate button (after Delete) call
+the same `duplicateContent` backend operation and open the new post. Duplication
+preserves normal fields, tags, publication state, and all existing media keys
+and body attachment references without copying or uploading files. It clears
+related posts and application hooks, regenerates ID/version/timestamps, and
+records an initial revision. Assigned read permissions and the inheritance flag
+are preserved; an inherited effective permission set becomes independently
+assigned because related links are not copied. Titles/slugs receive matching
+` COPY<n>` / `-copy<n>` suffixes, skipping collisions in either field. Copying a
+copy removes existing copy suffixes and advances the number.
 
 Use the post component with a content entity returned by the API:
 
@@ -45,7 +56,8 @@ Use the post component with a content entity returned by the API:
 
 Modes are `view`, `edit`, `add`, and `view-clean`. The public `view-clean`
 mode has no management controls. `changed` emits the entity returned by the
-backend, `deleted` reports archiving, and `cancelled` reports cancellation.
+backend, `deleted` reports archiving, `duplicated` emits the newly created copy
+for the host to open, and `cancelled` reports cancellation.
 `mode` supports two-way binding.
 
 The editor uses contenteditable title/excerpt/body fields instead of a body

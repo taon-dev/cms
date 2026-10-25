@@ -18,6 +18,7 @@ import {
   Models,
   getStatusCode,
   HttpStatusEnum,
+  ExpressResponse,
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
@@ -47,6 +48,7 @@ import { contentError } from './taon-cms-content.validation';
     'getAll',
     'getBy',
     'createContent',
+    'duplicateContent',
     'updateContent',
     'deleteContent',
     'restoreContent',
@@ -116,6 +118,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     ) {
       return;
     }
+
+    await this.taonSessionRepository.throwIfNotAuthenticated({ req, res });
     const ctx = await this.taonAuthContextRepository.getContext(
       req.userId,
       req.sessionId,
@@ -248,9 +252,12 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     content: TaonCmsContentEntity,
     publicOnly: boolean,
     req: ExpressRequest,
+    res: ExpressResponse,
     t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
   ): Promise<void> {
     //#region @websqlFunc
+
+
     const { permissions } =
       await this.taonCmsContentRepository.getPermissionConfiguration(
         content.id,
@@ -264,6 +271,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
         );
       }
     } else {
+      await this.taonSessionRepository.throwIfNotAuthenticated({ req, res });
       const context = await this.taonAuthContextRepository.getContext(
         req.userId,
         req.sessionId,
@@ -319,6 +327,15 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#endregion
   }
   //#endregion
+
+  @POST()
+  duplicateContent(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.duplicateContent(id);
+    //#endregion
+  }
 
   //#region methods / delete content
   @DELETE()

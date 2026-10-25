@@ -56,45 +56,101 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     validateContentInput(input, true);
+    return this.connection.transaction('SERIALIZABLE', manager =>
+      this.createContentWithManager(input, manager),
+    );
+    //#endregion
+  }
+
+  async duplicateContent(id: number): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    requireContentId(id);
     return this.connection.transaction('SERIALIZABLE', async manager => {
-      const fields = this.contentFields(input);
-      const tagIds = [...new Set(input.tagIds ?? [])];
-      const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
-      const permissionIds = [...new Set(input.permissionIds ?? [])];
-      await this.validateReferences(fields, tagIds, permissionIds, manager);
-      await this.requireAvailableSlug(fields.slug, manager);
+      const source = await this.requireContent(id, manager);
+      const snapshot = await this.snapshotOf(source, manager);
+      const configuration = await this.resolvePermissionConfiguration(
+        source,
+        manager,
+      );
+      const titleSuffix = source.title.match(/\s+COPY(\d+)$/i);
+      const slugSuffix = source.slug.match(/-copy(\d+)$/i);
+      const baseTitle = source.title.replace(/(?:\s+COPY\d+)+$/i, '');
+      const baseSlug = source.slug.replace(/(?:-copy\d+)+$/i, '');
+      let number =
+        Math.max(Number(titleSuffix?.[1] ?? 0), Number(slugSuffix?.[1] ?? 0)) +
+        1;
       const repository = manager.getRepository<TaonCmsContentEntity>(
         this.target,
       );
-      const now = new Date();
-      const content = await repository.save(
-        repository.create({
-          ...fields,
-          version: 1,
-          createdAt: now,
-          updatedAt: now,
-        }),
-      );
-      await this.taonCmsContentTagRepository.replaceTags(
-        content.id,
-        tagIds,
-        manager,
-      );
-      await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
-      await this.validatePermissionInheritance(manager);
-      await this.replacePermissions(content.id, permissionIds, [], manager);
-      await this.replaceApplicationHook(
-        content.id,
-        input.applicationHook ?? null,
-        manager,
-      );
-      await this.taonCmsContentRevisionRepository.recordContent(
-        content,
-        { ...fields, tagIds, relatedPostIds, permissionIds },
-        manager,
-      );
-      return this.requireContent(content.id, manager);
+      while (Number.isSafeInteger(number)) {
+        const title = `${baseTitle} COPY${number}`;
+        const slug = `${baseSlug}-copy${number}`;
+        const existing = await repository.findOne({
+          where: [{ title }, { slug }],
+        });
+        if (!existing) {
+          return this.createContentWithManager(
+            {
+              ...snapshot,
+              title,
+              slug,
+              relatedPostIds: [],
+              applicationHook: null,
+              // Inherited permissions become independent without related links.
+              permissionIds: configuration.permissions.map(
+                permission => permission.id,
+              ),
+            },
+            manager,
+          );
+        }
+        number += 1;
+      }
+      contentError('No available copy number could be generated.', 409);
     });
+    //#endregion
+  }
+
+  private async createContentWithManager(
+    input: TaonCmsCreateContent,
+    manager: EntityManager,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    const fields = this.contentFields(input);
+    const tagIds = [...new Set(input.tagIds ?? [])];
+    const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
+    const permissionIds = [...new Set(input.permissionIds ?? [])];
+    await this.validateReferences(fields, tagIds, permissionIds, manager);
+    await this.requireAvailableSlug(fields.slug, manager);
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    const now = new Date();
+    const content = await repository.save(
+      repository.create({
+        ...fields,
+        version: 1,
+        createdAt: now,
+        updatedAt: now,
+      }),
+    );
+    await this.taonCmsContentTagRepository.replaceTags(
+      content.id,
+      tagIds,
+      manager,
+    );
+    await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
+    await this.validatePermissionInheritance(manager);
+    await this.replacePermissions(content.id, permissionIds, [], manager);
+    await this.replaceApplicationHook(
+      content.id,
+      input.applicationHook ?? null,
+      manager,
+    );
+    await this.taonCmsContentRevisionRepository.recordContent(
+      content,
+      { ...fields, tagIds, relatedPostIds, permissionIds },
+      manager,
+    );
+    return this.requireContent(content.id, manager);
     //#endregion
   }
 

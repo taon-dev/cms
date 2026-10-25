@@ -73,6 +73,8 @@ export class TaonCmsPostComponent {
 
   readonly deleted = output<TaonCmsContentEntity>();
 
+  readonly duplicated = output<TaonCmsContentEntity>();
+
   readonly cancelled = output<void>();
 
   readonly currentPost = signal<TaonCmsContentEntity | null>(null);
@@ -911,6 +913,37 @@ export class TaonCmsPostComponent {
         if (confirmed) {
           this.persist(this.api.deleteContent(post.id, post.version), true);
         }
+      });
+  }
+  //#endregion
+
+  //#region methods / duplicate
+  duplicate(): void {
+    if (this.busy() || this.dialogOpen() || this.mode() === 'view-clean') {
+      return;
+    }
+    const post = this.requirePost();
+    if (!post) {
+      return;
+    }
+    this.busy.set(true);
+    this.error.set('');
+    this.api
+      .duplicateContent(post.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.busy.set(false)),
+      )
+      .subscribe({
+        next: duplicate => this.duplicated.emit(duplicate),
+        error: (error: unknown) => {
+          console.error('[taon-cms-post] Unable to duplicate post', error);
+          this.error.set(
+            this.t.gettext(
+              'The post could not be duplicated. Please try again.',
+            ),
+          );
+        },
       });
   }
   //#endregion
