@@ -9,4 +9,5 @@ export const TaonCmsContentDefaultsValues = {
   videoKey: null,
   audioKey: null,
   attachmentKey: null,
+  thumbnailKey: null,
 } as Partial<TaonCmsContentEntity>;

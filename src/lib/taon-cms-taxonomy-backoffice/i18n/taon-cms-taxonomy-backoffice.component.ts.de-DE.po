@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:82
+msgid "Name"
+msgstr "Name"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:83
+msgid "Slug"
+msgstr "Slug"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:87
+msgid "Parent Category"
+msgstr "Übergeordnete Kategorie"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:92
+msgid "Sort Order"
+msgstr "Sortierreihenfolge"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:99
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:105
+msgid "Actions"
+msgstr "Aktionen"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:112
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:119
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:220
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:215
+msgid "Delete category?"
+msgstr "Kategorie löschen?"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:216
+msgid "Delete tag?"
+msgstr "Tag löschen?"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:217
+msgid "Only unused items can be deleted. This cannot be undone."
+msgstr "Nur unbenutzte Einträge können gelöscht werden. Dies kann nicht rückgängig gemacht werden."
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:261
+msgid "The operation failed. Check for duplicate names or slugs, invalid parents, or items still used by posts or child categories, then reload and try again."
+msgstr "Der Vorgang ist fehlgeschlagen. Prüfen Sie doppelte Namen oder Slugs, ungültige übergeordnete Kategorien sowie die Verwendung durch Beiträge oder Unterkategorien. Laden Sie die Seite neu und versuchen Sie es erneut."

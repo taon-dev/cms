@@ -1,0 +1,69 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:1
+msgid "Categories"
+msgstr "Kategorien"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:1
+msgid "Tags"
+msgstr "Tags"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:8
+msgid "Create category"
+msgstr "Kategorie erstellen"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:8
+msgid "Create tag"
+msgstr "Tag erstellen"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:15
+msgid "Reload"
+msgstr "Neu laden"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:22
+msgid "Loading..."
+msgstr "Wird geladen..."
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:28
+msgid "Create"
+msgstr "Erstellen"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:28
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:30
+msgid "Name"
+msgstr "Name"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:39
+msgid "Slug"
+msgstr "Slug"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:48
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:57
+msgid "Parent Category"
+msgstr "Übergeordnete Kategorie"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:62
+msgid "None"
+msgstr "Keine"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:69
+msgid "Sort Order"
+msgstr "Sortierreihenfolge"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:87
+msgid "Save"
+msgstr "Speichern"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.html:94
+msgid "Cancel"
+msgstr "Abbrechen"

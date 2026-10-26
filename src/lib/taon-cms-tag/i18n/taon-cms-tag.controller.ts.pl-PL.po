@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-tag/taon-cms-tag.controller.ts:45
+msgid "You can't manage posts"
+msgstr "Nie masz uprawnień do zarządzania wpisami"

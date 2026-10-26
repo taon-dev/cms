@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-category/taon-cms-taxonomy.validation.ts:29
+msgid "Name, slug, and a valid description are required."
+msgstr "Name, slug, and a valid description are required."
+
+#: src/lib/taon-cms-category/taon-cms-taxonomy.validation.ts:46
+msgid "A category cannot be its own ancestor."
+msgstr "A category cannot be its own ancestor."
+
+#: src/lib/taon-cms-category/taon-cms-taxonomy.validation.ts:51
+msgid "The parent category does not exist."
+msgstr "The parent category does not exist."

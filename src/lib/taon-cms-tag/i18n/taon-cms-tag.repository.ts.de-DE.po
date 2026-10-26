@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-tag/taon-cms-tag.repository.ts:45
+msgid "This tag name or slug is already in use."
+msgstr "Dieser Tag-Name oder Slug wird bereits verwendet."
+
+#: src/lib/taon-cms-tag/taon-cms-tag.repository.ts:72
+msgid "Remove this tag from posts before deleting it."
+msgstr "Entfernen Sie diesen Tag vor dem Löschen aus den Beiträgen."

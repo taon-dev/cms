@@ -65,6 +65,9 @@ import { contentError } from './taon-cms-content.validation';
     'getPublicAudioLinkBySlug',
     'getAttachmentLinkBySlug',
     'getPublicAttachmentLinkBySlug',
+    'getThumbnailLinkBySlug',
+    'getPublicThumbnailLinkBySlug',
+    'listTagIds',
     'addRelatedPost',
     'deleteRelatedPost',
     'paginationQuery',
@@ -105,7 +108,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
       methodConfig.methodName === 'getPublicContentByHook' ||
       methodConfig.methodName === 'getPublicVideoLinkBySlug' ||
       methodConfig.methodName === 'getPublicAudioLinkBySlug' ||
-      methodConfig.methodName === 'getPublicAttachmentLinkBySlug'
+      methodConfig.methodName === 'getPublicAttachmentLinkBySlug' ||
+      methodConfig.methodName === 'getPublicThumbnailLinkBySlug'
     ) {
       return;
     }
@@ -114,7 +118,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
       methodConfig.methodName === 'getVideoLinkBySlug' ||
       methodConfig.methodName === 'getAudioLinkBySlug' ||
       methodConfig.methodName === 'getAttachmentLinkBySlug' ||
-      methodConfig.methodName === 'getContentByHook'
+      methodConfig.methodName === 'getContentByHook' ||
+      methodConfig.methodName === 'getThumbnailLinkBySlug'
     ) {
       return;
     }
@@ -197,9 +202,34 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   //#endregion
 
   //#region methods / get media link
+  @GET()
+  getThumbnailLinkBySlug(@Query('slug') slug: string): Taon.Response<string> {
+    //#region @websqlFunc
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'thumbnail', false, req, t);
+    //#endregion
+  }
+
+  @GET()
+  getPublicThumbnailLinkBySlug(
+    @Query('slug') slug: string,
+  ): Taon.Response<string> {
+    //#region @websqlFunc
+    return (req, _res, { t }) =>
+      this.getMediaLinkBySlug(slug, 'thumbnail', true, req, t);
+    //#endregion
+  }
+
+  @GET()
+  listTagIds(@Query('id') id: number): Taon.Response<number[]> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.listTagIds(id);
+    //#endregion
+  }
+
   private async getMediaLinkBySlug(
     slug: string,
-    type: 'video' | 'audio' | 'attachment',
+    type: 'video' | 'audio' | 'attachment' | 'thumbnail',
     publicOnly: boolean,
     req: ExpressRequest,
     t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
@@ -215,7 +245,9 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
         ? 'videoKey'
         : type === 'audio'
           ? 'audioKey'
-          : 'attachmentKey';
+          : type === 'thumbnail'
+            ? 'thumbnailKey'
+            : 'attachmentKey';
     const key = content![field];
     if (!key) {
       contentError(

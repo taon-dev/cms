@@ -202,6 +202,27 @@ export class TaonCmsContentApiService<
   //#endregion
 
   //#region API / create content
+  public listTagIds(id: number): Observable<number[]> {
+    return this.taonCmsContentController
+      .listTagIds(id)
+      .request()
+      .observable.pipe(map(res => res.body.json));
+  }
+
+  public async getThumbnailLinkBySlug(
+    slug: string,
+    publicOnly = false,
+  ): Promise<string> {
+    const response = publicOnly
+      ? await this.taonCmsContentController
+          .getPublicThumbnailLinkBySlug(slug)
+          .request()
+      : await this.taonCmsContentController
+          .getThumbnailLinkBySlug(slug)
+          .request();
+    return response.body.text;
+  }
+
   public createContent(
     input: TaonCmsCreateContent,
   ): Observable<TaonCmsContentEntity> {

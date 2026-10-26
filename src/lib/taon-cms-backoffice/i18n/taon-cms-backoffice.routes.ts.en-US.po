@@ -11,3 +11,11 @@ msgstr "Posts"
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:37
 msgid "Assets"
 msgstr "Assets"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:48
+msgid "Categories"
+msgstr "Categories"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:59
+msgid "Tags"
+msgstr "Tags"

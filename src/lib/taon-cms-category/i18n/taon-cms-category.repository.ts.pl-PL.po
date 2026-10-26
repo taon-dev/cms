@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-category/taon-cms-category.repository.ts:35
+msgid "Sort order must be an integer."
+msgstr "Kolejność sortowania musi być liczbą całkowitą."
+
+#: src/lib/taon-cms-category/taon-cms-category.repository.ts:56
+msgid "This category slug is already in use."
+msgstr "Ten slug kategorii jest już używany."
+
+#: src/lib/taon-cms-category/taon-cms-category.repository.ts:85
+msgid "Reassign child categories and posts before deleting this category."
+msgstr "Przed usunięciem tej kategorii przypisz jej podkategorie i wpisy do innej kategorii."

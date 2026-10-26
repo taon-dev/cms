@@ -20,6 +20,7 @@ export interface TaonCmsContentFields {
   videoKey: string | null;
   audioKey: string | null;
   attachmentKey: string | null;
+  thumbnailKey: string | null;
   excerpt: string | null;
   categoryId: number | null;
   authorUserId: number | null;

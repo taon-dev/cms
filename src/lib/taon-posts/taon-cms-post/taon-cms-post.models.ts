@@ -1,8 +1,15 @@
 export type TaonCmsPostMode = 'view' | 'edit' | 'add' | 'view-clean';
 
 export interface TaonCmsPostDraft extends Pick<
-  TaonCmsContentFields, 'type' | 'videoKey' | 'audioKey' | 'attachmentKey'
+  TaonCmsContentFields,
+  | 'type'
+  | 'videoKey'
+  | 'audioKey'
+  | 'attachmentKey'
+  | 'thumbnailKey'
+  | 'categoryId'
 > {
+  tagIds: number[];
   title: string;
   slug: string;
   excerpt: string;

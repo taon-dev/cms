@@ -18,6 +18,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -25,7 +27,15 @@ import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
 import { Translation } from '@taon-dev/i18n/src';
-import { Observable, Subscription, finalize, firstValueFrom, take } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  finalize,
+  firstValueFrom,
+  forkJoin,
+  of,
+  take,
+} from 'rxjs';
 import { Taon } from 'taon/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
@@ -39,6 +49,15 @@ import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/ta
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
+import {
+  defaultThumbnailKey,
+  defaultThumbnailUrl,
+  generateVideoThumbnail,
+} from './taon-cms-thumbnail';
+import { TaonCmsCategoryApiService } from '../../taon-cms-category/taon-cms-category-api.service';
+import type { TaonCmsCategoryEntity } from '../../taon-cms-category/taon-cms-category.entity';
+import { TaonCmsTagApiService } from '../../taon-cms-tag/taon-cms-tag-api.service';
+import type { TaonCmsTagEntity } from '../../taon-cms-tag/taon-cms-tag.entity';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 //#endregion
 
@@ -54,12 +73,19 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
+    MatChipsModule,
     MatProgressBarModule,
     MatRadioModule,
     MatSelectModule,
     TaonCmsEditableDirective,
   ],
-  providers: [TaonCmsContentApiService, TaonPermissionApiService],
+  providers: [
+    TaonCmsContentApiService,
+    TaonPermissionApiService,
+    TaonCmsCategoryApiService,
+    TaonCmsTagApiService,
+  ],
 })
 export class TaonCmsPostComponent {
   readonly t = t.for(this);
@@ -97,6 +123,9 @@ export class TaonCmsPostComponent {
     videoKey: null,
     audioKey: null,
     attachmentKey: null,
+    thumbnailKey: null,
+    categoryId: null,
+    tagIds: [],
   });
 
   readonly postTypes = [
@@ -141,6 +170,37 @@ export class TaonCmsPostComponent {
   );
 
   readonly busy = signal(false);
+  readonly thumbnailPreviewUrl = signal('');
+  readonly thumbnailError = signal('');
+  private readonly thumbnailReference = computed(
+    () => this.draft().thumbnailKey,
+  );
+  private readonly thumbnailSlug = computed(() => this.draft().slug);
+  readonly taxonomyLoading = signal(false);
+  readonly taxonomyError = signal('');
+  readonly categories = signal<TaonCmsCategoryEntity[]>([]);
+  readonly tags = signal<TaonCmsTagEntity[]>([]);
+  readonly tagSearch = signal('');
+  readonly filteredTags = computed(() => {
+    const query = this.tagSearch().trim().toLowerCase();
+    return this.tags().filter(
+      tag =>
+        !this.draft().tagIds.includes(tag.id) &&
+        `${tag.name} ${tag.slug}`.toLowerCase().includes(query),
+    );
+  });
+  readonly selectedTags = computed(() =>
+    this.tags().filter(tag => this.draft().tagIds.includes(tag.id)),
+  );
+  private readonly categoryApi = inject(TaonCmsCategoryApiService);
+  private readonly tagApi = inject(TaonCmsTagApiService);
+  private taxonomyLoad?: Subscription;
+  private editorSession = 0;
+  private thumbnailObjectUrl = '';
+  private readonly stagedThumbnail = signal<{
+    key: string | null;
+    url: string;
+  } | null>(null);
 
   readonly uploading = signal(false);
 
@@ -229,7 +289,9 @@ export class TaonCmsPostComponent {
       !this.applicationHooksError() &&
       (!this.useAsApplicationHook() || !!this.selectedApplicationHook()) &&
       !this.permissionsLoading() &&
-      !this.permissionsError(),
+      !this.permissionsError() &&
+      !this.taxonomyLoading() &&
+      !this.taxonomyError(),
   );
 
   readonly canPublish = computed(() => {
@@ -263,9 +325,62 @@ export class TaonCmsPostComponent {
         untracked(() => {
           this.loadApplicationHooks();
           this.loadPermissionOptions();
+          this.loadTaxonomy();
         });
       }
     });
+    effect(onCleanup => {
+      const key = this.thumbnailReference();
+      const slug = this.thumbnailSlug();
+      const editing = this.editing();
+      const staged = this.stagedThumbnail();
+      let active = true;
+      onCleanup(() => {
+        active = false;
+      });
+      this.thumbnailError.set('');
+      this.thumbnailPreviewUrl.set('');
+      if (staged && staged.key === key) {
+        this.thumbnailPreviewUrl.set(staged.url);
+        return;
+      }
+      if (!key) {
+        return;
+      }
+      const placeholder = defaultThumbnailUrl(key);
+      if (placeholder) {
+        this.thumbnailPreviewUrl.set(placeholder);
+        return;
+      }
+      if (!slug) {
+        return;
+      }
+      const load = async () => {
+        if (editing) {
+          return this.api.getAssetUrl(key);
+        }
+        try {
+          return await this.api.getThumbnailLinkBySlug(slug, true);
+        } catch {
+          return this.api.getThumbnailLinkBySlug(slug);
+        }
+      };
+      void load()
+        .then(url => {
+          if (active && !this.destroyRef.destroyed) {
+            this.thumbnailPreviewUrl.set(url);
+          }
+        })
+        .catch((error: unknown) => {
+          console.error('[taon-cms-post] Unable to load thumbnail', error);
+          if (active && !this.destroyRef.destroyed) {
+            this.thumbnailError.set(
+              this.t.gettext('The thumbnail could not be loaded.'),
+            );
+          }
+        });
+    });
+    this.destroyRef.onDestroy(() => this.releaseThumbnailPreview());
     effect(() => {
       const media = this.mediaAttachment();
       const key = media ? this.draft()[media.key] : null;
@@ -348,6 +463,145 @@ export class TaonCmsPostComponent {
   //#endregion
 
   //#region methods / load related posts
+  loadTaxonomy(): void {
+    this.taxonomyLoad?.unsubscribe();
+    const session = this.editorSession;
+    const postId = this.currentPost()?.id;
+    this.taxonomyLoading.set(true);
+    this.taxonomyError.set('');
+    this.taxonomyLoad = forkJoin({
+      categories: this.categoryApi.allMyEntities$,
+      tags: this.tagApi.allMyEntities$,
+      tagIds: postId ? this.api.listTagIds(postId) : of([] as number[]),
+    })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.taxonomyLoading.set(false)),
+      )
+      .subscribe({
+        next: result => {
+          if (session === this.editorSession) {
+            this.categories.set(
+              result.categories.sort(
+                (a, b) =>
+                  a.sortOrder - b.sortOrder || a.name.localeCompare(b.name),
+              ),
+            );
+            this.tags.set(result.tags);
+            this.updateDraft('tagIds', result.tagIds);
+          }
+        },
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-post] Unable to load categories and tags',
+            error,
+          );
+          this.taxonomyError.set(
+            this.t.gettext(
+              'Categories and tags could not be loaded. Please try again.',
+            ),
+          );
+        },
+      });
+  }
+
+  addTag(id: number): void {
+    if (!this.draft().tagIds.includes(id)) {
+      this.updateDraft('tagIds', [...this.draft().tagIds, id]);
+    }
+  }
+
+  removeTag(id: number): void {
+    this.updateDraft(
+      'tagIds',
+      this.draft().tagIds.filter(selected => selected !== id),
+    );
+  }
+
+  filterTags(event: Event): void {
+    if (event.target instanceof HTMLInputElement) {
+      this.tagSearch.set(event.target.value);
+    }
+  }
+
+  applyDefaultThumbnail(): void {
+    if (!this.editing() || this.busy() || this.dialogOpen()) {
+      return;
+    }
+    this.releaseThumbnailPreview();
+    this.stagedThumbnail.set(null);
+    this.updateDraft('thumbnailKey', defaultThumbnailKey(this.draft().type));
+  }
+
+  async thumbnailSelected(event: Event): Promise<void> {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+    const input = event.target;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || !this.editing() || this.busy() || this.dialogOpen()) {
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      this.error.set(
+        this.t.gettext('Please select an image for the thumbnail.'),
+      );
+      return;
+    }
+    this.busy.set(true);
+    this.error.set('');
+    try {
+      await this.storeThumbnail(file, this.editorSession);
+    } catch (error: unknown) {
+      console.error('[taon-cms-post] Unable to upload thumbnail', error);
+      this.error.set(
+        this.t.gettext(
+          'The thumbnail could not be uploaded. Please try again.',
+        ),
+      );
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  private async storeThumbnail(file: File, session: number): Promise<void> {
+    if (session !== this.editorSession || this.destroyRef.destroyed) {
+      return;
+    }
+    const previousPreview = this.thumbnailPreviewUrl();
+    const previousStaged = this.stagedThumbnail();
+    const preview = URL.createObjectURL(file);
+    this.stagedThumbnail.set({ key: this.draft().thumbnailKey, url: preview });
+    this.thumbnailPreviewUrl.set(preview);
+    try {
+      const object = await this.api.uploadMedia(file);
+      if (session === this.editorSession && !this.destroyRef.destroyed) {
+        this.releaseThumbnailPreview();
+        this.thumbnailObjectUrl = preview;
+        this.stagedThumbnail.set({ key: object.key, url: preview });
+        this.updateDraft('thumbnailKey', object.key);
+      }
+    } catch (error: unknown) {
+      if (session === this.editorSession) {
+        this.stagedThumbnail.set(previousStaged);
+        this.thumbnailPreviewUrl.set(previousPreview);
+      }
+      throw error;
+    } finally {
+      if (this.thumbnailObjectUrl !== preview) {
+        URL.revokeObjectURL(preview);
+      }
+    }
+  }
+
+  private releaseThumbnailPreview(): void {
+    if (this.thumbnailObjectUrl) {
+      URL.revokeObjectURL(this.thumbnailObjectUrl);
+      this.thumbnailObjectUrl = '';
+    }
+  }
+
   loadRelatedPosts(): void {
     if (this.busy() || this.relatedPostsLoading()) {
       return;
@@ -616,7 +870,7 @@ export class TaonCmsPostComponent {
       input.value = '';
       return;
     }
-    const draft = this.draft();
+    const session = this.editorSession;
     this.busy.set(true);
     this.uploading.set(true);
     this.uploadProgress.set(0);
@@ -627,7 +881,7 @@ export class TaonCmsPostComponent {
           this.uploadProgress.set(percentage);
         }
       });
-      if (!this.destroyRef.destroyed && this.draft() === draft) {
+      if (!this.destroyRef.destroyed && this.editorSession === session) {
         const fileName = object.fileName || file.name;
         this.mediaFileNames.update(names => ({
           ...names,
@@ -641,6 +895,26 @@ export class TaonCmsPostComponent {
           });
         }
         this.updateDraft(media.key, object.key);
+        if (media.type === TaonCmsContentType.Video) {
+          try {
+            const blob = await generateVideoThumbnail(file);
+            const extension = blob.type === 'image/webp' ? 'webp' : 'png';
+            await this.storeThumbnail(
+              new File([blob], `thumbnail.${extension}`, { type: blob.type }),
+              session,
+            );
+          } catch (error: unknown) {
+            console.error(
+              '[taon-cms-post] Unable to generate thumbnail',
+              error,
+            );
+            this.error.set(
+              this.t.gettext(
+                'The video was uploaded, but its thumbnail could not be generated. Upload a thumbnail or apply a default placeholder.',
+              ),
+            );
+          }
+        }
       }
     } catch (error: unknown) {
       console.error('[taon-cms-post] Unable to upload media', error);
@@ -979,6 +1253,13 @@ export class TaonCmsPostComponent {
 
   //#region methods / set post
   private setPost(post: TaonCmsContentEntity | null): void {
+    this.editorSession += 1;
+    this.taxonomyLoad?.unsubscribe();
+    this.taxonomyLoading.set(false);
+    this.taxonomyError.set('');
+    this.releaseThumbnailPreview();
+    this.stagedThumbnail.set(null);
+    this.tagSearch.set('');
     this.relatedPostsLoad?.unsubscribe();
     this.applicationHooksLoad?.unsubscribe();
     this.permissionsLoad?.unsubscribe();
@@ -1009,6 +1290,9 @@ export class TaonCmsPostComponent {
       videoKey: post?.videoKey ?? null,
       audioKey: post?.audioKey ?? null,
       attachmentKey: post?.attachmentKey ?? null,
+      thumbnailKey: post?.thumbnailKey ?? null,
+      categoryId: post?.categoryId ?? null,
+      tagIds: [],
     });
     if (
       post &&
@@ -1019,6 +1303,9 @@ export class TaonCmsPostComponent {
     }
     if (post && this.mode() !== 'view-clean') {
       this.loadPermissions();
+    }
+    if (this.editing()) {
+      this.loadTaxonomy();
     }
   }
   //#endregion

@@ -11,3 +11,11 @@ msgstr "Wpisy"
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:37
 msgid "Assets"
 msgstr "Aktywa"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:48
+msgid "Categories"
+msgstr "Kategorie"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:59
+msgid "Tags"
+msgstr "Tagi"

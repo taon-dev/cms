@@ -109,6 +109,11 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   attachmentKey: string | null = null;
 
   //#region @websql
+  @Column({ type: 'varchar', nullable: true })
+  //#endregion
+  thumbnailKey: string | null = null;
+
+  //#region @websql
   @Column({ type: 'integer', nullable: true })
   //#endregion
   categoryId: number | null;

@@ -53,6 +53,7 @@ export function validateContentInput(
     'videoKey',
     'audioKey',
     'attachmentKey',
+    'thumbnailKey',
   ] as const) {
     if (
       input[field] !== undefined &&

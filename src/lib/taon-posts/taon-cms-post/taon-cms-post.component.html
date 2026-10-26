@@ -236,6 +236,117 @@
       </section>
     }
     <section
+      class="post-thumbnail"
+      aria-labelledby="thumbnail-heading">
+      <h2 id="thumbnail-heading">{{ t.gettext('Thumbnail') }}</h2>
+      @if (thumbnailPreviewUrl()) {
+        <img
+          class="thumbnail-preview"
+          [src]="thumbnailPreviewUrl()"
+          [alt]="t.gettext('Post thumbnail')" />
+      } @else {
+        <p>{{ t.gettext('No thumbnail selected.') }}</p>
+      }
+      @if (thumbnailError()) {
+        <p role="alert">{{ thumbnailError() }}</p>
+      }
+      <input
+        #thumbnailInput
+        hidden
+        type="file"
+        accept="image/*"
+        [disabled]="busy() || dialogOpen()"
+        (change)="thumbnailSelected($event)" />
+      <div class="buttons">
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="thumbnailInput.click()">
+          {{ t.gettext('Upload Thumbnail') }}
+        </button>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="applyDefaultThumbnail()">
+          {{ t.gettext('Apply Default Placeholder') }}
+        </button>
+      </div>
+    </section>
+    <section
+      class="post-taxonomy"
+      aria-labelledby="category-heading">
+      <h2 id="category-heading">{{ t.gettext('Category and Tags') }}</h2>
+      @if (taxonomyLoading()) {
+        <p role="status">{{ t.gettext('Loading categories and tags...') }}</p>
+      }
+      @if (taxonomyError()) {
+        <p role="alert">{{ taxonomyError() }}</p>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy()"
+          (click)="loadTaxonomy()">
+          {{ t.gettext('Try again') }}
+        </button>
+      }
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.gettext('Category') }}</mat-label>
+        <mat-select
+          [value]="draft().categoryId"
+          [disabled]="
+            busy() || dialogOpen() || taxonomyLoading() || !!taxonomyError()
+          "
+          (selectionChange)="updateDraft('categoryId', $event.value)">
+          <mat-option [value]="null">{{ t.gettext('None') }}</mat-option>
+          @for (category of categories(); track category.id) {
+            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <h3>{{ t.gettext('Tags') }}</h3>
+      <mat-chip-set [attr.aria-label]="t.gettext('Selected tags')">
+        @for (tag of selectedTags(); track tag.id) {
+          <mat-chip
+            [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+            (removed)="removeTag(tag.id)">
+            {{ tag.name }}
+            <button
+              matChipRemove
+              type="button"
+              [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+              [attr.aria-label]="
+                t.gettext('Remove tag [[ name ]]', { name: tag.name })
+              ">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        }
+      </mat-chip-set>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.gettext('Search tags') }}</mat-label>
+        <input
+          matInput
+          [value]="tagSearch()"
+          (input)="filterTags($event)"
+          [disabled]="busy() || dialogOpen() || taxonomyLoading()" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.gettext('Add tag') }}</mat-label>
+        <mat-select
+          [value]="null"
+          [disabled]="
+            busy() || dialogOpen() || taxonomyLoading() || !!taxonomyError()
+          "
+          (selectionChange)="addTag($event.value)">
+          @for (tag of filteredTags(); track tag.id) {
+            <mat-option [value]="tag.id">{{ tag.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </section>
+    <section
       class="related-posts"
       aria-labelledby="related-posts-heading">
       <h2 id="related-posts-heading">{{ t.gettext('Related posts') }}</h2>
@@ -473,6 +584,15 @@
       }
     </section>
   } @else if (currentPost(); as post) {
+    @if (thumbnailPreviewUrl()) {
+      <img
+        class="thumbnail-preview"
+        [src]="thumbnailPreviewUrl()"
+        [alt]="t.gettext('Post thumbnail')" />
+    }
+    @if (thumbnailError()) {
+      <p role="alert">{{ thumbnailError() }}</p>
+    }
     <h1 class="post-title">{{ post.title }}</h1>
     @if (post.excerpt) {
       <p class="post-excerpt">{{ post.excerpt }}</p>

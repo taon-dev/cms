@@ -106,6 +106,8 @@
 }
 
 .media-attachment,
+.post-thumbnail,
+.post-taxonomy,
 .related-posts,
 .application-hook,
 .post-permissions {
@@ -114,6 +116,20 @@
 
   h2 {
     font-size: 1rem;
+  }
+
+  .thumbnail-preview {
+    display: block;
+    width: min(100%, 480px);
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-taxonomy mat-form-field {
+    display: block;
+    margin-top: 0.75rem;
   }
 }
 

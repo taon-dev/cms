@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:82
+msgid "Name"
+msgstr "Nazwa"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:83
+msgid "Slug"
+msgstr "Slug"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:87
+msgid "Parent Category"
+msgstr "Kategoria nadrzędna"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:92
+msgid "Sort Order"
+msgstr "Kolejność sortowania"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:99
+msgid "Description"
+msgstr "Opis"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:105
+msgid "Actions"
+msgstr "Akcje"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:112
+msgid "Edit"
+msgstr "Edytuj"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:119
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:220
+msgid "Delete"
+msgstr "Usuń"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:215
+msgid "Delete category?"
+msgstr "Usunąć kategorię?"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:216
+msgid "Delete tag?"
+msgstr "Usunąć tag?"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:217
+msgid "Only unused items can be deleted. This cannot be undone."
+msgstr "Można usunąć tylko nieużywane elementy. Tej operacji nie można cofnąć."
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component.ts:261
+msgid "The operation failed. Check for duplicate names or slugs, invalid parents, or items still used by posts or child categories, then reload and try again."
+msgstr "Operacja nie powiodła się. Sprawdź, czy nazwy lub slugi się nie powtarzają, kategorie nadrzędne są prawidłowe, a elementy nie są używane przez wpisy lub podkategorie. Następnie odśwież i spróbuj ponownie."

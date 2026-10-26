@@ -51,6 +51,16 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
 
   private readonly tags = this.injectCustomRepo(TaonCmsTagRepository);
 
+  async listTagIds(id: number): Promise<number[]> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager => {
+      await this.requireContent(id, manager);
+      return this.taonCmsContentTagRepository.findTagIds(id, manager);
+    });
+    //#endregion
+  }
+
   async createContent(
     input: TaonCmsCreateContent,
   ): Promise<TaonCmsContentEntity> {
@@ -455,7 +465,12 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     const contents = await this.connection
       .getRepository<TaonCmsContentEntity>(this.target)
       .find({
-        where: [{ videoKey: key }, { audioKey: key }, { attachmentKey: key }],
+        where: [
+          { videoKey: key },
+          { audioKey: key },
+          { attachmentKey: key },
+          { thumbnailKey: key },
+        ],
         relations: { permissions: true },
       });
     if (!contents.length) {
@@ -574,6 +589,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         input.attachmentKey === undefined
           ? (current?.attachmentKey ?? null)
           : input.attachmentKey,
+      thumbnailKey:
+        input.thumbnailKey === undefined
+          ? (current?.thumbnailKey ?? null)
+          : input.thumbnailKey,
       excerpt:
         input.excerpt === undefined
           ? (current?.excerpt ?? null)

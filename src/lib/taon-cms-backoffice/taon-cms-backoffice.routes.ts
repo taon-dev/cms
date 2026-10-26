@@ -42,6 +42,28 @@ export const TaonCmsBackofficeRoutes: Routes = [
             m => m.TaonCmsAssetsBackofficeRoutes,
           ),
       }),
+      adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
+        path: 'categories',
+        menuItem: t.gettext('Categories'),
+        expandable: false,
+        icon: 'folder',
+        loader: () =>
+          import('../taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.routes').then(
+            m => m.TaonCmsCategoriesBackofficeRoutes,
+          ),
+      }),
+      adminLazyRoute({
+        isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
+        path: 'tags',
+        menuItem: t.gettext('Tags'),
+        expandable: false,
+        icon: 'label',
+        loader: () =>
+          import('../taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.routes').then(
+            m => m.TaonCmsTagsBackofficeRoutes,
+          ),
+      }),
       // adminLazyRoute({
       //   path: 'dashboard',
       //   menuItem: 'Dashboard',

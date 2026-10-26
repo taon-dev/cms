@@ -1,0 +1,104 @@
+<h1>{{ isCategory ? t.gettext('Categories') : t.gettext('Tags') }}</h1>
+<div class="actions">
+  <button
+    mat-button
+    type="button"
+    [disabled]="busy()"
+    (click)="edit()">
+    {{ isCategory ? t.gettext('Create category') : t.gettext('Create tag') }}
+  </button>
+  <button
+    mat-button
+    type="button"
+    [disabled]="busy()"
+    (click)="reload()">
+    {{ t.gettext('Reload') }}
+  </button>
+</div>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+@if (busy()) {
+  <p role="status">{{ t.gettext('Loading...') }}</p>
+}
+@if (editing()) {
+  <form
+    #form="ngForm"
+    (ngSubmit)="save()">
+    <h2>{{ editingId === null ? t.gettext('Create') : t.gettext('Edit') }}</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ t.gettext('Name') }}</mat-label>
+      <input
+        matInput
+        name="name"
+        required
+        [(ngModel)]="draft.name"
+        [disabled]="busy()" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ t.gettext('Slug') }}</mat-label>
+      <input
+        matInput
+        name="slug"
+        required
+        [(ngModel)]="draft.slug"
+        [disabled]="busy()" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ t.gettext('Description') }}</mat-label>
+      <textarea
+        matInput
+        name="description"
+        [(ngModel)]="draft.description"
+        [disabled]="busy()"></textarea>
+    </mat-form-field>
+    @if (isCategory) {
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.gettext('Parent Category') }}</mat-label>
+        <mat-select
+          name="parentCategoryId"
+          [(ngModel)]="draft.parentCategoryId"
+          [disabled]="busy()">
+          <mat-option [value]="null">{{ t.gettext('None') }}</mat-option>
+          @for (category of parentOptions(); track category.id) {
+            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ t.gettext('Sort Order') }}</mat-label>
+        <input
+          matInput
+          name="sortOrder"
+          type="number"
+          step="1"
+          required
+          [(ngModel)]="draft.sortOrder"
+          [disabled]="busy()" />
+      </mat-form-field>
+    }
+    <div class="actions">
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="
+          busy() || form.invalid || !draft.name.trim() || !draft.slug.trim()
+        ">
+        {{ t.gettext('Save') }}
+      </button>
+      <button
+        mat-button
+        type="button"
+        [disabled]="busy()"
+        (click)="editing.set(false)">
+        {{ t.gettext('Cancel') }}
+      </button>
+    </div>
+  </form>
+}
+<taon-datatable
+  [data]="tableRows()"
+  [columns]="columns"
+  [hideAddButton]="true"
+  searchMode="advanced">
+</taon-datatable>

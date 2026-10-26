@@ -17,7 +17,75 @@ Files are never fetched as blobs or buffered by the page. Collapsing a row
 destroys its preview/player. Listing and private URL issuance require the same
 authenticated `toManagePosts` permission as CMS uploads. Failed list, URL, and
 playback operations display errors with reload/retry controls.
- 
+
+## Categories and Tags
+
+CMS navigation includes separate `/cms/categories` and `/cms/tags` management
+pages, each with its own searchable/sortable `taon-datatable` and create, edit,
+and delete actions. Both resources have a name, unique slug, and description.
+Categories additionally have an integer sort order and an optional parent.
+The category parent selector excludes the current category and its descendants;
+the backend also validates missing parents, self-parenting, and indirect cycles
+inside a serializable transaction. Tags are flat and also require unique names.
+
+The pages use `TaonCmsCategoryController.getAll/saveCategory/deleteCategory` and
+`TaonCmsTagController.getAll/saveTag/deleteTag` through their existing Angular
+API services. All operations require the same authenticated `toManagePosts`
+access as Posts and Assets. Deleting a category still used by a post or child
+category, or a tag still assigned to a post, is rejected. Reassign/remove those
+references first; deletion never silently changes posts.
+
+New/Edit Post has one nullable Category selector and searchable Tags with
+removable selected chips. Save/Publish sends `categoryId` and `tagIds` through
+the existing content API. Tag assignments remain rows in
+`TaonCmsContentTagEntity`, not strings on the post. Cancel discards selections;
+reopening the editor loads current assignments with `listTagIds`. Existing
+content revision, duplication, and restore semantics apply to both resources.
+
+## Post thumbnails
+
+New/Edit Post includes Thumbnail above Related Posts, with a preview, Upload
+Thumbnail, and Apply Default Placeholder. Uploaded/generated images use the same
+`TaonCmsContentStorageController` upload API and configured storage provider as
+other media. Posts store only `thumbnailKey`; image data is never stored in the
+content entity. Thumbnail keys are saved, duplicated, and revisioned alongside
+the other content fields. Cancel discards draft changes without deleting assets
+needed by revisions or other posts.
+
+Every successful video upload/replacement triggers browser-native extraction
+from that selected `File`. An object URL feeds a native video element; a small
+64-pixel-wide canvas checks luminance at 0.25-second intervals over at most the
+first five seconds. A frame is usable when at least 2% of its pixels have
+luminance above 18, allowing small subjects in dark scenes. If none qualifies,
+the most visible scanned frame is used. The selected frame is encoded as WebP
+(or the browser's supported fallback), at up to 1280×720 while preserving aspect
+ratio, then uploaded as an ordinary CMS image asset. Video object URLs are
+always revoked; extraction never uses `file.arrayBuffer()`, FFmpeg, or backend
+video processing.
+
+Every video re-upload replaces the current thumbnail, including a manual
+override. Unrelated field edits never trigger extraction. Upload Thumbnail can
+override the result at any time. Local image previews appear before upload
+finishes, and their object URLs are released on replacement, cancellation, or
+editor destruction. A generation failure keeps the uploaded video and reports
+how to choose a manual/default thumbnail.
+
+Defaults are reusable `cms-placeholder:<post-type>` references, rendered as
+clean inline SVG illustrations for normal, video, audio, and attachment posts;
+they do not create duplicate storage objects. Stored image thumbnails use the
+same permission/publication checks and signed-download policy as other media,
+including when assets are shared by multiple posts.
+
+Run migration `CmsContext_1793043000000_postThumbnails` for an existing database.
+It adds the nullable `thumbnailKey` column; old posts and snapshots remain
+compatible. New UI and validation messages follow the existing gettext
+conventions, with English, Polish, and German PO catalogs.
+
+Focused regression tests:
+
+```sh
+npx --no-install vitest run src/tests/taon-cms-thumbnail.spec.ts src/tests/taon-cms-taxonomy.spec.ts src/tests/taon-cms-post.spec.ts
+```
 
 ## Posts UI
 
