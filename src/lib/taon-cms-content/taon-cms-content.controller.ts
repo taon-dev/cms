@@ -252,11 +252,9 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     content: TaonCmsContentEntity,
     publicOnly: boolean,
     req: ExpressRequest,
-    res: ExpressResponse,
     t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
   ): Promise<void> {
     //#region @websqlFunc
-
 
     const { permissions } =
       await this.taonCmsContentRepository.getPermissionConfiguration(
@@ -271,7 +269,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
         );
       }
     } else {
-      await this.taonSessionRepository.throwIfNotAuthenticated({ req, res });
+      await this.taonSessionRepository.throwIfNotAuthenticated({ req });
       const context = await this.taonAuthContextRepository.getContext(
         req.userId,
         req.sessionId,
