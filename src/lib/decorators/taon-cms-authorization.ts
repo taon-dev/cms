@@ -68,6 +68,7 @@ export class TaonAuthContextHasAccess extends TaonAuthContextHasAccessBase {
     //#region @websqlFunc
     return (
       this.context.isSuperUser ||
+      this.context.isInGroup(TaonSessionCoreGroups.Administrator) ||
       this.context.hasRole(TaonSessionCoreRoles.PostsManager)
     );
     //#endregion
