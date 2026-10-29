@@ -13,6 +13,10 @@ msgstr "Add related post"
 msgid "Search posts"
 msgstr "Search posts"
 
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:7
+msgid "Search posts by ID, title or slug"
+msgstr ""
+
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
 msgid "Cancel"
 msgstr "Cancel"
