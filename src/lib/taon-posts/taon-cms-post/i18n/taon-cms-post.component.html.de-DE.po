@@ -61,22 +61,22 @@ msgid "Loading media preview..."
 msgstr "Die Medien-Vorsicht lädt..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:175
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:618
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:619
 msgid "Your browser does not support video playback."
 msgstr "Ihr Browser unterstützt das Wiedergeben von Videos nicht."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:182
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:625
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:626
 msgid "Your browser does not support audio playback."
 msgstr "Ihr Browser unterstützt das Wiedergeben von Audio nicht."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:187
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:630
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:631
 msgid "Attached file: [[ fileName ]]"
 msgstr "Beigefügte Datei: [[ fileName ]]"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:195
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:638
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:639
 msgid "Download or open"
 msgstr "Download oder Öffnen"
 
@@ -205,26 +205,26 @@ msgstr "Entfernen Sie die Genehmigung [[ name ]]"
 msgid "No permissions assigned."
 msgstr "Keine Berechtigungen zugewiesen."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:538
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:539
 msgid "Permission"
 msgstr "Erlaubnis"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:557
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:558
 msgid "No permissions available"
 msgstr "Keine Berechtigungen verfügbar"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:572
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:573
 msgid "Assign permission"
 msgstr "Berechtigung zuzuweisen"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:582
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:583
 msgid "Apply permissions to related posts"
 msgstr "Berechtigungen für verwandte Posts anwenden"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:606
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:607
 msgid "Loading media..."
 msgstr "Die Medien laden..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:645
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:646
 msgid "No post is loaded."
 msgstr "Keine Post ist geladen."
