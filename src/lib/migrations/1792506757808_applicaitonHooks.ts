@@ -69,15 +69,21 @@ export class CmsContext_1792506757808_applicaitonHooks extends TaonBaseMigration
   }
   //#endregion
 
+  protected getApplicationHooks(): Record<string, string> {
+    return TaonCmsApplicationHook;
+  }
+
   private async persistApplicationHooks(
     queryRunner: QueryRunner,
   ): Promise<void> {
     const repository = queryRunner.manager.getRepository(
       TaonCmsApplicationHookEntity,
     );
-    for (const hook of Object.values(TaonCmsApplicationHook)) {
-      if (!(await repository.findOneBy({ hook }))) {
-        await repository.save(repository.create({ hook, contentId: null }));
+    for (const hook of Object.values(this.getApplicationHooks())) {
+      if (!(await repository.findOneBy({ hook: hook as any }))) {
+        await repository.save(
+          repository.create({ hook: hook as any, contentId: null }),
+        );
       }
     }
   }
