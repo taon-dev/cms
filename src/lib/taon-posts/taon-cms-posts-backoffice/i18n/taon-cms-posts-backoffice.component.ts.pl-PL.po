@@ -18,31 +18,31 @@ msgstr "Akcje"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:79
 msgid "Duplicate post"
-msgstr "Duplikuj post"
+msgstr "Duplikuj wpis"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:86
 msgid "Post details"
-msgstr "Szczegóły artykułu"
+msgstr "Szczegóły wpisu"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:92
 msgid "Delete (archive) post"
-msgstr "Usuń (zarchwizuj) post"
+msgstr "Usuń (zarchiwizuj) wpis"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:120
 msgid "The Post details route is unavailable."
-msgstr "Szczegółowa trasa jest niedostępna."
+msgstr "Trasa szczegółów wpisu jest niedostępna."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:146
 msgid "The post could not be duplicated. Please try again."
-msgstr ""
+msgstr "Nie udało się zduplikować wpisu. Spróbuj ponownie."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:161
 msgid "Delete post?"
-msgstr "Wymazać wiadomość?"
+msgstr "Usunąć wpis?"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:162
 msgid "This archives the post. It can be restored from its revisions."
-msgstr "To archiwum, który można odtworzyć z jego zmian."
+msgstr "Ta operacja archiwizuje wpis. Można go przywrócić z jednej z jego wersji."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:165
 msgid "Delete"
@@ -50,4 +50,4 @@ msgstr "Usunięcie"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:191
 msgid "The post could not be deleted. Refresh the table before retrying."
-msgstr "Nie można było usunąć pozycji."
+msgstr "Nie udało się usunąć wpisu. Odśwież tabelę przed ponowną próbą."

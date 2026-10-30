@@ -14,11 +14,11 @@ msgstr "Name"
 
 #: src/app.ts:182
 msgid "Angular version: [[ version ]]"
-msgstr "Winkelversion: [[ version ]]"
+msgstr "Angular-Version: [[ version ]]"
 
 #: src/app.ts:186
 msgid "Taon backend: [[ mode ]]"
-msgstr ""
+msgstr "Taon-Backend: [[ mode ]]"
 
 #: src/app.ts:209
 msgctxt "header-taon-admin"
@@ -27,16 +27,16 @@ msgstr "Hallo [[ username ]]"
 
 #: src/app.ts:216
 msgid "Please login to use Taon Admin"
-msgstr "Bitte loggen Sie sich bei Taon Admin an"
+msgstr "Bitte melden Sie sich bei Taon Admin an"
 
 #: src/app.ts:242
 msgid "Example hook content"
-msgstr ""
+msgstr "Beispielinhalt des Hooks"
 
 #: src/app.ts:253
 msgid "Private Video 1"
-msgstr ""
+msgstr "Privates Video 1"
 
 #: src/app.ts:260
 msgid "Your browser does not support video playback."
-msgstr ""
+msgstr "Ihr Browser unterstützt die Videowiedergabe nicht."

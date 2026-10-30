@@ -6,7 +6,7 @@ msgstr ""
 
 #: src/lib/taon-cms-content/taon-cms-content.controller.ts:134
 msgid "You can't manage posts"
-msgstr "Nie możesz zarządzać stanowiskami."
+msgstr "Nie możesz zarządzać wpisami"
 
 #: src/lib/taon-cms-content/taon-cms-content.controller.ts:241
 msgid "Content was not found."
@@ -14,11 +14,11 @@ msgstr "Zawartość nie została znaleziona."
 
 #: src/lib/taon-cms-content/taon-cms-content.controller.ts:254
 msgid "Content has no [[ type ]] media."
-msgstr "Treść nie zawiera mediów [[ type ]]."
+msgstr "Treść nie zawiera multimediów typu [[ type ]]."
 
 #: src/lib/taon-cms-content/taon-cms-content.controller.ts:261
 msgid "The media file was not found in storage."
-msgstr "Plik mediów nie został znaleziony w magazynie."
+msgstr "Nie znaleziono pliku multimedialnego w magazynie danych."
 
 #: src/lib/taon-cms-content/taon-cms-content.controller.ts:299
 msgid "This content is not publicly accessible."

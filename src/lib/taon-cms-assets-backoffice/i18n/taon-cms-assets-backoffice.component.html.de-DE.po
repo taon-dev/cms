@@ -6,12 +6,12 @@ msgstr ""
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:1
 msgid "CMS assets"
-msgstr "CMS-Anlagen"
+msgstr "CMS-Medien"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:7
 msgid "Reload assets"
-msgstr "Vermögenswerte"
+msgstr "Medien neu laden"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.html:10
 msgid "Loading assets..."
-msgstr "Die Vermögenswerte laden..."
+msgstr "Medien werden geladen..."

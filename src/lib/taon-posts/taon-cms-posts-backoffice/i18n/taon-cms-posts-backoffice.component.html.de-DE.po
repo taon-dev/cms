@@ -6,8 +6,8 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:1
 msgid "CMS posts"
-msgstr "CMS-Posts"
+msgstr "CMS-Beiträge"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:3
 msgid "Loading posts..."
-msgstr "Ladeposten..."
+msgstr "Beiträge werden geladen..."

@@ -6,8 +6,8 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.routes.ts:17
 msgid "Invalid Post ID"
-msgstr "Ungültige Post-Id"
+msgstr "Ungültige Beitrags-ID"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.routes.ts:22
 msgid "Post not found"
-msgstr "Post nicht gefunden"
+msgstr "Beitrag nicht gefunden"

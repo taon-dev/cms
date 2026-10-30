@@ -6,7 +6,7 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:93
 msgid "Revisions could not be loaded. Please try again."
-msgstr "Nie można było założyć przeglądów."
+msgstr "Nie udało się załadować wersji. Spróbuj ponownie."
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:105
 msgid "Select a revision to restore."
@@ -14,4 +14,4 @@ msgstr "Wybierz wersję do przywrócenia."
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.ts:127
 msgid "The revision could not be restored. If the post changed, close and reopen it to load its latest version."
-msgstr "Jeśli post się zmienił, zamknij i otwórz go ponownie, aby założyć najnowszą wersję."
+msgstr "Nie udało się przywrócić wersji. Jeśli wpis się zmienił, zamknij go i otwórz ponownie, aby wczytać najnowszą wersję."

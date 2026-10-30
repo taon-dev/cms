@@ -7,23 +7,23 @@ msgstr ""
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:1
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:54
 msgid "Add related post"
-msgstr "Dodaj powiązane posty"
+msgstr "Dodaj powiązany wpis"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:4
 msgid "Search posts"
-msgstr "Postupy wyszukiwania"
+msgstr "Szukaj wpisów"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:7
 msgid "Search posts by ID, title or slug"
-msgstr ""
+msgstr "Szukaj wpisów według ID, tytułu lub sluga"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
 msgid "Cancel"
-msgstr "Odwołanie"
+msgstr "Anuluj"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
 msgid "Loading posts..."
-msgstr "- Władowe posterunki..."
+msgstr "Ładowanie wpisów..."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:24
 msgid "Try again"
@@ -31,4 +31,4 @@ msgstr "Spróbuj jeszcze raz."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
-msgstr "Nie ma odpowiednich stanowisk."
+msgstr "Nie znaleziono pasujących wpisów."

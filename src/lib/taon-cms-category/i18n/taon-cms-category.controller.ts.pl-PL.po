@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/lib/taon-cms-category/taon-cms-category.controller.ts:46
 msgid "You can't manage posts"
-msgstr "Nie masz uprawnień do zarządzania wpisami"
+msgstr "Nie możesz zarządzać wpisami"

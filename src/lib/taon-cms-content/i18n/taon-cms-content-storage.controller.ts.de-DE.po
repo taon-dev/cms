@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/lib/taon-cms-content/taon-cms-content-storage.controller.ts:68
 msgid "You can't manage posts"
-msgstr "Du kannst keine Posten verwalten."
+msgstr "Sie können keine Beiträge verwalten"

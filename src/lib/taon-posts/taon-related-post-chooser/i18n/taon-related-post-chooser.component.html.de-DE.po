@@ -7,15 +7,15 @@ msgstr ""
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:1
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:54
 msgid "Add related post"
-msgstr "Verwandte Beiträge hinzufügen"
+msgstr "Verwandten Beitrag hinzufügen"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:4
 msgid "Search posts"
-msgstr "Suchstellen"
+msgstr "Beiträge suchen"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:7
 msgid "Search posts by ID, title or slug"
-msgstr ""
+msgstr "Beiträge nach ID, Titel oder Slug suchen"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
 msgid "Cancel"
@@ -23,7 +23,7 @@ msgstr "Abrufen"
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
 msgid "Loading posts..."
-msgstr "Ladeposten..."
+msgstr "Beiträge werden geladen..."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:24
 msgid "Try again"
@@ -31,4 +31,4 @@ msgstr "Versuchen Sie es noch mal."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
-msgstr "Keine entsprechenden Stellen verfügbar."
+msgstr "Keine passenden Beiträge verfügbar."

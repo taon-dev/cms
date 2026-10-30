@@ -6,11 +6,11 @@ msgstr ""
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:2
 msgid "Loading asset preview..."
-msgstr "Laden Sie die Vorsicht..."
+msgstr "Medienvorschau wird geladen..."
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:11
 msgid "Retry preview"
-msgstr "Wiederholte Vorschau"
+msgstr "Vorschau erneut laden"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.html:22
 msgid "Your browser does not support video playback."

@@ -26,4 +26,4 @@ msgstr "Autoryzacja"
 
 #: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:79
 msgid "Emails"
-msgstr "/Wiadomości e-mail"
+msgstr "Wiadomości e-mail"

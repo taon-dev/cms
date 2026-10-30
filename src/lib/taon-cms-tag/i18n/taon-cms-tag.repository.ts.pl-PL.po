@@ -6,7 +6,7 @@ msgstr ""
 
 #: src/lib/taon-cms-tag/taon-cms-tag.repository.ts:45
 msgid "This tag name or slug is already in use."
-msgstr "Ta nazwa lub slug tagu jest już używany."
+msgstr "Nazwa tagu lub jego slug są już używane."
 
 #: src/lib/taon-cms-tag/taon-cms-tag.repository.ts:72
 msgid "Remove this tag from posts before deleting it."

@@ -22,27 +22,27 @@ msgstr "Beitrag duplizieren"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:86
 msgid "Post details"
-msgstr "Nachrichten"
+msgstr "Beitragsdetails"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:92
 msgid "Delete (archive) post"
-msgstr "Löschen (Archiv) -Post"
+msgstr "Beitrag löschen (archivieren)"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:120
 msgid "The Post details route is unavailable."
-msgstr "Die Post-Route ist nicht verfügbar."
+msgstr "Die Route zu den Beitragsdetails ist nicht verfügbar."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:146
 msgid "The post could not be duplicated. Please try again."
-msgstr ""
+msgstr "Der Beitrag konnte nicht dupliziert werden. Bitte versuchen Sie es erneut."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:161
 msgid "Delete post?"
-msgstr "- Schaltet die Post aus?"
+msgstr "Beitrag löschen?"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:162
 msgid "This archives the post. It can be restored from its revisions."
-msgstr "Hier wird der Post archivt."
+msgstr "Der Beitrag wird archiviert. Er kann aus einer seiner Revisionen wiederhergestellt werden."
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:165
 msgid "Delete"
@@ -50,4 +50,4 @@ msgstr "Löschen"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:191
 msgid "The post could not be deleted. Refresh the table before retrying."
-msgstr "Die Post konnte nicht gelöscht werden."
+msgstr "Der Beitrag konnte nicht gelöscht werden. Aktualisieren Sie die Tabelle, bevor Sie es erneut versuchen."

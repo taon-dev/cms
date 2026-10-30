@@ -6,28 +6,28 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:1
 msgid "Restore a revision"
-msgstr "Przywróć starszą wersje"
+msgstr "Przywróć wersję"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:4
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:5
 msgid "Restoring replaces the post, including its status, with the selected revision."
-msgstr "Wprowadzenie w życie zastępuje pozycję, w tym jej status, wybranym przeglądem."
+msgstr "Przywrócenie zastępuje wpis, w tym jego status, wybraną wersją."
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:67
 msgid "Cancel"
-msgstr "Odwołanie"
+msgstr "Anuluj"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:74
 msgid "Apply"
-msgstr "Wykorzystanie"
+msgstr "Zastosuj"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:11
 msgid "Loading revisions..."
-msgstr "Ładowanie przeglądów..."
+msgstr "Ładowanie wersji..."
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:23
 msgid "Revision [[ revisionNumber ]]"
-msgstr "Rewizja ONINTERPOLACJA0POSZYTOW [[ revisionNumber ]]"
+msgstr "Wersja [[ revisionNumber ]]"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:33
 msgid "User [[ userId ]]"
@@ -35,16 +35,16 @@ msgstr "Użytkownik [[ userId ]]"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:39
 msgid "Legacy revision - cannot be restored"
-msgstr "Wyrzeczenie dziedzictwa - nie może być przywrócone"
+msgstr "Starsza wersja — nie można jej przywrócić"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:43
 msgid "No revisions are available."
-msgstr "Nie ma dostępnych zmian."
+msgstr "Brak dostępnych wersji."
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:54
 msgid "Reload revisions"
-msgstr "Przeładowanie przeglądów"
+msgstr "Odśwież wersje"
 
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:58
 msgid "Restoring..."
-msgstr "Odbudowa..."
+msgstr "Przywracanie..."

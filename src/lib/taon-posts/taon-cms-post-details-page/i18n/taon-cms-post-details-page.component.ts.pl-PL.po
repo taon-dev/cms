@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-post-details-page/taon-cms-post-details-page.component.ts:23
 msgid "Back to Posts"
-msgstr "Wracając do postów"
+msgstr "Wróć do wpisów"

@@ -22,7 +22,7 @@ msgstr "Sitzungen"
 
 #: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:68
 msgid "Authorization"
-msgstr "Genehmigung"
+msgstr "Autorisierung"
 
 #: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:79
 msgid "Emails"

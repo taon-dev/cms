@@ -10,8 +10,8 @@ msgstr "Dateiname"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:57
 msgid "Content Type"
-msgstr "Inhaltstype"
+msgstr "Inhaltstyp"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:94
 msgid "Assets could not be loaded. Please try reloading."
-msgstr "Die Vermögenswerte konnten nicht geladen werden."
+msgstr "Medien konnten nicht geladen werden. Bitte laden Sie sie erneut."

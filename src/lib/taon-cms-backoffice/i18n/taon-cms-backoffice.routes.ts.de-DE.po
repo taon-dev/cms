@@ -6,11 +6,11 @@ msgstr ""
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:28
 msgid "Posts"
-msgstr "Posts"
+msgstr "Beiträge"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:37
 msgid "Assets"
-msgstr "Vermögenswerte"
+msgstr "Medien"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:48
 msgid "Categories"

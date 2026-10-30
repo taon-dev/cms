@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/app/session-example/session-example.component.html:2
 msgid "Session example works!"
-msgstr "Sesiowy przykład działa!"
+msgstr "Przykład sesji działa!"

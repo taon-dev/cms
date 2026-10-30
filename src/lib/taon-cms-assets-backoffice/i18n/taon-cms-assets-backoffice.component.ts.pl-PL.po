@@ -10,8 +10,8 @@ msgstr "Nazwa pliku"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:57
 msgid "Content Type"
-msgstr "Rodzaj treści"
+msgstr "Typ treści"
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-assets-backoffice.component.ts:94
 msgid "Assets could not be loaded. Please try reloading."
-msgstr "Aktyw nie można było załadować."
+msgstr "Nie udało się załadować zasobów. Spróbuj odświeżyć widok."

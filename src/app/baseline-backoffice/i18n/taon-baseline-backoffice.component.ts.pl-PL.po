@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/app/baseline-backoffice/taon-baseline-backoffice.component.ts:34
 msgid "Application Title"
-msgstr "Tytuł wniosku"
+msgstr "Tytuł aplikacji"

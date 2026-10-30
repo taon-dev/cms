@@ -6,8 +6,8 @@ msgstr ""
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.ts:78
 msgid "The asset could not be opened. Please retry."
-msgstr "Nie mogliśmy otworzyć aktywa."
+msgstr "Nie udało się otworzyć zasobu. Spróbuj ponownie."
 
 #: src/lib/taon-cms-assets-backoffice/taon-cms-asset-preview.component.ts:90
 msgid "Playback failed or the preview link expired. Please retry."
-msgstr "Odtwarzanie nie działa lub link do przeglądu wygasł."
+msgstr "Odtwarzanie nie powiodło się lub link do podglądu wygasł. Spróbuj ponownie."

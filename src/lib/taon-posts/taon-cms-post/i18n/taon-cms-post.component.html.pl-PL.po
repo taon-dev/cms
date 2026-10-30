@@ -6,11 +6,11 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:4
 msgid "New draft"
-msgstr "Nowy projekt"
+msgstr "Nowy szkic"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
 msgid "Add"
-msgstr "Dodać"
+msgstr "Dodaj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:13
 msgid "Save"
@@ -26,15 +26,15 @@ msgstr "Edytuj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:38
 msgid "Publish"
-msgstr "Publikuj"
+msgstr "Opublikuj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:46
 msgid "Unpublish"
-msgstr "Niepublikowane"
+msgstr "Cofnij publikację"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:54
 msgid "Revert"
-msgstr "Wróć do starszej wersji"
+msgstr "Cofnij"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:62
 msgid "Delete"
@@ -42,23 +42,23 @@ msgstr "Usunięcie"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:70
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplikuj"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:77
 msgid "Uploading... "
-msgstr "- Władowanie..."
+msgstr "Przesyłanie... "
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:78
 msgid "Saving..."
-msgstr "Oszczędzam..."
+msgstr "Zapisywanie..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:140
 msgid "URL slug"
-msgstr "Sług URL"
+msgstr "Slug URL"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:161
 msgid "Loading media preview..."
-msgstr "Ładując przegląd mediów..."
+msgstr "Ładowanie podglądu multimediów..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:175
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:619
@@ -73,7 +73,7 @@ msgstr "Twoja przeglądarka nie obsługuje odtwarzania dźwięku."
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:187
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:631
 msgid "Attached file: [[ fileName ]]"
-msgstr "Dołączony dokument: [[ fileName ]]"
+msgstr "Załączony plik: [[ fileName ]]"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:195
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:639
@@ -82,11 +82,11 @@ msgstr "Pobierz lub otwórz"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:211
 msgid "Replace"
-msgstr "Zastąpienie"
+msgstr "Zastąp"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:218
 msgid "Remove"
-msgstr "Wyłączyć"
+msgstr "Usuń"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:241
 msgid "Thumbnail"
@@ -102,7 +102,7 @@ msgstr "Prześlij miniaturę"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:273
 msgid "Apply Default Placeholder"
-msgstr "Zastosuj domyślny obraz"
+msgstr "Użyj domyślnego obrazu zastępczego"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:280
 msgid "Category and Tags"
@@ -146,52 +146,52 @@ msgstr "Dodaj tag"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:352
 msgid "Related posts"
-msgstr "Pozycje powiązane"
+msgstr "Powiązane wpisy"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:354
 msgid "Loading related posts..."
-msgstr "Ładowanie powiązanych postów..."
+msgstr "Ładowanie powiązanych wpisów..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:377
 msgid "Remove related post [[ title ]]"
-msgstr "Usunięcie powiązanego położenia [[ title ]]"
+msgstr "Usuń powiązany wpis [[ title ]]"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:387
 msgid "No related posts yet."
-msgstr "Nie ma jeszcze powiązanych postów."
+msgstr "Brak powiązanych wpisów."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:395
 msgid "Add related post"
-msgstr "Dodaj powiązane posty"
+msgstr "Dodaj powiązany wpis"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:405
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:433
 msgid "Application Hook"
-msgstr "Wykorzystanie"
+msgstr "Hook aplikacji"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:408
 msgid "Loading application hooks..."
-msgstr "Ładowanie haków aplikacyjnych..."
+msgstr "Ładowanie hooków aplikacji..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:427
 msgid "Use as application hook"
-msgstr "Używanie jako hak aplikacyjny"
+msgstr "Użyj jako hooka aplikacji"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:450
 msgid "(in use by post # [[ postId ]])"
-msgstr "(w użyciu przez post # [[ postId ]])"
+msgstr "(używany przez wpis # [[ postId ]])"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:458
 msgid "No application hooks configured"
-msgstr "Nie konfigurowano haków aplikacyjnych"
+msgstr "Nie skonfigurowano hooków aplikacji"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:471
 msgid "Allow Read only with Permissions"
-msgstr "Pozwalać czytanie tylko z uprawnieniami"
+msgstr "Zezwalaj na dostęp tylko do odczytu na podstawie uprawnień"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:476
 msgid "Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them."
-msgstr "Pozwolenia są dziedziczone od #[[ postId ]] - [[ title ]]."
+msgstr "Uprawnienia są dziedziczone z wpisu # [[ postId ]] - [[ title ]]. Edytuj wpis źródłowy, aby je zmienić."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:484
 msgid "Loading assigned permissions..."
@@ -199,32 +199,32 @@ msgstr "Ładowanie przypisanych uprawnień..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:507
 msgid "Remove permission [[ name ]]"
-msgstr "Zdejmij zezwolenie [[ name ]]"
+msgstr "Usuń uprawnienie [[ name ]]"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:517
 msgid "No permissions assigned."
-msgstr "Nie przypisano zezwoleń."
+msgstr "Nie przypisano żadnych uprawnień."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:539
 msgid "Permission"
-msgstr "Pozwolenie"
+msgstr "Uprawnienie"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:558
 msgid "No permissions available"
-msgstr "Nie ma dostępnych zezwoleń"
+msgstr "Brak dostępnych uprawnień"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:573
 msgid "Assign permission"
-msgstr "Przypisz zezwolenie"
+msgstr "Przypisz uprawnienie"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:583
 msgid "Apply permissions to related posts"
-msgstr "Wpływ uprawnień do powiązanych postów"
+msgstr "Zastosuj uprawnienia do powiązanych wpisów"
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:607
 msgid "Loading media..."
-msgstr "Ładowanie mediów..."
+msgstr "Ładowanie multimediów..."
 
 #: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:646
 msgid "No post is loaded."
-msgstr "Żaden posterunek nie jest załadowany."
+msgstr "Żaden wpis nie jest załadowany."

@@ -10,4 +10,4 @@ msgstr "Taon Admin v1.0"
 
 #: src/app/baseline-backoffice/taon-baseline-backoffice.component.html:21
 msgid "Fixed content here"
-msgstr "Stała zawartość tutaj"
+msgstr "Stała treść tutaj"

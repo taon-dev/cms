@@ -6,8 +6,8 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:88
 msgid "Posts could not be loaded. Please try again."
-msgstr "Nie mogłem założyć wiadomości."
+msgstr "Nie udało się załadować wpisów. Spróbuj ponownie."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:107
 msgid "Select a related post."
-msgstr "Wybierz powiązany post."
+msgstr "Wybierz powiązany wpis."

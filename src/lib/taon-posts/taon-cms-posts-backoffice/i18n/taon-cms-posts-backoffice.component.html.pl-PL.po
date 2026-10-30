@@ -10,4 +10,4 @@ msgstr "Wpisy CMS"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:3
 msgid "Loading posts..."
-msgstr "- Władowe posterunki..."
+msgstr "Ładowanie wpisów..."

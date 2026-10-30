@@ -6,8 +6,8 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:88
 msgid "Posts could not be loaded. Please try again."
-msgstr "Die Posten konnten nicht geladen werden."
+msgstr "Beiträge konnten nicht geladen werden. Bitte versuchen Sie es erneut."
 
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.ts:107
 msgid "Select a related post."
-msgstr "Wählen Sie einen verwandten Posten aus."
+msgstr "Wählen Sie einen verwandten Beitrag aus."

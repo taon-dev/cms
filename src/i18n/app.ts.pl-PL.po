@@ -18,7 +18,7 @@ msgstr "Wersja Angulara: [[ version ]]"
 
 #: src/app.ts:186
 msgid "Taon backend: [[ mode ]]"
-msgstr "Taon server: [[ mode ]]"
+msgstr "Taon backend: [[ mode ]]"
 
 #: src/app.ts:209
 msgctxt "header-taon-admin"
@@ -31,12 +31,12 @@ msgstr "Proszę zalogować się do Taon Admin"
 
 #: src/app.ts:242
 msgid "Example hook content"
-msgstr ""
+msgstr "Przykładowa treść hooka"
 
 #: src/app.ts:253
 msgid "Private Video 1"
-msgstr ""
+msgstr "Prywatne wideo 1"
 
 #: src/app.ts:260
 msgid "Your browser does not support video playback."
-msgstr ""
+msgstr "Twoja przeglądarka nie obsługuje odtwarzania wideo."
