@@ -301,12 +301,18 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
 
   async getPermissionConfiguration(
     id: number,
+    skipTransaction = false,
   ): Promise<TaonCmsPermissionConfiguration> {
     //#region @websqlFunc
     requireContentId(id);
+    if (skipTransaction) {
+      const manager = this.connection.manager;
+      const post = await this.requireContent(id, manager);
+      return await this.resolvePermissionConfiguration(post, manager);
+    }
     return this.connection.transaction(async manager => {
       const post = await this.requireContent(id, manager);
-      return this.resolvePermissionConfiguration(post, manager);
+      return await this.resolvePermissionConfiguration(post, manager);
     });
     //#endregion
   }

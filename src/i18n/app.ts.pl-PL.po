@@ -4,39 +4,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/app.ts:134
+#: src/app.ts:136
 msgid "Basic app info"
 msgstr "Podstawowe informacje o aplikacji"
 
-#: src/app.ts:135
+#: src/app.ts:137
 msgid "Name"
 msgstr "Nazwa"
 
-#: src/app.ts:137
+#: src/app.ts:139
 msgid "Angular version: [[ version ]]"
 msgstr "Wersja Angulara: [[ version ]]"
 
-#: src/app.ts:141
+#: src/app.ts:143
 msgid "Taon backend: [[ mode ]]"
 msgstr "Taon backend: [[ mode ]]"
 
-#: src/app.ts:164
+#: src/app.ts:166
 msgctxt "header-taon-admin"
 msgid "Hello [[ username ]]"
 msgstr "Cześć [[ username ]]"
 
-#: src/app.ts:171
+#: src/app.ts:173
 msgid "Please login to use Taon Admin"
 msgstr "Proszę zalogować się do Taon Admin"
 
-#: src/app.ts:197
+#: src/app.ts:199
 msgid "Example hook content"
 msgstr "Przykładowa treść hooka"
 
-#: src/app.ts:208
+#: src/app.ts:210
 msgid "Private Video 1"
 msgstr "Prywatne wideo 1"
 
-#: src/app.ts:215
+#: src/app.ts:217
 msgid "Your browser does not support video playback."
 msgstr "Twoja przeglądarka nie obsługuje odtwarzania wideo."
