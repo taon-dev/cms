@@ -3,6 +3,7 @@ import {
   TaonSessionProvider,
   TaonSessionRepository,
 } from '@taon-dev/session/src';
+import { TaonAuthContextRepository } from '@taon-dev/session/src';
 import {
   ExpressRequest,
   ExpressResponse,
@@ -15,8 +16,6 @@ import {
   Models,
 } from 'taon/src';
 import { UtilsJwt } from 'tnp-core/src';
-
-import { TaonAuthContextRepository } from '../decorators/taon-cms-authorization';
 
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';

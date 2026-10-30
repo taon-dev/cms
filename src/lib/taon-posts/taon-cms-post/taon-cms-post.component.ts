@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   computed,
   effect,
   inject,
@@ -11,22 +12,27 @@ import {
   output,
   signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Translation } from '@taon-dev/i18n/src';
 import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
-import { Translation } from '@taon-dev/i18n/src';
+import { Editor, NgxEditorModule, toHTML } from 'ngx-editor';
+import type { Toolbar } from 'ngx-editor';
 import {
   Observable,
   Subscription,
@@ -40,25 +46,29 @@ import { Taon } from 'taon/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
 import type { TaonCmsApplicationHook } from '../../taon-cms-application-hooks';
+import { TaonCmsCategoryApiService } from '../../taon-cms-category/taon-cms-category-api.service';
+import type { TaonCmsCategoryEntity } from '../../taon-cms-category/taon-cms-category.entity';
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
+import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-content.config.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
 import { TaonCmsContentType } from '../../taon-cms-content/taon-cms-content.models';
+import { resolveTemplateVariables } from '../../taon-cms-content/taon-cms-template-variables';
+import type { TaonCmsTemplateVariable } from '../../taon-cms-content/taon-cms-template-variables';
+import { TaonCmsTagApiService } from '../../taon-cms-tag/taon-cms-tag-api.service';
+import type { TaonCmsTagEntity } from '../../taon-cms-tag/taon-cms-tag.entity';
 import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/taon-cms-revision-chooser.component';
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
+import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 import {
   defaultThumbnailKey,
   defaultThumbnailUrl,
   generateVideoThumbnail,
 } from './taon-cms-thumbnail';
-import { TaonCmsCategoryApiService } from '../../taon-cms-category/taon-cms-category-api.service';
-import type { TaonCmsCategoryEntity } from '../../taon-cms-category/taon-cms-category.entity';
-import { TaonCmsTagApiService } from '../../taon-cms-tag/taon-cms-tag-api.service';
-import type { TaonCmsTagEntity } from '../../taon-cms-tag/taon-cms-tag.entity';
-import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
+
 //#endregion
 
 const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
@@ -74,6 +84,9 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatMenuModule,
+    MatTabsModule,
+    NgxEditorModule,
     MatChipsModule,
     MatProgressBarModule,
     MatRadioModule,
@@ -82,6 +95,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
   ],
   providers: [
     TaonCmsContentApiService,
+    TaonCmsContentConfigService,
     TaonPermissionApiService,
     TaonCmsCategoryApiService,
     TaonCmsTagApiService,
@@ -170,17 +184,27 @@ export class TaonCmsPostComponent {
   );
 
   readonly busy = signal(false);
+
   readonly thumbnailPreviewUrl = signal('');
+
   readonly thumbnailError = signal('');
+
   private readonly thumbnailReference = computed(
     () => this.draft().thumbnailKey,
   );
+
   private readonly thumbnailSlug = computed(() => this.draft().slug);
+
   readonly taxonomyLoading = signal(false);
+
   readonly taxonomyError = signal('');
+
   readonly categories = signal<TaonCmsCategoryEntity[]>([]);
+
   readonly tags = signal<TaonCmsTagEntity[]>([]);
+
   readonly tagSearch = signal('');
+
   readonly filteredTags = computed(() => {
     const query = this.tagSearch().trim().toLowerCase();
     return this.tags().filter(
@@ -189,14 +213,21 @@ export class TaonCmsPostComponent {
         `${tag.name} ${tag.slug}`.toLowerCase().includes(query),
     );
   });
+
   readonly selectedTags = computed(() =>
     this.tags().filter(tag => this.draft().tagIds.includes(tag.id)),
   );
+
   private readonly categoryApi = inject(TaonCmsCategoryApiService);
+
   private readonly tagApi = inject(TaonCmsTagApiService);
+
   private taxonomyLoad?: Subscription;
+
   private editorSession = 0;
+
   private thumbnailObjectUrl = '';
+
   private readonly stagedThumbnail = signal<{
     key: string | null;
     url: string;
@@ -301,6 +332,43 @@ export class TaonCmsPostComponent {
 
   private readonly api = inject(TaonCmsContentApiService);
 
+  private readonly contentConfig = inject(TaonCmsContentConfigService);
+
+  readonly contentTab = signal(0);
+
+  readonly contentEditor = signal<Editor | null>(null);
+
+  readonly rawContent =
+    viewChild<ElementRef<HTMLTextAreaElement>>('rawContent');
+
+  private loadingEditorContent = false;
+
+  readonly contentToolbar: Toolbar = [
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    ['ordered_list', 'bullet_list'],
+    ['blockquote', 'code'],
+    ['link', 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ['horizontal_rule', 'format_clear'],
+    ['undo', 'redo'],
+  ];
+
+  readonly resolvedBody = computed(() => {
+    const draft = this.draft();
+    return resolveTemplateVariables(draft.body, {
+      frontendUrl: this.api.frontendUrl,
+      site: { name: this.contentConfig.siteName },
+      post: {
+        title: draft.title,
+        url: draft.slug ? this.api.getPostUrl(draft.slug) : null,
+        id: this.currentPost()?.id,
+        thumbnailUrl: this.thumbnailPreviewUrl() || null,
+      },
+    });
+  });
+
   private readonly permissionApi = inject(TaonPermissionApiService);
 
   private readonly dialog = inject(MatDialog);
@@ -316,10 +384,51 @@ export class TaonCmsPostComponent {
 
   //#region constructor
   constructor() {
+    const editor = new Editor({
+      attributes: {
+        'aria-label': this.t.gettext('Post body'),
+        style: 'min-height: 20rem',
+      },
+    });
+
+    this.contentEditor.set(editor);
+
+    const editorChanges = editor.valueChanges.subscribe(document => {
+      if (!this.editing() || this.loadingEditorContent) {
+        return;
+      }
+
+      this.updateDraft('body', toHTML(document, editor.schema));
+    });
+
+    // React to post input changes.
     effect(() => {
       const post = this.post();
-      untracked(() => this.setPost(post));
+
+      untracked(() => {
+        this.setPost(post);
+
+        // Synchronize editor only because the POST changed externally.
+        this.loadingEditorContent = true;
+
+        try {
+          editor.setContent(this.draft().body);
+        } finally {
+          this.loadingEditorContent = false;
+        }
+      });
     });
+
+    // Enable/disable editor without recreating it.
+    effect(() => {
+      const disabled = this.busy() || this.dialogOpen() || !this.editing();
+
+      editor.view.setProps({
+        editable: () => !disabled,
+      });
+    });
+
+    // Load edit-mode dependencies.
     effect(() => {
       if (this.editing()) {
         untracked(() => {
@@ -329,42 +438,55 @@ export class TaonCmsPostComponent {
         });
       }
     });
+
+    // Thumbnail preview handling.
     effect(onCleanup => {
       const key = this.thumbnailReference();
       const slug = this.thumbnailSlug();
       const editing = this.editing();
       const staged = this.stagedThumbnail();
+
       let active = true;
+
       onCleanup(() => {
         active = false;
       });
+
       this.thumbnailError.set('');
       this.thumbnailPreviewUrl.set('');
+
       if (staged && staged.key === key) {
         this.thumbnailPreviewUrl.set(staged.url);
         return;
       }
+
       if (!key) {
         return;
       }
+
       const placeholder = defaultThumbnailUrl(key);
+
       if (placeholder) {
         this.thumbnailPreviewUrl.set(placeholder);
         return;
       }
+
       if (!slug) {
         return;
       }
+
       const load = async () => {
         if (editing) {
           return this.api.getAssetUrl(key);
         }
+
         try {
           return await this.api.getThumbnailLinkBySlug(slug, true);
         } catch {
           return this.api.getThumbnailLinkBySlug(slug);
         }
       };
+
       void load()
         .then(url => {
           if (active && !this.destroyRef.destroyed) {
@@ -373,6 +495,7 @@ export class TaonCmsPostComponent {
         })
         .catch((error: unknown) => {
           console.error('[taon-cms-post] Unable to load thumbnail', error);
+
           if (active && !this.destroyRef.destroyed) {
             this.thumbnailError.set(
               this.t.gettext('The thumbnail could not be loaded.'),
@@ -380,14 +503,19 @@ export class TaonCmsPostComponent {
           }
         });
     });
-    this.destroyRef.onDestroy(() => this.releaseThumbnailPreview());
+
+    // Media preview handling.
     effect(() => {
       const media = this.mediaAttachment();
       const key = media ? this.draft()[media.key] : null;
+
       const slug = this.draft().slug;
       const editing = this.editing();
+
       const viewing = !!this.currentPost() && this.mode() !== 'add';
+
       const stagedPreview = this.uploadedMediaPreview();
+
       if ((!editing && !viewing) || !media || !key) {
         this.mediaPreviewSignature = '';
         this.mediaPreviewRequest += 1;
@@ -396,18 +524,25 @@ export class TaonCmsPostComponent {
         this.mediaPreviewError.set('');
         return;
       }
+
       if (stagedPreview?.key === key) {
         const signature = `upload:${key}:${stagedPreview.url}`;
+
         if (signature === this.mediaPreviewSignature) {
           return;
         }
+
         this.mediaPreviewSignature = signature;
         this.mediaPreviewRequest += 1;
+
         this.mediaPreviewUrl.set(stagedPreview.url);
+
         this.mediaPreviewLoading.set(false);
         this.mediaPreviewError.set('');
+
         return;
       }
+
       if (!slug) {
         this.mediaPreviewSignature = '';
         this.mediaPreviewRequest += 1;
@@ -416,18 +551,25 @@ export class TaonCmsPostComponent {
         this.mediaPreviewError.set('');
         return;
       }
+
       const signature = `${this.mode()}:${media.type}:${slug}:${key}`;
+
       if (signature === this.mediaPreviewSignature) {
         return;
       }
+
       this.mediaPreviewSignature = signature;
+
       const requestId = ++this.mediaPreviewRequest;
+
       this.mediaPreviewUrl.set('');
       this.mediaPreviewLoading.set(true);
       this.mediaPreviewError.set('');
+
       const getLink = editing
         ? this.getMediaLink(slug, media.type)
         : this.getMediaLinkForView(slug, media.type);
+
       void getLink
         .then(url => {
           if (
@@ -439,6 +581,7 @@ export class TaonCmsPostComponent {
         })
         .catch((error: unknown) => {
           console.error('[taon-cms-post] Unable to load media preview', error);
+
           if (
             requestId === this.mediaPreviewRequest &&
             !this.destroyRef.destroyed
@@ -458,6 +601,18 @@ export class TaonCmsPostComponent {
             this.mediaPreviewLoading.set(false);
           }
         });
+    });
+
+    // Destroy ngx-editor ONLY when this component is actually destroyed.
+    this.destroyRef.onDestroy(() => {
+      editorChanges.unsubscribe();
+      editor.destroy();
+
+      if (this.contentEditor() === editor) {
+        this.contentEditor.set(null);
+      }
+
+      this.releaseThumbnailPreview();
     });
   }
   //#endregion
@@ -846,6 +1001,36 @@ export class TaonCmsPostComponent {
   //#endregion
 
   //#region methods / update draft
+  updateRawContent(event: Event): void {
+    if (event.target instanceof HTMLTextAreaElement) {
+      this.updateDraft('body', event.target.value);
+    }
+  }
+
+  insertVariable(variable: TaonCmsTemplateVariable): void {
+    if (!this.editing() || this.busy() || this.dialogOpen()) {
+      return;
+    }
+    const text = `{{${variable}}}`;
+    if (this.contentTab() === 1) {
+      const textarea = this.rawContent()?.nativeElement;
+      if (textarea) {
+        textarea.setRangeText(
+          text,
+          textarea.selectionStart,
+          textarea.selectionEnd,
+          'end',
+        );
+        this.updateDraft('body', textarea.value);
+        textarea.focus();
+      }
+    } else if (this.contentTab() === 0) {
+      const editor = this.contentEditor();
+      editor?.commands.insertText(text).exec();
+      editor?.view.focus();
+    }
+  }
+
   updateDraft<K extends keyof TaonCmsPostDraft>(
     field: K,
     value: TaonCmsPostDraft[K],

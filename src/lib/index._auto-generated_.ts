@@ -7,7 +7,6 @@ export * from './build-info._auto-generated_';
 export * from './start-cli'; 
 export * from './taon-cms-application-hooks'; 
 export * from './taon-cms.abstract.context'; 
-export * from './decorators/taon-cms-authorization'; 
 export * from './taon-cms-application-hook/taon-cms-application-hook.entity'; 
 export * from './taon-cms-assets-backoffice/taon-cms-asset-preview.component'; // @browser
 export * from './taon-cms-assets-backoffice/taon-cms-assets-backoffice.component'; // @browser
@@ -52,6 +51,7 @@ export * from './taon-cms-content/taon-cms-content.repository';
 export * from './taon-cms-content/taon-cms-content.subscriber'; 
 export * from './taon-cms-content/taon-cms-content.utils'; 
 export * from './taon-cms-content/taon-cms-content.validation'; 
+export * from './taon-cms-content/taon-cms-template-variables'; 
 export * from './taon-cms-content/taon-cms-upload-progress'; 
 export * from './taon-cms-content-asset/taon-cms-content-asset-api.service'; // @browser
 export * from './taon-cms-content-asset/taon-cms-content-asset.abstract.context'; 

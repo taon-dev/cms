@@ -1,4 +1,6 @@
 //#region imports
+import { TaonSessionRepository } from '@taon-dev/session/src';
+import { TaonAuthContextRepository } from '@taon-dev/session/src';
 import {
   Taon,
   ClassHelpers,
@@ -11,11 +13,10 @@ import {
   Body,
   Models,
 } from 'taon/src';
-import { TaonSessionRepository } from '@taon-dev/session/src';
-import { TaonAuthContextRepository } from '../decorators/taon-cms-authorization';
-import { contentError } from '../taon-cms-content/taon-cms-content.validation';
-import type { TaonCmsTaxonomyFields } from '../taon-cms-category/taon-cms-taxonomy.validation';
 import { _ } from 'tnp-core/src';
+
+import type { TaonCmsTaxonomyFields } from '../taon-cms-category/taon-cms-taxonomy.validation';
+import { contentError } from '../taon-cms-content/taon-cms-content.validation';
 
 import { TaonCmsTagEntity } from './taon-cms-tag.entity';
 import { TaonCmsTagRepository } from './taon-cms-tag.repository';
@@ -31,6 +32,7 @@ export class TaonCmsTagController extends TaonBaseCrudController<TaonCmsTagEntit
   taonCmsTagRepository = this.injectCustomRepo(TaonCmsTagRepository);
 
   private readonly sessions = this.injectCustomRepo(TaonSessionRepository);
+
   private readonly auth = this.injectCustomRepo(TaonAuthContextRepository);
 
   protected async beforeEachRequest({

@@ -89,6 +89,31 @@ npx --no-install vitest run src/tests/taon-cms-thumbnail.spec.ts src/tests/taon-
 
 ## Posts UI
 
+### Content editing and template variables
+
+The post body has Editor (`ngx-editor`), Raw HTML, and read-only Preview tabs.
+All tabs use the same draft `body`; switching tabs does not rewrite HTML or
+discard unsaved edits. WYSIWYG edits serialize the editor's supported HTML
+schema, so use Raw for markup outside that schema. Insert variable has Site
+and Post submenus and inserts at the current rich-text or Raw selection.
+
+Preview and read-only post views use the exported `resolveTemplateVariables`
+helper from `taon-cms-content/taon-cms-template-variables`. It supports only
+`{{frontendUrl}}`, `{{site.name}}`, `{{currentYear}}`, `{{post.title}}`,
+`{{post.url}}`, `{{post.id}}`, and `{{post.thumbnailUrl}}`. Unknown and
+unavailable values (including IDs before creation) remain unchanged. Values
+are HTML-escaped, never evaluated or recursively expanded, and the final HTML
+is rendered through Angular's normal sanitizer. Resolved content is never
+written back to the draft, API payload, database, or revisions.
+
+Frontend origin comes from the existing API context; site name comes from
+the generated `website.title` environment setting via the content provider
+and config service. Post URLs use `<frontend origin>/posts/<encoded slug>`;
+the host application must supply that public route. Thumbnail variables reuse
+the existing thumbnail preview/permission-aware URL loading, including default
+placeholders. Signed image URLs are resolved only for display, not stored.
+
+
 `TaonCmsPostsBackofficeComponent` displays posts in `taon-datatable`.
 Create navigates to `/cms/posts/new`, reusing `TaonCmsPostComponent` in `add`
 mode without an ID. Saving opens the created post; cancelling returns to the

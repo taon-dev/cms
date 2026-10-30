@@ -4,6 +4,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-cms-content/taon-cms-content-storage.controller.ts:68
+#: src/lib/taon-cms-content/taon-cms-content-storage.controller.ts:67
 msgid "You can't manage posts"
 msgstr "Nie możesz zarządzać wpisami"

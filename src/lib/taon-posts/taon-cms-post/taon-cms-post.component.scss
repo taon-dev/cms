@@ -68,8 +68,33 @@
   }
 }
 
-.post-body.editable {
+.post-content-editor {
+  border: 1px solid #8885;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.raw-content {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 20rem;
+  padding: 1rem;
+  resize: vertical;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font-family: monospace;
+}
+
+ngx-editor {
+  display: block;
+  min-height: 20rem;
+}
+
+.content-preview {
   min-height: 12rem;
+  padding: 1rem;
 }
 
 .slug-field {

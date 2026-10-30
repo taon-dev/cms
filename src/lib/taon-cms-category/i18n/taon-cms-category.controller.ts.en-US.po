@@ -4,6 +4,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-cms-category/taon-cms-category.controller.ts:46
+#: src/lib/taon-cms-category/taon-cms-category.controller.ts:48
 msgid "You can't manage posts"
 msgstr "You can't manage posts"

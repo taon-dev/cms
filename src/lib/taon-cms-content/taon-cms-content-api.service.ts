@@ -38,6 +38,14 @@ export class TaonCmsContentApiService<
   public get crudController(): TaonCmsContentController {
     return this.taonCmsContentController;
   }
+
+  public get frontendUrl(): string {
+    return this.ctx.frontendHostUri.origin;
+  }
+
+  public getPostUrl(slug: string): string {
+    return `${this.frontendUrl}/posts/${encodeURIComponent(slug)}`;
+  }
   //#endregion
 
   //#region API / get by id

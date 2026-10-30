@@ -125,17 +125,83 @@
       [attr.contenteditable]="!busy() && !dialogOpen()"
       [taonCmsEditable]="draft().excerpt"
       (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
-    <div
-      class="post-body editable"
-      contenteditable="true"
-      role="textbox"
-      [attr.aria-label]="t.gettext('Post body')"
-      aria-multiline="true"
-      [attr.data-placeholder]="placeholderTellYourStory()"
-      [attr.contenteditable]="!busy() && !dialogOpen()"
-      taonCmsEditableFormat="html"
-      [taonCmsEditable]="draft().body"
-      (taonCmsEditableChange)="updateDraft('body', $event)"></div>
+    <section class="post-content-editor">
+      <mat-tab-group
+        [selectedIndex]="contentTab()"
+        (selectedIndexChange)="contentTab.set($event)"
+        [preserveContent]="true"
+        animationDuration="0ms">
+        <mat-tab [label]="t.gettext('Editor')">
+          @if (contentEditor(); as editor) {
+            <ngx-editor-menu
+              [editor]="editor"
+              [toolbar]="contentToolbar"
+              [disabled]="busy() || dialogOpen()" />
+            <ngx-editor
+              [editor]="editor"
+              [placeholder]="placeholderTellYourStory()" />
+          }
+        </mat-tab>
+        <mat-tab [label]="t.gettext('Raw')">
+          <textarea
+            #rawContent
+            class="raw-content"
+            [attr.aria-label]="t.gettext('Post body HTML')"
+            [value]="draft().body"
+            [disabled]="busy() || dialogOpen()"
+            (input)="updateRawContent($event)"
+            spellcheck="false"></textarea>
+        </mat-tab>
+        <mat-tab [label]="t.gettext('Preview')">
+          <div
+            class="post-body content-preview"
+            [innerHTML]="resolvedBody()"></div>
+        </mat-tab>
+      </mat-tab-group>
+      @if (contentTab() !== 2) {
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen() || !contentEditor()"
+          [matMenuTriggerFor]="variableMenu"
+          [matMenuTriggerRestoreFocus]="false">
+          {{ t.gettext('Insert variable') }}
+        </button>
+      }
+      <mat-menu #variableMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="siteVariableMenu">
+          {{ t.gettext('Site') }}
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="postVariableMenu">
+          {{ t.gettext('Post') }}
+        </button>
+      </mat-menu>
+      <mat-menu #siteVariableMenu="matMenu">
+        <button mat-menu-item (click)="insertVariable('frontendUrl')">
+          {{ t.gettext('Frontend URL') }}
+        </button>
+        <button mat-menu-item (click)="insertVariable('site.name')">
+          {{ t.gettext('Site name') }}
+        </button>
+        <button mat-menu-item (click)="insertVariable('currentYear')">
+          {{ t.gettext('Current year') }}
+        </button>
+      </mat-menu>
+      <mat-menu #postVariableMenu="matMenu">
+        <button mat-menu-item (click)="insertVariable('post.title')">
+          {{ t.gettext('Post title') }}
+        </button>
+        <button mat-menu-item (click)="insertVariable('post.url')">
+          {{ t.gettext('Post URL') }}
+        </button>
+        <button mat-menu-item (click)="insertVariable('post.id')">
+          {{ t.gettext('Post ID') }}
+        </button>
+        <button mat-menu-item (click)="insertVariable('post.thumbnailUrl')">
+          {{ t.gettext('Post Thumbnail URL') }}
+        </button>
+      </mat-menu>
+    </section>
     <label class="slug-field">
       <span>{{ t.gettext('URL slug') }}</span>
       <input
@@ -600,7 +666,7 @@
     }
     <div
       class="post-body"
-      [innerHTML]="post.body"></div>
+      [innerHTML]="resolvedBody()"></div>
     @if (mediaAttachment(); as media) {
       @if (draft()[media.key]; as key) {
         @if (mediaPreviewLoading()) {

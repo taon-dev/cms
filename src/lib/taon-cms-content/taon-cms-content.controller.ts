@@ -4,6 +4,10 @@ import {
   type TaonPermissionEntity,
 } from '@taon-dev/session/src';
 import {
+  TaonAuthContextRepository,
+  TaonSessionCoreAuthorization,
+} from '@taon-dev/session/src';
+import {
   Taon,
   ClassHelpers,
   TaonController,
@@ -22,13 +26,10 @@ import {
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
-import {
-  TaonAuthContextRepository,
-  TaonSessionCoreAuthorization,
-} from '../decorators/taon-cms-authorization';
 import type { TaonCmsApplicationHookEntity } from '../taon-cms-application-hook/taon-cms-application-hook.entity';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 
+import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
 import type {
   TaonCmsCreateContent,
@@ -37,7 +38,6 @@ import type {
   TaonCmsPermissionConfiguration,
 } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
-import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
 import { contentError } from './taon-cms-content.validation';
 //#endregion
 

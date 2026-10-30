@@ -1,4 +1,6 @@
 //#region imports
+import { TaonSessionRepository } from '@taon-dev/session/src';
+import { TaonAuthContextRepository } from '@taon-dev/session/src';
 import {
   Taon,
   ClassHelpers,
@@ -11,14 +13,13 @@ import {
   Body,
   Models,
 } from 'taon/src';
-import { TaonSessionRepository } from '@taon-dev/session/src';
-import { TaonAuthContextRepository } from '../decorators/taon-cms-authorization';
-import { contentError } from '../taon-cms-content/taon-cms-content.validation';
-import type { TaonCmsCategoryFields } from './taon-cms-taxonomy.validation';
 import { _ } from 'tnp-core/src';
+
+import { contentError } from '../taon-cms-content/taon-cms-content.validation';
 
 import { TaonCmsCategoryEntity } from './taon-cms-category.entity';
 import { TaonCmsCategoryRepository } from './taon-cms-category.repository';
+import type { TaonCmsCategoryFields } from './taon-cms-taxonomy.validation';
 //#endregion
 
 @TaonController<TaonCmsCategoryController>({
@@ -32,6 +33,7 @@ export class TaonCmsCategoryController extends TaonBaseCrudController<TaonCmsCat
   taonCmsCategoryRepository = this.injectCustomRepo(TaonCmsCategoryRepository);
 
   private readonly sessions = this.injectCustomRepo(TaonSessionRepository);
+
   private readonly auth = this.injectCustomRepo(TaonAuthContextRepository);
 
   protected async beforeEachRequest({

@@ -1,10 +1,10 @@
 //#region imports
 import { Routes } from '@angular/router';
 import { Translation } from '@taon-dev/i18n/src';
+import type { TaonAuthContextEntity } from '@taon-dev/session/src';
 import { adminLazyRoute as adminLazyRouteBase } from '@taon-dev/ui/src';
 import { Taon } from 'taon/src';
 
-import type { TaonAuthContextEntity } from '../decorators/taon-cms-authorization';
 //#endregion
 
 const adminLazyRoute = adminLazyRouteBase<TaonAuthContextEntity>;

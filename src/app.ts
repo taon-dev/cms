@@ -1,10 +1,9 @@
 //#region imports
 import * as os from 'os'; // @backend
 
-import { AsyncPipe, JsonPipe, NgFor } from '@angular/common'; // @browser
+import { AsyncPipe } from '@angular/common'; // @browser
 import {
   inject,
-  Injectable,
   APP_INITIALIZER,
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -30,12 +29,9 @@ import {
 import {
   provideRouter,
   Router,
-  RouterLinkActive,
   RouterModule,
-  RouterOutlet,
   ActivatedRoute,
   Routes,
-  Route,
   withHashLocation,
   withComponentInputBinding,
 } from '@angular/router';
@@ -44,29 +40,19 @@ import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import Aura from '@primeng/themes/aura'; // @browser
 import {
-  CmsContext_1791132517217_initial,
   MIGRATIONS_CLASSES_FOR_CmsContext,
-  TaonAuthContextEntity,
-  TaonAuthContextRepository,
   TaonCmsAbstractContext,
+  TaonCmsContentProvider,
 } from '@taon-dev/cms/src';
 import { TaonCmsContentApiService } from '@taon-dev/cms/src'; // @browser
 import { TaonCmsApplicationHook } from '@taon-dev/cms/src';
 import { Translation, TranslationManager } from '@taon-dev/i18n/src';
 // TranslationManager.globalDefautlLanguageOverride = 'pl-PL';
-import { TranslateDirective } from '@taon-dev/i18n/src'; // @browser
+import { TaonSessionButtonComponent } from '@taon-dev/session/src'; // @browser
 import {
-  TaonAuthContextHasAccess,
-  TaonAuthorizationSchema,
-  TaonSessionCoreAuthorization,
-  TaonSessionCoreGroups,
-  TaonSessionCorePermissions,
-  TaonSessionCoreRoles,
+  TaonAuthContextEntity,
+  TaonAuthContextRepository,
 } from '@taon-dev/session/src';
-import {
-  TaonSessionButtonComponent,
-  TaonSessionComponent,
-} from '@taon-dev/session/src'; // @browser
 import {
   DEFAULT_SESSION_EMAIL,
   DEFAULT_SESSION_PASSWORD,
@@ -78,55 +64,26 @@ import {
   TaonSessionUserRepository,
   TaonSessionUserUtils,
 } from '@taon-dev/session/src';
-import { MIGRATIONS_CLASSES_FOR_SessionContext } from '@taon-dev/session/src';
 import { TaonSudoAbstractContext } from '@taon-dev/sudo/src';
 import {
   TaonBaselineBackofficeOutletName,
   TaonDraggableButtonPanelComponent,
 } from '@taon-dev/ui/src'; // @browser
 import { providePrimeNG } from 'primeng/config'; // @browser
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  map,
-  of,
-  switchMap,
-} from 'rxjs';
-import {
-  Taon,
-  TaonBaseContext,
-  TAON_CONTEXT,
-  EndpointContext,
-  TaonBaseAngularService,
-  TaonEntity,
-  StringColumn,
-  TaonBaseAbstractEntity,
-  TaonBaseCrudController,
-  TaonController,
-  GET,
-  TaonMigration,
-  TaonBaseMigration,
-  TaonContext,
-  ClassHelpers,
-  TaonProvider,
-} from 'taon/src';
+import { BehaviorSubject } from 'rxjs';
+import { Taon, TaonBaseContext, TAON_CONTEXT, ClassHelpers } from 'taon/src';
 import { TaonAdminService, TaonAdmin } from 'taon/src'; // @browser
 import { TaonStor } from 'taon-storage/src';
-import {
-  TaonNotFoundComponent,
-  TaonSettingsComponent,
-  TaonThemeComponent,
-  TaonThemeService,
-} from 'taon-ui/src'; // @browser
-import { Utils, UtilsOs } from 'tnp-core/src';
+import { TaonSettingsComponent, TaonThemeService } from 'taon-ui/src'; // @browser
+import { UtilsOs } from 'tnp-core/src';
 
-import { HOST_CONFIG } from './app.hosts';
 import {
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID,
-  ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET,
-  ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS,
-} from './lib/env';
+  TaonAuthContextEntityDecorator,
+  TaonAuthContextRepositoryDecorator,
+  TaonCmsContentProviderDecorator,
+  TaonSessionProviderDecorator,
+} from './app.decorators';
+import { HOST_CONFIG } from './app.hosts';
 import { ENV_ANGULAR_NODE_APP_BUILD_PWA_DISABLE_SERVICE_WORKER } from './lib/env/env.angular-node-app';
 // @placeholder-for-imports
 
@@ -333,7 +290,7 @@ export class CmsApp implements OnInit {
     return globalThis?.location.pathname?.split('?')[0];
   }
 
-  public readonly context: TaonAuthContextEntity;
+  public readonly context: TaonAuthContextEntityDecorator;
 
   openDialog(
     enterAnimationDuration: string | number,
@@ -465,39 +422,6 @@ export const CmsConfig = mergeApplicationConfig(CmsAppConfig, CmsServerConfig);
 //#endregion
 //#endregion
 
-//#region taon sesssion providers decorator
-@TaonProvider({
-  className: 'TaonSessionProvider',
-})
-class TaonSessionProviderOverride extends TaonSessionProvider {
-  constructor() {
-    super();
-    this.socialLogin.google.enabled = true;
-    this.socialLogin.google.googleClientId =
-      ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_CLIENT_ID;
-
-    this.login.defaultEmail = DEFAULT_EMAIL;
-    this.linkSocialAccountEmail = true;
-  }
-
-  //#region @backend
-  async _() {
-    const googleSecret = await ENV_ANGULAR_NODE_APP_CONFIG_GOOGLE_SECRET();
-    this.socialLogin.google.googleSecret = googleSecret;
-
-    this.superUsersEmails = [
-      DEFAULT_EMAIL,
-      ...(await ENV_ANGULAR_NODE_APP_CONFIG_SUPER_USERS()).split(','),
-    ];
-
-    console.log('active super users', this.superUsersEmails);
-
-    await super._();
-  }
-  //#endregion
-}
-//#endregion
-
 //#region  cms context
 var CmsContext = Taon.createContext(() => ({
   ...HOST_CONFIG['CmsContext'],
@@ -507,18 +431,20 @@ var CmsContext = Taon.createContext(() => ({
     TaonBaseContext,
   },
   migrations: {
-    CmsContext_1791132517217_initial,
     ...MIGRATIONS_CLASSES_FOR_CmsContext,
   },
   providers: {
-    [ClassHelpers.getName(TaonSessionProvider)]: TaonSessionProviderOverride,
+    [ClassHelpers.getName(TaonSessionProvider)]: TaonSessionProviderDecorator,
+    [ClassHelpers.getName(TaonCmsContentProvider)]:
+      TaonCmsContentProviderDecorator,
   },
   entities: {
-    [ClassHelpers.getName(TaonAuthContextEntity)]: TaonAuthContextEntity,
+    [ClassHelpers.getName(TaonAuthContextEntity)]:
+      TaonAuthContextEntityDecorator,
   },
   repositories: {
     [ClassHelpers.getName(TaonAuthContextRepository)]:
-      TaonAuthContextRepository,
+      TaonAuthContextRepositoryDecorator,
   },
   logs: {
     // db
