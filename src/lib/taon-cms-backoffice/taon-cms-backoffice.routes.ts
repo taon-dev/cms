@@ -22,31 +22,33 @@ export const TaonCmsBackofficeRoutes: Routes = [
       adminLazyRoute({
         isDisabled: ({ context }) => {
           // console.log('context', { context });
-          return !context?.hasAccess.toManagePosts;
+          return !context?.hasAccess.toManageCms;
         },
         path: 'posts',
-        menuItem: t.gettext('Posts'),
+        menuItem: t.signal.gettext('Posts'),
         expandable: true,
         icon: 'edit',
         loader: () =>
           import('@taon-dev/cms/src').then(m => m.TaonCmsPostsBackofficeRoutes),
       }),
-       adminLazyRoute({
+      adminLazyRoute({
         isDisabled: ({ context }) => {
           // console.log('context', { context });
-          return !context?.hasAccess.toManagePosts;
+          return !context?.hasAccess.toManageCms;
         },
         path: 'courses',
-        menuItem: t.gettext('Courses'),
+        menuItem: t.signal.gettext('Courses'),
         expandable: false,
         icon: 'school',
         loader: () =>
-          import('@taon-dev/cms/src').then(m => m.TaonCmsCourseBackofficeRoutes),
+          import('@taon-dev/cms/src').then(
+            m => m.TaonCmsCourseBackofficeRoutes,
+          ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
+        isDisabled: ({ context }) => !context?.hasAccess.toManageCms,
         path: 'assets',
-        menuItem: t.gettext('Assets'),
+        menuItem: t.signal.gettext('Assets'),
         expandable: false,
         icon: 'perm_media',
         loader: () =>
@@ -55,9 +57,9 @@ export const TaonCmsBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
+        isDisabled: ({ context }) => !context?.hasAccess.toManageCms,
         path: 'categories',
-        menuItem: t.gettext('Categories'),
+        menuItem: t.signal.gettext('Categories'),
         expandable: false,
         icon: 'folder',
         loader: () =>
@@ -66,9 +68,9 @@ export const TaonCmsBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
+        isDisabled: ({ context }) => !context?.hasAccess.toManageCms,
         path: 'tags',
-        menuItem: t.gettext('Tags'),
+        menuItem: t.signal.gettext('Tags'),
         expandable: false,
         icon: 'label',
         loader: () =>

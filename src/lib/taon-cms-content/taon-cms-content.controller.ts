@@ -130,7 +130,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
       req.userId,
       req.sessionId,
     );
-    if (!ctx?.hasAccess?.toManagePosts) {
+    if (!ctx?.hasAccess?.toManageCms) {
       Taon.error({
         message: t.gettext("You can't manage posts"),
         status: getStatusCode(HttpStatusEnum.FORBIDDEN),

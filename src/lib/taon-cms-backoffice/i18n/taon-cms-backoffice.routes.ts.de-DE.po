@@ -12,14 +12,14 @@ msgstr "Beiträge"
 msgid "Courses"
 msgstr ""
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:49
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:51
 msgid "Assets"
 msgstr "Medien"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:60
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:62
 msgid "Categories"
 msgstr "Kategorien"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:71
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:73
 msgid "Tags"
 msgstr "Tags"

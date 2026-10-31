@@ -6,20 +6,20 @@ msgstr ""
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:28
 msgid "Posts"
-msgstr "Wpisy"
+msgstr "Posty"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:40
 msgid "Courses"
-msgstr ""
+msgstr "Kursy"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:49
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:51
 msgid "Assets"
 msgstr "Zasoby"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:60
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:62
 msgid "Categories"
 msgstr "Kategorie"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:71
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:73
 msgid "Tags"
 msgstr "Tagi"

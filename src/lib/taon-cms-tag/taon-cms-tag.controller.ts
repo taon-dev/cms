@@ -43,7 +43,7 @@ export class TaonCmsTagController extends TaonBaseCrudController<TaonCmsTagEntit
     //#region @backendFunc
     await this.sessions.throwIfNotAuthenticated({ req, res });
     const context = await this.auth.getContext(req.userId, req.sessionId);
-    if (!context?.hasAccess?.toManagePosts) {
+    if (!context?.hasAccess?.toManageCms) {
       contentError(t.gettext("You can't manage posts"), 403);
     }
     //#endregion

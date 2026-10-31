@@ -63,7 +63,7 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
       req.userId,
       req.sessionId,
     );
-    if (!context?.hasAccess?.toManagePosts) {
+    if (!context?.hasAccess?.toManageCms) {
       contentError(t.gettext("You can't manage posts"), 403);
     }
     //#endregion
