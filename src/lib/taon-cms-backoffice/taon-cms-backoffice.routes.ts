@@ -31,6 +31,18 @@ export const TaonCmsBackofficeRoutes: Routes = [
         loader: () =>
           import('@taon-dev/cms/src').then(m => m.TaonCmsPostsBackofficeRoutes),
       }),
+       adminLazyRoute({
+        isDisabled: ({ context }) => {
+          // console.log('context', { context });
+          return !context?.hasAccess.toManagePosts;
+        },
+        path: 'courses',
+        menuItem: t.gettext('Courses'),
+        expandable: false,
+        icon: 'school',
+        loader: () =>
+          import('@taon-dev/cms/src').then(m => m.TaonCmsCourseBackofficeRoutes),
+      }),
       adminLazyRoute({
         isDisabled: ({ context }) => !context?.hasAccess.toManagePosts,
         path: 'assets',

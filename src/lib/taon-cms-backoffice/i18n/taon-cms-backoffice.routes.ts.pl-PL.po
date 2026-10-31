@@ -8,14 +8,18 @@ msgstr ""
 msgid "Posts"
 msgstr "Wpisy"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:37
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:40
+msgid "Courses"
+msgstr ""
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:49
 msgid "Assets"
 msgstr "Zasoby"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:48
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:60
 msgid "Categories"
 msgstr "Kategorie"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:59
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:71
 msgid "Tags"
 msgstr "Tagi"

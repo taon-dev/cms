@@ -87,6 +87,27 @@ Focused regression tests:
 npx --no-install vitest run src/tests/taon-cms-thumbnail.spec.ts src/tests/taon-cms-taxonomy.spec.ts src/tests/taon-cms-post.spec.ts
 ```
 
+## Courses UI
+
+The Courses tab is a specialized post view at `/cms/courses`, protected by
+the same `toManagePosts` permission as Posts. `listCourses` selects distinct,
+non-archived posts with a non-empty thumbnail key and at least one related
+post, without loading the children. Covers reuse the post editor's default
+placeholders and permission-aware thumbnail links, preserve aspect ratio, and
+never exceed 50px in height.
+
+Published courses display Public with an unlocked icon and subtle green cells
+across the row; drafts display Private with a locked icon and subtle red cells.
+Expanding a row follows the Users table's lazy `expansionTemplate` pattern and
+calls `listRelatedPosts` only for that course. The nested table displays all
+non-archived first-level children, without pagination or recursive expansion.
+
+Both tables reuse the Posts table's Duplicate, Edit/details, and Delete/archive
+actions, including confirmations, optimistic versions, errors, and navigation to
+the normal post editor. Deleting a child reloads the course list and its
+expansions; no separate course entity or management logic is introduced.
+Reload courses fetches the latest list from the server.
+
 ## Posts UI
 
 ### Content editing and template variables

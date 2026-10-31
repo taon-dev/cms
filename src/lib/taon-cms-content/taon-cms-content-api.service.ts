@@ -284,6 +284,11 @@ export class TaonCmsContentApiService<
   //#endregion
 
   //#region API / list related posts
+  public listCourses(): Observable<TaonCmsContentEntity[]> {
+    return this.taonCmsContentController.listCourses()
+      .request!().observable.pipe(map(res => res.body.json));
+  }
+
   public listRelatedPosts(id: number): Observable<TaonCmsContentEntity[]> {
     return this.taonCmsContentController.listRelatedPosts(id)
       .request!().observable.pipe(map(res => res.body.json));

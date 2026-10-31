@@ -1,0 +1,36 @@
+<h1>{{ t.gettext('Courses') }}</h1>
+<h2 style="color: goldenrod;">{{ t.gettext('Course is just a post with related posts and thumbnail. Any non archived post can be course.') }}</h2>
+<button mat-button type="button" [disabled]="loading()" (click)="reload()">
+  {{ t.gettext('Reload courses') }}
+</button>
+@if (loading()) {
+  <p role="status">{{ t.gettext('Loading courses...') }}</p>
+}
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+<taon-datatable
+  [data]="courses()"
+  [columns]="columns"
+  [allowedColumns]="['id', 'title', 'status']"
+  [hideAddButton]="true"
+  searchMode="advanced"
+  [expansionTemplate]="expansionTemplate">
+</taon-datatable>
+<ng-template #coverTemplate let-post>
+  <taon-cms-course-cover [post]="post"></taon-cms-course-cover>
+</ng-template>
+<ng-template #visibilityTemplate let-post>
+  <span class="visibility">
+    <mat-icon aria-hidden="true">
+      {{ post.status === 'published' ? 'lock_open' : 'lock' }}
+    </mat-icon>
+    {{ post.status === 'published' ? t.gettext('Public') : t.gettext('Private') }}
+  </span>
+</ng-template>
+<ng-template #expansionTemplate let-course>
+  <taon-cms-course-contents
+    [course]="course"
+    [actionsColumn]="actionsColumn">
+  </taon-cms-course-contents>
+</ng-template>

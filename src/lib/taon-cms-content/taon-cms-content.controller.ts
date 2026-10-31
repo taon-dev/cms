@@ -54,6 +54,7 @@ import { contentError } from './taon-cms-content.validation';
     'restoreContent',
     'listRevisions',
     'listRelatedPosts',
+    'listCourses',
     'listPermissions',
     'getPermissionConfiguration',
     'listApplicationHooks',
@@ -217,6 +218,13 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#region @websqlFunc
     return (req, _res, { t }) =>
       this.getMediaLinkBySlug(slug, 'thumbnail', true, req, t);
+    //#endregion
+  }
+
+  @GET()
+  listCourses(): Taon.Response<TaonCmsContentEntity[]> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.listCourses();
     //#endregion
   }
 

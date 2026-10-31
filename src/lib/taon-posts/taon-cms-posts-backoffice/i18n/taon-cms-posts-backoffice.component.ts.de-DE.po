@@ -4,50 +4,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:69
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:45
 msgid "Title"
 msgstr "Titel"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:70
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:46
 msgid "Status"
 msgstr "Status"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:72
-msgid "Actions"
-msgstr "Aktionen"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:79
-msgid "Duplicate post"
-msgstr "Beitrag duplizieren"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:86
-msgid "Post details"
-msgstr "Beitragsdetails"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:92
-msgid "Delete (archive) post"
-msgstr "Beitrag löschen (archivieren)"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:120
-msgid "The Post details route is unavailable."
-msgstr "Die Route zu den Beitragsdetails ist nicht verfügbar."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:146
-msgid "The post could not be duplicated. Please try again."
-msgstr "Der Beitrag konnte nicht dupliziert werden. Bitte versuchen Sie es erneut."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:161
-msgid "Delete post?"
-msgstr "Beitrag löschen?"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:162
-msgid "This archives the post. It can be restored from its revisions."
-msgstr "Der Beitrag wird archiviert. Er kann aus einer seiner Revisionen wiederhergestellt werden."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:165
-msgid "Delete"
-msgstr "Löschen"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:191
-msgid "The post could not be deleted. Refresh the table before retrying."
-msgstr "Der Beitrag konnte nicht gelöscht werden. Aktualisieren Sie die Tabelle, bevor Sie es erneut versuchen."

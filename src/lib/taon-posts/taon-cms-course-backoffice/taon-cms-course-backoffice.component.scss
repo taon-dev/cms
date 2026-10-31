@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+.visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+:host ::ng-deep td.cms-course-public {
+  background-color: rgba(46, 125, 50, 0.08);
+}
+
+:host ::ng-deep td.cms-course-private {
+  background-color: rgba(198, 40, 40, 0.07);
+}

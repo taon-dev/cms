@@ -4,50 +4,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:69
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:45
 msgid "Title"
 msgstr "Tytuł"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:70
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:46
 msgid "Status"
 msgstr "Status"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:72
-msgid "Actions"
-msgstr "Akcje"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:79
-msgid "Duplicate post"
-msgstr "Duplikuj wpis"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:86
-msgid "Post details"
-msgstr "Szczegóły wpisu"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:92
-msgid "Delete (archive) post"
-msgstr "Usuń (zarchiwizuj) wpis"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:120
-msgid "The Post details route is unavailable."
-msgstr "Trasa szczegółów wpisu jest niedostępna."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:146
-msgid "The post could not be duplicated. Please try again."
-msgstr "Nie udało się zduplikować wpisu. Spróbuj ponownie."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:161
-msgid "Delete post?"
-msgstr "Usunąć wpis?"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:162
-msgid "This archives the post. It can be restored from its revisions."
-msgstr "Ta operacja archiwizuje wpis. Można go przywrócić z jednej z jego wersji."
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:165
-msgid "Delete"
-msgstr "Usunięcie"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:191
-msgid "The post could not be deleted. Refresh the table before retrying."
-msgstr "Nie udało się usunąć wpisu. Odśwież tabelę przed ponowną próbą."

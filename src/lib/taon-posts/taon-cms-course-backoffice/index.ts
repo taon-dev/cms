@@ -1,0 +1,1 @@
+export * from './taon-cms-course-backoffice.component'; // @browser

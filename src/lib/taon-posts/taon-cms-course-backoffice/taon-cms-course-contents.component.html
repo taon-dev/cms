@@ -1,0 +1,20 @@
+<section [attr.aria-label]="t.gettext('Course contents')">
+  <h2>{{ t.gettext('Course contents') }}: {{ course.title }}</h2>
+  @if (loading()) {
+    <p role="status">{{ t.gettext('Loading course contents...') }}</p>
+  }
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+    <button mat-button type="button" (click)="reload()">
+      {{ t.gettext('Retry') }}
+    </button>
+  }
+  <taon-datatable
+    [pageSize]="posts().length || 1"
+    [data]="posts()"
+    [columns]="columns"
+    [showPaginator]="false"
+    [hideSearch]="true"
+    [hideAddButton]="true">
+  </taon-datatable>
+</section>

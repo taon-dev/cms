@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:53
+msgid "Title"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:54
+msgid "Status"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:80
+msgid "Course contents could not be loaded. Please retry."
+msgstr ""

@@ -4,26 +4,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:134
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:135
 msgid "You can't manage posts"
 msgstr "You can't manage posts"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:241
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:249
 msgid "Content was not found."
 msgstr "Content was not found."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:254
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:262
 msgid "Content has no [[ type ]] media."
 msgstr "Content has no [[ type ]] media."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:261
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:269
 msgid "The media file was not found in storage."
 msgstr "The media file was not found in storage."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:299
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:307
 msgid "This content is not publicly accessible."
 msgstr "This content is not publicly accessible."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:314
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:322
 msgid "You do not have access to this content."
 msgstr "You do not have access to this content."

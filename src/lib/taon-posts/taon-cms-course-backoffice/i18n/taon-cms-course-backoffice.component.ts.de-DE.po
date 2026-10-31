@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:64
+msgid "Cover"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:69
+msgid "Title"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:71
+msgid "Visibility"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:104
+msgid "Courses could not be loaded. Please try reloading."
+msgstr ""

@@ -1,0 +1,6 @@
+@if (url()) {
+  <img [src]="url()" [alt]="post.title" (error)="failed()" />
+}
+@if (error()) {
+  <button mat-button type="button" (click)="reload()">{{ error() }}</button>
+}

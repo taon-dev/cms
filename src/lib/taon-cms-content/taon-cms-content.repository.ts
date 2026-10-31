@@ -283,6 +283,21 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async listCourses(): Promise<TaonCmsContentEntity[]> {
+    //#region @websqlFunc
+    return this.connection
+      .getRepository<TaonCmsContentEntity>(this.target)
+      .createQueryBuilder('content')
+      .innerJoin('content.relatedPosts', 'relatedPost')
+      .where('content.status != :archived', { archived: 'archived' })
+      .andWhere('content.thumbnailKey IS NOT NULL')
+      .andWhere('content.thumbnailKey != :empty', { empty: '' })
+      .distinct(true)
+      .orderBy('content.id', 'ASC')
+      .getMany();
+    //#endregion
+  }
+
   async listRelatedPosts(id: number): Promise<TaonCmsContentEntity[]> {
     //#region @websqlFunc
     requireContentId(id);

@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:1
+msgid "Courses"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:2
+msgid "Course is just a post with related posts and thumbnail. Any non archived post can be course."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:4
+msgid "Reload courses"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:28
+msgid "Public"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:28
+msgid "Private"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:7
+msgid "Loading courses..."
+msgstr ""
