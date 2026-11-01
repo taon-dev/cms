@@ -271,8 +271,6 @@ export class TaonCmsPostComponent implements AfterViewInit {
 
   private mediaPreviewSignature = '';
 
-  private slugManuallySet = false;
-
   readonly dialogOpen = signal(false);
 
   readonly error = signal('');
@@ -1196,12 +1194,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     field: K,
     value: TaonCmsPostDraft[K],
   ): void {
-    if (
-      field === 'title' &&
-      this.mode() === 'add' &&
-      !this.slugManuallySet &&
-      !this.draft().slug
-    ) {
+    if (field === 'title' && this.mode() === 'add') {
       const title = String(value);
       this.draft.update(draft => ({
         ...draft,
@@ -1370,7 +1363,6 @@ export class TaonCmsPostComponent implements AfterViewInit {
   //#region methods / update slug
   updateSlug(event: Event): void {
     if (event.target instanceof HTMLInputElement) {
-      this.slugManuallySet = true;
       this.updateDraft('slug', event.target.value);
     }
   }
@@ -1634,7 +1626,6 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.mediaPreviewSignature = '';
     this.mediaPreviewRequest += 1;
     this.currentPost.set(post);
-    this.slugManuallySet = Boolean(post);
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);
     this.permissionSource.set(null);
