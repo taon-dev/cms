@@ -1,9 +1,12 @@
 //#region imports
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
+  TemplateRef,
+  ViewChild,
   computed,
   effect,
   inject,
@@ -19,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -39,10 +43,13 @@ import {
   finalize,
   firstValueFrom,
   forkJoin,
+  from,
   of,
+  switchMap,
   take,
 } from 'rxjs';
 import { Taon } from 'taon/src';
+import { _ } from 'tnp-core/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
 import type { TaonCmsApplicationHook } from '../../taon-cms-application-hooks';
@@ -57,6 +64,7 @@ import { resolveTemplateVariables } from '../../taon-cms-content/taon-cms-templa
 import type { TaonCmsTemplateVariable } from '../../taon-cms-content/taon-cms-template-variables';
 import { TaonCmsTagApiService } from '../../taon-cms-tag/taon-cms-tag-api.service';
 import type { TaonCmsTagEntity } from '../../taon-cms-tag/taon-cms-tag.entity';
+import { TaonCmsTaxonomyQuickCreateDialogComponent } from '../../taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component';
 import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/taon-cms-revision-chooser.component';
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
@@ -68,6 +76,7 @@ import {
   defaultThumbnailUrl,
   generateVideoThumbnail,
 } from './taon-cms-thumbnail';
+import { NgTemplateOutlet } from '@angular/common';
 
 //#endregion
 
@@ -81,6 +90,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
   imports: [
     MatButtonModule,
     MatCheckboxModule,
+    MatCardModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -92,6 +102,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatRadioModule,
     MatSelectModule,
     TaonCmsEditableDirective,
+    NgTemplateOutlet,
   ],
   providers: [
     TaonCmsContentApiService,
@@ -101,7 +112,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     TaonCmsTagApiService,
   ],
 })
-export class TaonCmsPostComponent {
+export class TaonCmsPostComponent implements AfterViewInit {
   readonly t = t.for(this);
 
   //#region fields and getters
@@ -116,6 +127,11 @@ export class TaonCmsPostComponent {
   readonly duplicated = output<TaonCmsContentEntity>();
 
   readonly cancelled = output<void>();
+
+  readonly actionButtonsTemplate = output<TemplateRef<unknown>>();
+
+  @ViewChild('actionButtonsTemplate')
+  private readonly actionButtonsTemplateRef?: TemplateRef<unknown>;
 
   readonly currentPost = signal<TaonCmsContentEntity | null>(null);
 
@@ -255,6 +271,8 @@ export class TaonCmsPostComponent {
 
   private mediaPreviewSignature = '';
 
+  private slugManuallySet = false;
+
   readonly dialogOpen = signal(false);
 
   readonly error = signal('');
@@ -382,6 +400,12 @@ export class TaonCmsPostComponent {
   private permissionsLoad?: Subscription;
   //#endregion
 
+  ngAfterViewInit(): void {
+    if (this.actionButtonsTemplateRef) {
+      this.actionButtonsTemplate.emit(this.actionButtonsTemplateRef);
+    }
+  }
+
   //#region constructor
   constructor() {
     const editor = new Editor({
@@ -442,8 +466,8 @@ export class TaonCmsPostComponent {
     // Thumbnail preview handling.
     effect(onCleanup => {
       const key = this.thumbnailReference();
-      const slug = this.thumbnailSlug();
       const editing = this.editing();
+      const slug = editing ? '' : this.thumbnailSlug();
       const staged = this.stagedThumbnail();
 
       let active = true;
@@ -471,7 +495,7 @@ export class TaonCmsPostComponent {
         return;
       }
 
-      if (!slug) {
+      if (!editing && !slug) {
         return;
       }
 
@@ -618,7 +642,7 @@ export class TaonCmsPostComponent {
   //#endregion
 
   //#region methods / load related posts
-  loadTaxonomy(): void {
+  loadTaxonomy(preserveSelectedTags = false): void {
     this.taxonomyLoad?.unsubscribe();
     const session = this.editorSession;
     const postId = this.currentPost()?.id;
@@ -643,7 +667,9 @@ export class TaonCmsPostComponent {
               ),
             );
             this.tags.set(result.tags);
-            this.updateDraft('tagIds', result.tagIds);
+            if (!preserveSelectedTags) {
+              this.updateDraft('tagIds', result.tagIds);
+            }
           }
         },
         error: (error: unknown) => {
@@ -677,6 +703,76 @@ export class TaonCmsPostComponent {
     if (event.target instanceof HTMLInputElement) {
       this.tagSearch.set(event.target.value);
     }
+  }
+
+  createTaxonomy(taxonomy: 'category' | 'tag'): void {
+    if (this.busy() || this.dialogOpen()) {
+      return;
+    }
+
+    this.dialogOpen.set(true);
+    this.taxonomyError.set('');
+    const ref = this.dialog.open<
+      TaonCmsTaxonomyQuickCreateDialogComponent,
+      { taxonomy: 'category' | 'tag' },
+      {
+        name: string;
+        slug: string;
+        description: string | null;
+        parentCategoryId: number | null;
+        sortOrder: number;
+      }
+    >(TaonCmsTaxonomyQuickCreateDialogComponent, {
+      data: { taxonomy },
+      width: '560px',
+      maxWidth: '95vw',
+      disableClose: true,
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(fields => {
+        if (!fields) {
+          this.dialogOpen.set(false);
+          return;
+        }
+
+        const request =
+          taxonomy === 'category'
+            ? this.categoryApi.save(null, fields)
+            : this.tagApi.save(null, fields);
+        request
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.dialogOpen.set(false)),
+          )
+          .subscribe({
+            next: saved => {
+              if (taxonomy === 'category') {
+                this.updateDraft('categoryId', saved.id);
+              } else {
+                this.addTag(saved.id);
+              }
+              this.loadTaxonomy(true);
+            },
+            error: (error: unknown) => {
+              console.error(
+                `[taon-cms-post] Unable to create ${taxonomy}`,
+                error,
+              );
+              this.taxonomyError.set(
+                taxonomy === 'category'
+                  ? this.t.gettext(
+                      'The category could not be created. Please try again.',
+                    )
+                  : this.t.gettext(
+                      'The tag could not be created. Please try again.',
+                    ),
+              );
+            },
+          });
+      });
   }
 
   applyDefaultThumbnail(): void {
@@ -824,6 +920,71 @@ export class TaonCmsPostComponent {
         ) {
           this.relatedPosts.update(posts => [...posts, post]);
         }
+      });
+  }
+  //#endregion
+
+  //#region methods / add as child of
+  addAsChildOf(): void {
+    const post = this.currentPost();
+    if (
+      !this.editing() ||
+      !post ||
+      this.busy() ||
+      this.dialogOpen() ||
+      this.relatedPostsLoading()
+    ) {
+      return;
+    }
+
+    this.dialogOpen.set(true);
+    const ref = this.dialog.open<
+      TaonRelatedPostChooserComponent,
+      TaonRelatedPostChooserData,
+      TaonCmsContentEntity
+    >(TaonRelatedPostChooserComponent, {
+      data: { postId: post.id, excludedIds: [] },
+      width: '560px',
+      maxWidth: '95vw',
+      disableClose: true,
+    });
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(parent => {
+        this.dialogOpen.set(false);
+        if (!parent || !this.currentPost()) {
+          return;
+        }
+
+        this.busy.set(true);
+        this.error.set('');
+        this.api
+          .addRelatedPost(parent.id, post.id, parent.version)
+          .pipe(
+            switchMap(() => from(this.api.getById(post.id))),
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.busy.set(false)),
+          )
+          .subscribe({
+            next: refreshedPost => {
+              this.currentPost.set(refreshedPost);
+              this.permissionsLoad?.unsubscribe();
+              this.permissionsLoading.set(false);
+              this.loadPermissions();
+            },
+            error: (error: unknown) => {
+              console.error(
+                '[taon-cms-post] Unable to make post a child',
+                error,
+              );
+              this.error.set(
+                this.t.gettext(
+                  'The parent post could not be changed. Please try again.',
+                ),
+              );
+            },
+          });
       });
   }
   //#endregion
@@ -1035,6 +1196,20 @@ export class TaonCmsPostComponent {
     field: K,
     value: TaonCmsPostDraft[K],
   ): void {
+    if (
+      field === 'title' &&
+      this.mode() === 'add' &&
+      !this.slugManuallySet &&
+      !this.draft().slug
+    ) {
+      const title = String(value);
+      this.draft.update(draft => ({
+        ...draft,
+        title,
+        slug: _.kebabCase(title),
+      }));
+      return;
+    }
     this.draft.update(draft => ({ ...draft, [field]: value }));
   }
   //#endregion
@@ -1195,6 +1370,7 @@ export class TaonCmsPostComponent {
   //#region methods / update slug
   updateSlug(event: Event): void {
     if (event.target instanceof HTMLInputElement) {
+      this.slugManuallySet = true;
       this.updateDraft('slug', event.target.value);
     }
   }
@@ -1458,6 +1634,7 @@ export class TaonCmsPostComponent {
     this.mediaPreviewSignature = '';
     this.mediaPreviewRequest += 1;
     this.currentPost.set(post);
+    this.slugManuallySet = Boolean(post);
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);
     this.permissionSource.set(null);

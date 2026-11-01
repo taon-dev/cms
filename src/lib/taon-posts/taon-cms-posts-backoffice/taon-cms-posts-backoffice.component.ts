@@ -5,6 +5,10 @@ import {
   ViewChild,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MtxGridColumn } from '@ng-matero/extensions/grid';
 import { TaonDatatableComponent } from '@taon-dev/ui/src';
@@ -23,7 +27,14 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
   templateUrl: './taon-cms-posts-backoffice.component.html',
   styleUrls: ['./taon-cms-posts-backoffice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, TaonDatatableComponent],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    TaonDatatableComponent,
+  ],
   providers: [TaonCmsContentApiService],
 })
 export class TaonCmsPostsBackofficeComponent extends TaonCmsPostTableActions {
@@ -43,6 +54,7 @@ export class TaonCmsPostsBackofficeComponent extends TaonCmsPostTableActions {
   readonly columns: MtxGridColumn[] = [
     { header: 'ID', field: 'id', sortable: true },
     { header: this.t.gettext('Title'), field: 'title', sortable: true },
+    { header: this.t.gettext('Slug'), field: 'slug', sortable: true },
     { header: this.t.gettext('Status'), field: 'status', sortable: true },
     this.actionsColumn,
   ];

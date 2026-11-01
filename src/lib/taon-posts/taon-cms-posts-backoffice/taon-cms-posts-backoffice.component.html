@@ -8,7 +8,43 @@
 <taon-datatable
   [entityCrudController]="crud"
   [columns]="columns"
-  [allowedColumns]="['id', 'title', 'status']"
+  [allowedColumns]="['id', 'title', 'slug', 'status']"
+  tableId="cms-posts"
+  storeTableFilters="query-params"
+  [filtersTemplate]="filtersTemplate"
   searchMode="advanced"
   (addingItem)="add()">
 </taon-datatable>
+<ng-template
+  #filtersTemplate
+  let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('ID') }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filters.id"
+      (keyup.enter)="datatable.applyAdvancedFilters()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('Title') }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filters.title"
+      (keyup.enter)="datatable.applyAdvancedFilters()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('Slug') }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filters.slug"
+      (keyup.enter)="datatable.applyAdvancedFilters()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('Status') }}</mat-label>
+    <mat-select [(ngModel)]="filters.status">
+      <mat-option value="published">{{ t.gettext('Published') }}</mat-option>
+      <mat-option value="draft">{{ t.gettext('Draft') }}</mat-option>
+      <mat-option value="archived">{{ t.gettext('Archived') }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</ng-template>

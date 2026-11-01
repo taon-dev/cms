@@ -7,13 +7,19 @@ import { PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBac
 import { DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentHtml } from './taon-cms-taxonomy-backoffice.component.html.de-DE.i18n.data';
 import { EnUsTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs } from './taon-cms-taxonomy-backoffice.component.ts.en-US.i18n.data';
 import { PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs } from './taon-cms-taxonomy-backoffice.component.ts.pl-PL.i18n.data';
-import { DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs } from './taon-cms-taxonomy-backoffice.component.ts.de-DE.i18n.data';;
+import { DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs } from './taon-cms-taxonomy-backoffice.component.ts.de-DE.i18n.data';
+import { EnUsTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs } from './taon-cms-taxonomy-quick-create-dialog.component.ts.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs } from './taon-cms-taxonomy-quick-create-dialog.component.ts.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs } from './taon-cms-taxonomy-quick-create-dialog.component.ts.de-DE.i18n.data';;
 export type TaonCmsTaxonomyBackofficeOverride = CoreModels.DeepPartial<EnUsTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentHtml 
 | PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentHtml 
 | DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentHtml 
 | EnUsTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs 
 | PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs 
-| DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs>;
+| DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyBackofficeComponentTs 
+| EnUsTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs 
+| PlPlTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs 
+| DeDeTraslationOverrideSrcLibTaonCmsTaxonomyBackofficeTaonCmsTaxonomyQuickCreateDialogComponentTs>;
 
  // THIS FILE IS GENERATED - DO NOT MODIFY
         

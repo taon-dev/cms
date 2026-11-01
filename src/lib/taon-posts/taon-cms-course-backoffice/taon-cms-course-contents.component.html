@@ -1,5 +1,14 @@
 <section [attr.aria-label]="t.gettext('Course contents')">
   <h2>{{ t.gettext('Course contents') }}: {{ course.title }}</h2>
+  <button
+    mat-button
+    type="button"
+    (click)="copyCourseSlug()">
+    {{ t.gettext('Copy slug: [[ slug ]]', { slug: course.slug }) }}
+  </button>
+  @if (copyFeedback()) {
+    <p role="status">{{ copyFeedback() }}</p>
+  }
   @if (loading()) {
     <p role="status">{{ t.gettext('Loading course contents...') }}</p>
   }

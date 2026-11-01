@@ -29,6 +29,8 @@ export abstract class TaonCmsPostTableActions {
 
   protected readonly postPath: string[] = [];
 
+  protected readonly backContext: 'posts' | 'courses' = 'posts';
+
   private readonly dialog = inject(MatDialog);
 
   private readonly route = inject(ActivatedRoute);
@@ -82,7 +84,26 @@ export abstract class TaonCmsPostTableActions {
       );
       return;
     }
-    void this.router.navigate([...this.postPath, id], { relativeTo: postsRoute });
+    void this.router
+      .navigate([...this.postPath, id], {
+        relativeTo: postsRoute,
+        queryParams:
+          this.backContext === 'courses'
+            ? { postOrigin: 'courses' }
+            : undefined,
+        queryParamsHandling: 'preserve',
+      })
+      .catch(error => {
+        console.error(
+          '[taon-cms-posts-backoffice] Unable to open post',
+          error,
+        );
+        this.error.set(
+          this.actionsTranslation.gettext(
+            'The Post details route is unavailable.',
+          ),
+        );
+      });
   }
 
   duplicate(post: TaonCmsContentEntity): void {

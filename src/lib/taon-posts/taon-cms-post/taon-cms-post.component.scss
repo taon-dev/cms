@@ -30,6 +30,16 @@
   overflow-wrap: anywhere;
 }
 
+.post-settings {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.post-setting-card {
+  display: block;
+}
+
 .post-title {
   margin: 0 0 1.5rem;
   font-size: clamp(2rem, 5vw, 3.5rem);

@@ -45,6 +45,8 @@ export class TaonCmsCourseContentsComponent implements OnInit {
 
   readonly error = signal('');
 
+  readonly copyFeedback = signal('');
+
   columns: MtxGridColumn[] = [];
 
   ngOnInit(): void {
@@ -81,5 +83,21 @@ export class TaonCmsCourseContentsComponent implements OnInit {
           );
         },
       });
+  }
+
+  async copyCourseSlug(): Promise<void> {
+    this.copyFeedback.set('');
+    try {
+      if (!navigator.clipboard) {
+        throw new Error('Clipboard access is unavailable.');
+      }
+      await navigator.clipboard.writeText(this.course.slug);
+      this.copyFeedback.set(this.t.gettext('Course slug copied.'));
+    } catch (error: unknown) {
+      console.error('[taon-cms-course-contents] Unable to copy course slug', error);
+      this.copyFeedback.set(
+        this.t.gettext('The course slug could not be copied.'),
+      );
+    }
   }
 }

@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:43
+msgid "Add category"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:44
+msgid "Add tag"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:50
+msgid "Name"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:59
+msgid "Slug"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:68
+msgid "Description"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:80
+msgid "Cancel"
+msgstr ""
+
+#: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:87
+msgid "Create"
+msgstr ""

@@ -4,14 +4,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:53
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:55
 msgid "Title"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:54
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:56
 msgid "Status"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:80
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:82
 msgid "Course contents could not be loaded. Please retry."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:95
+msgid "Course slug copied."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:99
+msgid "The course slug could not be copied."
 msgstr ""

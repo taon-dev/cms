@@ -110,6 +110,7 @@ export * from './taon-cms-tag/taon-cms-tag.subscriber';
 export * from './taon-cms-tag/taon-cms-tag.utils'; 
 export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component'; // @browser
 export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.routes'; // @browser
+export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component'; // @browser
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component'; // @browser
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.models'; 
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.routes'; // @browser

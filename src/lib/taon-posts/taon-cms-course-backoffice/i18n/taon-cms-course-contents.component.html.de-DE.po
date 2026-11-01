@@ -9,10 +9,14 @@ msgstr ""
 msgid "Course contents"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:4
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:7
+msgid "Copy slug: [[ slug ]]"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:13
 msgid "Loading course contents..."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:9
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:18
 msgid "Retry"
 msgstr ""

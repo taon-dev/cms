@@ -1,8 +1,5 @@
 @if (mode() !== 'view-clean') {
-  <header class="post-actions">
-    <span class="post-status">{{
-      mode() === 'add' ? t.gettext('New draft') : currentPost()?.status
-    }}</span>
+  <ng-template #actionButtonsTemplate>
     <div class="buttons">
       @if (editing()) {
         <button
@@ -71,6 +68,12 @@
         </button>
       }
     </div>
+  </ng-template>
+  <header class="post-actions">
+    <span class="post-status">{{
+      mode() === 'add' ? t.gettext('New draft') : currentPost()?.status
+    }}</span>
+    <ng-container [ngTemplateOutlet]="actionButtonsTemplate" />
     @if (busy()) {
       <span role="status">{{
         uploading()
@@ -92,6 +95,8 @@
   class="post-article"
   [attr.aria-busy]="busy()">
   @if (editing()) {
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab [label]="t.gettext('CONTENT')">
     <mat-radio-group
       class="post-type-selector"
       [attr.aria-label]="t.gettext('Post type')"
@@ -211,7 +216,11 @@
         (input)="updateSlug($event)"
         [placeholder]="t.gettext('my-post')" />
     </label>
+      </mat-tab>
+      <mat-tab [label]="t.gettext('SETTINGS')">
+        <div class="post-settings">
     @if (mediaAttachment(); as media) {
+      <mat-card class="post-setting-card">
       <section
         class="media-attachment"
         aria-labelledby="media-attachment-heading">
@@ -300,7 +309,9 @@
           </button>
         }
       </section>
+      </mat-card>
     }
+    <mat-card class="post-setting-card">
     <section
       class="post-thumbnail"
       aria-labelledby="thumbnail-heading">
@@ -340,10 +351,12 @@
         </button>
       </div>
     </section>
+    </mat-card>
+    <mat-card class="post-setting-card">
     <section
       class="post-taxonomy"
       aria-labelledby="category-heading">
-      <h2 id="category-heading">{{ t.gettext('Category and Tags') }}</h2>
+      <h2 id="category-heading">{{ t.gettext('Category / Tags') }}</h2>
       @if (taxonomyLoading()) {
         <p role="status">{{ t.gettext('Loading categories and tags...') }}</p>
       }
@@ -411,7 +424,25 @@
           }
         </mat-select>
       </mat-form-field>
+      <div class="buttons">
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+          (click)="createTaxonomy('category')">
+          <mat-icon>add</mat-icon> {{ t.gettext('Add category') }}
+        </button>
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+          (click)="createTaxonomy('tag')">
+          <mat-icon>add</mat-icon> {{ t.gettext('Add tag') }}
+        </button>
+      </div>
     </section>
+    </mat-card>
+    <mat-card class="post-setting-card">
     <section
       class="related-posts"
       aria-labelledby="related-posts-heading">
@@ -460,15 +491,27 @@
           (click)="addRelatedPost()">
           <mat-icon>add</mat-icon> {{ t.gettext('Add related post') }}
         </button>
+        @if (currentPost()) {
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="addAsChildOf()">
+            <mat-icon>account_tree</mat-icon>
+            {{ t.gettext('Add as child of') }}
+          </button>
+        }
       }
     </section>
+    </mat-card>
 
     @if (!mediaAttachment()) {
+      <mat-card class="post-setting-card">
       <section
         class="application-hook"
         aria-labelledby="application-hook-heading">
         <h2 id="application-hook-heading">
-          {{ t.gettext('Application Hook') }}
+          {{ t.gettext('Hooks') }}
         </h2>
         @if (applicationHooksLoading()) {
           <p role="status">{{ t.gettext('Loading application hooks...') }}</p>
@@ -529,13 +572,13 @@
           }
         }
       </section>
+      </mat-card>
     }
+    <mat-card class="post-setting-card">
     <section
       class="post-permissions"
       aria-labelledby="post-permissions-heading">
-      <h2 id="post-permissions-heading">
-        {{ t.gettext('Allow Read only with Permissions') }}
-      </h2>
+      <h2 id="post-permissions-heading">{{ t.gettext('Permissions') }}</h2>
       @if (permissionSource(); as source) {
         <p role="note">
           {{
@@ -650,6 +693,10 @@
         </mat-checkbox>
       }
     </section>
+    </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   } @else if (currentPost(); as post) {
     @if (thumbnailPreviewUrl()) {
       <img
@@ -681,6 +728,7 @@
           <video
             controls
             preload="none"
+            [poster]="thumbnailPreviewUrl() || null"
             [src]="mediaPreviewUrl()">
             {{ t.gettext('Your browser does not support video playback.') }}
           </video>
@@ -688,6 +736,7 @@
           <audio
             controls
             preload="none"
+            [poster]="thumbnailPreviewUrl() || null"
             [src]="mediaPreviewUrl()">
             {{ t.gettext('Your browser does not support audio playback.') }}
           </audio>

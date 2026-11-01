@@ -13,6 +13,9 @@
   [data]="courses()"
   [columns]="columns"
   [allowedColumns]="['id', 'title', 'status']"
+  tableId="cms-courses"
+  storeTableFilters="query-params"
+  [filtersTemplate]="filtersTemplate"
   [hideAddButton]="true"
   searchMode="advanced"
   [expansionTemplate]="expansionTemplate">
@@ -33,4 +36,29 @@
     [course]="course"
     [actionsColumn]="actionsColumn">
   </taon-cms-course-contents>
+</ng-template>
+<ng-template
+  #filtersTemplate
+  let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('ID') }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filters.id"
+      (keyup.enter)="datatable.applyAdvancedFilters()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('Title') }}</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filters.title"
+      (keyup.enter)="datatable.applyAdvancedFilters()" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ t.gettext('Visibility') }}</mat-label>
+    <mat-select [(ngModel)]="filters.status">
+      <mat-option value="published">{{ t.gettext('Public') }}</mat-option>
+      <mat-option value="draft">{{ t.gettext('Private') }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </ng-template>

@@ -4,42 +4,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:39
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:41
 msgid "Actions"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:46
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:48
 msgid "Duplicate post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:53
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:55
 msgid "Post details"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:59
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:61
 msgid "Delete (archive) post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:81
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:83
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:102
 msgid "The Post details route is unavailable."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:108
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:129
 msgid "The post could not be duplicated. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:123
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:144
 msgid "Delete post?"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:124
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:145
 msgid "This archives the post. It can be restored from its revisions."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:127
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:148
 msgid "Delete"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:153
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:174
 msgid "The post could not be deleted. Refresh the table before retrying."
 msgstr ""

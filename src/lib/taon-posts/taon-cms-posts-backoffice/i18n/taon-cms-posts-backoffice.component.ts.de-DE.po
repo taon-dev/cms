@@ -4,10 +4,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:45
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:56
 msgid "Title"
 msgstr "Titel"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:46
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:57
+msgid "Slug"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:58
 msgid "Status"
 msgstr "Status"
