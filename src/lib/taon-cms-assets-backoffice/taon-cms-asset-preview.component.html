@@ -16,7 +16,7 @@
     @case ('video') {
       <video
         controls
-        preload="none"
+        preload="metadata"
         [src]="url()"
         (error)="playbackError()">
         {{ t.gettext('Your browser does not support video playback.') }}

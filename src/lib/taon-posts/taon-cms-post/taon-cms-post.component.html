@@ -281,7 +281,7 @@
                   @if (media.type === 'video' && mediaPreviewUrl()) {
                     <video
                       controls
-                      preload="none"
+                      preload="metadata"
                       [src]="mediaPreviewUrl()">
                       {{
                         t.gettext(
@@ -292,7 +292,7 @@
                   } @else if (media.type === 'audio' && mediaPreviewUrl()) {
                     <audio
                       controls
-                      preload="none"
+                      preload="metadata"
                       [src]="mediaPreviewUrl()">
                       {{
                         t.gettext(
@@ -1016,7 +1016,13 @@
         } @else if (media.type === 'video' && mediaPreviewUrl()) {
           <video
             controls
-            preload="none"
+            preload="metadata"
+            [attr.controlsList]="
+              currentPost()?.status === 'archived' ||
+              currentPost()?.status === 'draft'
+                ? 'nodownload noremoteplayback'
+                : null
+            "
             [poster]="thumbnailPreviewUrl() || null"
             [src]="mediaPreviewUrl()">
             {{ t.gettext('Your browser does not support video playback.') }}
@@ -1024,8 +1030,13 @@
         } @else if (media.type === 'audio' && mediaPreviewUrl()) {
           <audio
             controls
-            preload="none"
-            [poster]="thumbnailPreviewUrl() || null"
+            preload="metadata"
+            [attr.controlsList]="
+              currentPost()?.status === 'archived' ||
+              currentPost()?.status === 'draft'
+                ? 'nodownload noremoteplayback'
+                : null
+            "
             [src]="mediaPreviewUrl()">
             {{ t.gettext('Your browser does not support audio playback.') }}
           </audio>

@@ -12,18 +12,18 @@ msgstr "Sudo"
 msgid "CMS"
 msgstr "CMS"
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:46
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:45
 msgid "Users"
 msgstr "Users"
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:57
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:55
 msgid "Sessions"
 msgstr "Sessions"
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:68
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:65
 msgid "Authorization"
 msgstr "Authorization"
 
-#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:79
+#: src/app/baseline-backoffice/taon-baseline-backoffice.routes.ts:75
 msgid "Emails"
 msgstr "Emails"
