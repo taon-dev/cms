@@ -361,6 +361,6 @@ msgstr "Apply permissions to related posts"
 msgid "Loading media..."
 msgstr "Loading media..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1061
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1064
 msgid "No post is loaded."
 msgstr "No post is loaded."

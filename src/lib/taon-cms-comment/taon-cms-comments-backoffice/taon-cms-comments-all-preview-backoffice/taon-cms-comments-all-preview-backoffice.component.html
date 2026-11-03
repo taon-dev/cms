@@ -1,4 +1,55 @@
-<router-outlet></router-outlet>
-<p>
-  {{ t.gettext('taon-cms-comments-all-preview-backoffice works!') }}
-</p>
+<h1>{{ t.gettext('CMS comments') }}</h1>
+<form (submit)="$event.preventDefault(); applyFilters()">
+  <label>
+    {{ t.gettext('ID') }}
+    <input [ngModel]="idFilter()" (ngModelChange)="idFilter.set($event)" name="id" />
+  </label>
+  <label>
+    {{ t.gettext('Text in comment') }}
+    <input [ngModel]="textFilter()" (ngModelChange)="textFilter.set($event)" name="text" />
+  </label>
+  <label>
+    {{ t.gettext('Author') }}
+    <input [ngModel]="authorFilter()" (ngModelChange)="authorFilter.set($event)" name="author" />
+  </label>
+  <button mat-button type="submit">{{ t.gettext('Apply filters') }}</button>
+</form>
+@if (loading()) {
+  <p role="status">{{ t.gettext('Loading comments...') }}</p>
+}
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+<ng-template #expanded let-comment>
+  <section>
+    <p><strong>{{ t.gettext('Full comment') }}:</strong> {{ comment.body }}</p>
+    <p>{{ t.gettext('Author') }}: {{ comment.authorName }}</p>
+    <p>{{ t.gettext('Created') }}: {{ comment.createdAt | date: 'medium' }}</p>
+    <p>
+      {{ t.gettext('Post') }}:
+      <a [routerLink]="['../../posts', comment.contentId]">{{ comment.postTitle }}</a>
+    </p>
+    <p>{{ t.gettext('Votes') }}: {{ comment.upvotes }} / {{ comment.downvotes }} ({{ comment.voteScore }})</p>
+    <p>{{ t.gettext('Spam reports') }}: {{ comment.spamReports }}</p>
+    <button mat-button color="warn" type="button" (click)="delete(comment)">
+      {{ t.gettext('Delete comment') }}
+    </button>
+  </section>
+</ng-template>
+<taon-datatable
+  [data]="comments()"
+  [columns]="columns"
+  [hideAddButton]="true"
+  [showPaginator]="false"
+  [expansionTemplate]="expanded"
+  searchMode="simple">
+</taon-datatable>
+<nav aria-label="Comment pages">
+  <button mat-button type="button" [disabled]="pageNumber() <= 1 || loading()" (click)="previousPage()">
+    {{ t.gettext('Previous') }}
+  </button>
+  <span>{{ t.gettext('Page [[ page ]]', { page: pageNumber() }) }}</span>
+  <button mat-button type="button" [disabled]="pageNumber() * pageSize >= total() || loading()" (click)="nextPage()">
+    {{ t.gettext('Next') }}
+  </button>
+</nav>

@@ -1,0 +1,19 @@
+// THIS FILE IS GENERATED - DO NOT MODIFY
+import { CoreModels } from 'tnp-core/src';
+
+// join interface type here
+import { EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml } from './taon-cms-comments-filters-settings.component.html.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml } from './taon-cms-comments-filters-settings.component.html.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml } from './taon-cms-comments-filters-settings.component.html.de-DE.i18n.data';
+import { EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs } from './taon-cms-comments-filters-settings.component.ts.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs } from './taon-cms-comments-filters-settings.component.ts.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs } from './taon-cms-comments-filters-settings.component.ts.de-DE.i18n.data';;
+export type TaonCmsCommentsFiltersSettingsOverride = CoreModels.DeepPartial<EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml 
+| PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml 
+| DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentHtml 
+| EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs 
+| PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs 
+| DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsFiltersSettingsTaonCmsCommentsFiltersSettingsComponentTs>;
+
+ // THIS FILE IS GENERATED - DO NOT MODIFY
+        

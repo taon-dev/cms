@@ -1,4 +1,25 @@
-<router-outlet></router-outlet>
-<p>
-  {{ t.gettext('taon-cms-comments-filters-settings works!') }}
-</p>
+<h1>{{ t.gettext('Comment filters') }}</h1>
+<p>{{ t.gettext('Comments containing any configured word or phrase are rejected.') }}</p>
+<form (submit)="$event.preventDefault(); add()">
+  <label>
+    {{ t.gettext('Blocked word or phrase') }}
+    <input [ngModel]="phrase()" (ngModelChange)="phrase.set($event)" name="phrase" />
+  </label>
+  <button mat-flat-button type="submit" [disabled]="loading() || !phrase().trim()">{{ t.gettext('Add') }}</button>
+</form>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+@if (loading()) {
+  <p role="status">{{ t.gettext('Loading blocked phrases...') }}</p>
+}
+<ul>
+  @for (item of phrases(); track item.id) {
+    <li>
+      {{ item.phrase }}
+      <button mat-button type="button" (click)="remove(item.id)">{{ t.gettext('Delete') }}</button>
+    </li>
+  } @empty {
+    <li>{{ t.gettext('No blocked words or phrases configured.') }}</li>
+  }
+</ul>

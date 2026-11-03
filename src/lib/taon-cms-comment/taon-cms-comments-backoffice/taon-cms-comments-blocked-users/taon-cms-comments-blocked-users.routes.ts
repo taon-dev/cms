@@ -7,7 +7,7 @@ export const TaonCmsCommentsBlockedUsersRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./taon-cms-comments-blocked-users.component').then(m => m.TaonCmsCommentsBlockedUsersComponent),
+      import('./taon-cms-comments-blocked-users.component').then(m => m.TaonCmsBlockedUsersBackofficeComponent),
 
     children: [
       // adminLazyRoute({

@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:1
+msgid "Comment-blocked users"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:2
+msgid "Blocking comments here does not block Session sign-in."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:5
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:18
+msgid "User ID"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:8
+msgid "Block commenting"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:18
+msgid "Actions"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:24
+msgid "Activate commenting"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:32
+msgid "Previous"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:33
+msgid "Page [[ page ]]"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:34
+msgid "Next"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:14
+msgid "Loading blocked users..."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:27
+msgid "No users are blocked from commenting."
+msgstr ""

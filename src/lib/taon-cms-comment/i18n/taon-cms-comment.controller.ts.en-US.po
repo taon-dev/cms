@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:103
+msgid "Authentication is required to comment."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:124
+msgid "You can't manage CMS comments."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:169
+msgid "A post and comment text are required."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:175
+msgid "Comments cannot exceed 500 characters."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:185
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:308
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:354
+msgid "The post was not found."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:196
+msgid "Your account is not allowed to comment."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:211
+msgid "Your comment contains a blocked word or phrase."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:228
+msgid "You have reached the limit of 50 comments per day."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:257
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:299
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:345
+msgid "The comment was not found."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:267
+msgid "You are not allowed to delete this comment."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:291
+msgid "Choose a valid comment vote."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:338
+msgid "A valid comment is required."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:443
+msgid "A valid user ID and blocked status are required."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:455
+msgid "The user was not found."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:496
+msgid "Enter a word or phrase of at most 500 characters."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:524
+msgid "The blocked phrase was not found."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:560
+msgid "You do not have access to this post."
+msgstr ""

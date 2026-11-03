@@ -63,6 +63,16 @@ export class TaonCmsContentApiService<
   }
   //#endregion
 
+  public async getPublicBySlug(slug: string): Promise<TaonCmsContentEntity> {
+    const response = await this.taonCmsContentController
+      .getPublicBySlug(slug)
+      .request!();
+    if (response.statusCode >= 400 || !response.body?.json) {
+      throw new Error(response.responseText || 'The post could not be loaded.');
+    }
+    return response.body.json;
+  }
+
   //#region API / get video link by slug
   /**
    * Get link to private video

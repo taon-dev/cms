@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:103
+msgid "Authentication is required to comment."
+msgstr "Zum Kommentieren müssen Sie angemeldet sein."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:124
+msgid "You can't manage CMS comments."
+msgstr "Sie sind nicht berechtigt, CMS-Kommentare zu verwalten."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:169
+msgid "A post and comment text are required."
+msgstr "Ein Beitrag und ein Kommentartext sind erforderlich."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:175
+msgid "Comments cannot exceed 500 characters."
+msgstr "Kommentare dürfen höchstens 500 Zeichen lang sein."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:185
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:308
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:354
+msgid "The post was not found."
+msgstr "Der Beitrag wurde nicht gefunden."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:196
+msgid "Your account is not allowed to comment."
+msgstr "Ihr Konto darf keine Kommentare verfassen."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:211
+msgid "Your comment contains a blocked word or phrase."
+msgstr "Ihr Kommentar enthält ein gesperrtes Wort oder eine gesperrte Formulierung."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:228
+msgid "You have reached the limit of 50 comments per day."
+msgstr "Sie haben das Tageslimit von 50 Kommentaren erreicht."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:257
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:299
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:345
+msgid "The comment was not found."
+msgstr "Der Kommentar wurde nicht gefunden."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:267
+msgid "You are not allowed to delete this comment."
+msgstr "Sie sind nicht berechtigt, diesen Kommentar zu löschen."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:291
+msgid "Choose a valid comment vote."
+msgstr "Wählen Sie eine gültige Stimme für den Kommentar."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:338
+msgid "A valid comment is required."
+msgstr "Ein gültiger Kommentar ist erforderlich."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:443
+msgid "A valid user ID and blocked status are required."
+msgstr "Eine gültige Benutzer-ID und ein gültiger Sperrstatus sind erforderlich."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:455
+msgid "The user was not found."
+msgstr "Der Benutzer wurde nicht gefunden."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:496
+msgid "Enter a word or phrase of at most 500 characters."
+msgstr "Geben Sie ein Wort oder eine Formulierung mit höchstens 500 Zeichen ein."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:524
+msgid "The blocked phrase was not found."
+msgstr "Die gesperrte Formulierung wurde nicht gefunden."
+
+#: src/lib/taon-cms-comment/taon-cms-comment.controller.ts:560
+msgid "You do not have access to this post."
+msgstr "Sie haben keinen Zugriff auf diesen Beitrag."

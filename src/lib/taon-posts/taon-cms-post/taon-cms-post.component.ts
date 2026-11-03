@@ -75,6 +75,7 @@ import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/ta
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
+import { TaonCmsCommentsComponent } from '../../taon-cms-comment/taon-cms-comments.component';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 import {
   defaultThumbnailKey,
@@ -108,6 +109,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatRadioModule,
     MatSelectModule,
     TaonCmsEditableDirective,
+    TaonCmsCommentsComponent,
     NgTemplateOutlet,
   ],
   providers: [

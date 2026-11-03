@@ -49,6 +49,7 @@ import { contentError } from './taon-cms-content.validation';
   allowedMethods: [
     'getAll',
     'getBy',
+    'getPublicBySlug',
     'createContent',
     'duplicateContent',
     'updateContent',
@@ -113,6 +114,8 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#region @backendFunc
     if (
       methodConfig.methodName === 'getPublicContentByHook' ||
+      methodConfig.methodName === 'getPublicBySlug' ||
+      methodConfig.methodName === 'listCourses' ||
       methodConfig.methodName === 'getPublicVideoLinkBySlug' ||
       methodConfig.methodName === 'getPublicAudioLinkBySlug' ||
       methodConfig.methodName === 'getPublicAttachmentLinkBySlug' ||
@@ -344,6 +347,34 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
         },
       });
       return model;
+    };
+    //#endregion
+  }
+  //#endregion
+
+  @GET()
+  getPublicBySlug(
+    @Query('slug') slug: string,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async (req, _res, { t }) => {
+      const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+      if (!normalizedSlug || normalizedSlug.length > 255) {
+        contentError(t.gettext('The post slug is invalid.'), 400);
+      }
+      const post =
+        await this.taonCmsContentRepository.getContentBySlugForMedia(
+          normalizedSlug,
+        );
+      if (!post) {
+        contentError(t.gettext('The post was not found.'), 404);
+      }
+      await this.requireReadAccess(post, true, req, t);
+      return Object.assign(new TaonCmsContentEntity(), post, {
+        permissions: [],
+        relatedPosts: [],
+        applicationHook: null,
+      });
     };
     //#endregion
   }

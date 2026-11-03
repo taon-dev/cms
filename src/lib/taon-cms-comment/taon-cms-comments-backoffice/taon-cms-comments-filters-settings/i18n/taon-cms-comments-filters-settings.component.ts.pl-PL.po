@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.ts:42
+msgid "Blocked phrases could not be loaded."
+msgstr "Nie udało się wczytać zablokowanych fraz."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.ts:60
+msgid "The phrase could not be added."
+msgstr "Nie udało się dodać frazy."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.ts:71
+msgid "The phrase could not be deleted."
+msgstr "Nie udało się usunąć frazy."

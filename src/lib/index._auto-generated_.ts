@@ -27,6 +27,10 @@ export * from './taon-cms-category/taon-cms-category.subscriber';
 export * from './taon-cms-category/taon-cms-category.utils'; 
 export * from './taon-cms-category/taon-cms-taxonomy.validation'; 
 export * from './taon-cms-comment/taon-cms-comment-api.service'; // @browser
+export * from './taon-cms-comment/taon-cms-comment-blocked-phrase.entity'; 
+export * from './taon-cms-comment/taon-cms-comment-blocked-user.entity'; 
+export * from './taon-cms-comment/taon-cms-comment-spam-report.entity'; 
+export * from './taon-cms-comment/taon-cms-comment-vote.entity'; 
 export * from './taon-cms-comment/taon-cms-comment.abstract.context'; 
 export * from './taon-cms-comment/taon-cms-comment.constants'; 
 export * from './taon-cms-comment/taon-cms-comment.controller'; 
@@ -37,6 +41,7 @@ export * from './taon-cms-comment/taon-cms-comment.provider';
 export * from './taon-cms-comment/taon-cms-comment.repository'; 
 export * from './taon-cms-comment/taon-cms-comment.subscriber'; 
 export * from './taon-cms-comment/taon-cms-comment.utils'; 
+export * from './taon-cms-comment/taon-cms-comments.component'; // @browser
 export * from './taon-cms-content/taon-cms-content-api.service'; // @browser
 export * from './taon-cms-content/taon-cms-content-storage.controller'; 
 export * from './taon-cms-content/taon-cms-content.abstract.context'; 

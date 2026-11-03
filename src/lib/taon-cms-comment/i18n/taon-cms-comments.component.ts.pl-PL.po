@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.ts:80
+msgid "Unable to add the comment."
+msgstr "Nie można dodać komentarza."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.ts:96
+msgid "Unable to vote on the comment."
+msgstr "Nie można zagłosować na komentarz."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.ts:115
+msgid "Unable to report the comment."
+msgstr "Nie można zgłosić komentarza."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.ts:132
+msgid "Unable to delete the comment."
+msgstr "Nie można usunąć komentarza."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.ts:157
+msgid "Unable to load comments."
+msgstr "Nie można wczytać komentarzy."

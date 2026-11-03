@@ -1057,6 +1057,9 @@
         }
       }
     }
+    @if (mode() === 'view-clean') {
+      <taon-cms-comments [contentId]="post.id" class="w-full" />
+    }
   } @else {
     <p role="status">{{ t.gettext('No post is loaded.') }}</p>
   }

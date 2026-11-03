@@ -4,26 +4,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:141
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:144
 msgid "You can't manage posts"
 msgstr "Nie możesz zarządzać wpisami"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:255
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:258
 msgid "Content was not found."
 msgstr "Zawartość nie została znaleziona."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:268
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:271
 msgid "Content has no [[ type ]] media."
 msgstr "Treść nie zawiera multimediów typu [[ type ]]."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:275
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:278
 msgid "The media file was not found in storage."
 msgstr "Nie znaleziono pliku multimedialnego w magazynie danych."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:313
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:316
 msgid "This content is not publicly accessible."
 msgstr "Zawartość ta nie jest dostępna publicznie."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:328
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:331
 msgid "You do not have access to this content."
 msgstr "Nie masz dostępu do tej treści."
+
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:363
+msgid "The post slug is invalid."
+msgstr "Nieprawidłowy slug wpisu."
+
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:370
+msgid "The post was not found."
+msgstr "Nie znaleziono wpisu."

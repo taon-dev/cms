@@ -462,7 +462,7 @@ export const CmsStartFunction = async (
   TranslationManager.Instance.visibleLanguages = ['en-US', 'pl-PL'];
   // await TranslationManager.Instance.changeGlobalLang('en-US');
 
-  // await TranslationManager.Instance.setOneLanguagePernament('en-US')
+  await TranslationManager.Instance.setOneLanguagePernament('pl-PL');
 
   //#region @browser
   TaonAdmin.init();

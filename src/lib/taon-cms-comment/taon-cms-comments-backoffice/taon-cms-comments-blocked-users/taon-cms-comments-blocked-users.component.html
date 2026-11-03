@@ -1,4 +1,35 @@
-<router-outlet></router-outlet>
-<p>
-  {{ t.gettext('taon-cms-comments-blocked-users works!') }}
-</p>
+<h1>{{ t.gettext('Comment-blocked users') }}</h1>
+<p>{{ t.gettext('Blocking comments here does not block Session sign-in.') }}</p>
+<form (submit)="$event.preventDefault(); block()">
+  <label>
+    {{ t.gettext('User ID') }}
+    <input [ngModel]="userId()" (ngModelChange)="userId.set($event)" name="userId" />
+  </label>
+  <button mat-flat-button type="submit" [disabled]="loading()">{{ t.gettext('Block commenting') }}</button>
+</form>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+}
+@if (loading()) {
+  <p role="status">{{ t.gettext('Loading blocked users...') }}</p>
+}
+<table>
+  <thead>
+    <tr><th>{{ t.gettext('User ID') }}</th><th>{{ t.gettext('Actions') }}</th></tr>
+  </thead>
+  <tbody>
+    @for (user of visibleUsers; track user.id) {
+      <tr>
+        <td>{{ user.userId }}</td>
+        <td><button mat-button type="button" (click)="unblock(user.userId)">{{ t.gettext('Activate commenting') }}</button></td>
+      </tr>
+    } @empty {
+      <tr><td colspan="2">{{ t.gettext('No users are blocked from commenting.') }}</td></tr>
+    }
+  </tbody>
+</table>
+<nav aria-label="Blocked user pages">
+  <button mat-button type="button" [disabled]="page() <= 1" (click)="changePage(-1)">{{ t.gettext('Previous') }}</button>
+  <span>{{ t.gettext('Page [[ page ]]', { page: page() }) }}</span>
+  <button mat-button type="button" [disabled]="page() * pageSize >= blockedUsers().length" (click)="changePage(1)">{{ t.gettext('Next') }}</button>
+</nav>

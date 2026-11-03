@@ -1,0 +1,19 @@
+// THIS FILE IS GENERATED - DO NOT MODIFY
+import { CoreModels } from 'tnp-core/src';
+
+// join interface type here
+import { EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml } from './taon-cms-comments-blocked-users.component.html.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml } from './taon-cms-comments-blocked-users.component.html.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml } from './taon-cms-comments-blocked-users.component.html.de-DE.i18n.data';
+import { EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs } from './taon-cms-comments-blocked-users.component.ts.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs } from './taon-cms-comments-blocked-users.component.ts.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs } from './taon-cms-comments-blocked-users.component.ts.de-DE.i18n.data';;
+export type TaonCmsCommentsBlockedUsersOverride = CoreModels.DeepPartial<EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml 
+| PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml 
+| DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentHtml 
+| EnUsTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs 
+| PlPlTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs 
+| DeDeTraslationOverrideSrcLibTaonCmsCommentTaonCmsCommentsBackofficeTaonCmsCommentsBlockedUsersTaonCmsCommentsBlockedUsersComponentTs>;
+
+ // THIS FILE IS GENERATED - DO NOT MODIFY
+        

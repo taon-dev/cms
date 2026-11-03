@@ -361,6 +361,6 @@ msgstr "Zastosuj uprawnienia do powiązanych wpisów"
 msgid "Loading media..."
 msgstr "Ładowanie multimediów..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1061
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1064
 msgid "No post is loaded."
 msgstr "Żaden wpis nie jest załadowany."

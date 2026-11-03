@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:4
+msgid "Comments"
+msgstr "Kommentare"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:6
+msgid "Loading comments..."
+msgstr "Kommentare werden geladen ..."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:14
+msgid "Add a comment"
+msgstr "Kommentar hinzufügen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:22
+msgid "Characters remaining: [[ count ]]"
+msgstr "Verbleibende Zeichen: [[ count ]]"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:31
+msgid "Comment"
+msgstr "Kommentieren"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:35
+msgid "Sign in to add a comment or vote."
+msgstr "Melden Sie sich an, um einen Kommentar zu verfassen oder abzustimmen."
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:50
+msgid "Your vote: Upvote"
+msgstr "Ihre Stimme: Dafür"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:52
+msgid "Your vote: Downvote"
+msgstr "Ihre Stimme: Dagegen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:58
+msgid "Upvote"
+msgstr "Dafür stimmen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:64
+msgid "Downvote"
+msgstr "Dagegen stimmen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:73
+msgid "Reported"
+msgstr "Gemeldet"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:74
+msgid "Report spam"
+msgstr "Als Spam melden"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:83
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:91
+msgid "No comments yet."
+msgstr "Noch keine Kommentare."

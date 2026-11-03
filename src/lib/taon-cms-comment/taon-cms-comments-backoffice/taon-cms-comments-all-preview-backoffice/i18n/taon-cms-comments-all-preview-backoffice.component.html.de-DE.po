@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:1
+msgid "CMS comments"
+msgstr "CMS-Kommentare"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:4
+msgid "ID"
+msgstr "ID"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:8
+msgid "Text in comment"
+msgstr "Kommentartext"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:12
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:26
+msgid "Author"
+msgstr "Autor"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:15
+msgid "Apply filters"
+msgstr "Filter anwenden"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:25
+msgid "Full comment"
+msgstr "Vollständiger Kommentar"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:27
+msgid "Created"
+msgstr "Erstellt"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:29
+msgid "Post"
+msgstr "Beitrag"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:32
+msgid "Votes"
+msgstr "Stimmen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:33
+msgid "Spam reports"
+msgstr "Spam-Meldungen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:35
+msgid "Delete comment"
+msgstr "Kommentar löschen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:49
+msgid "Previous"
+msgstr "Zurück"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:51
+msgid "Page [[ page ]]"
+msgstr "Seite [[ page ]]"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:53
+msgid "Next"
+msgstr "Weiter"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:18
+msgid "Loading comments..."
+msgstr "Kommentare werden geladen ..."

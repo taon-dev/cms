@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.ts:51
+msgid "Blocked users could not be loaded."
+msgstr "Nie udało się wczytać zablokowanych użytkowników."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.ts:60
+msgid "Enter a valid user ID."
+msgstr "Wprowadź prawidłowy identyfikator użytkownika."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.ts:86
+msgid "Comment access could not be updated."
+msgstr "Nie udało się zaktualizować dostępu do komentowania."

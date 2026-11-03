@@ -1,12 +1,14 @@
 //#region imports
 import {
   Column,
+  CreateDateColumn,
   CustomColumn,
   PrimaryGeneratedColumn,
   Taon,
   TaonBaseAbstractEntity,
   TaonBaseEntity,
   TaonEntity,
+  UpdateDateColumn,
 } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
@@ -54,12 +56,12 @@ export class TaonCmsCommentEntity extends TaonBaseEntity<TaonCmsCommentEntity> {
   status: string;
 
   //#region @websql
-  @Column({ type: 'datetime' })
+  @CreateDateColumn()
   //#endregion
   createdAt: Date;
 
   //#region @websql
-  @Column({ type: 'datetime' })
+  @UpdateDateColumn()
   //#endregion
   updatedAt: Date;
 }

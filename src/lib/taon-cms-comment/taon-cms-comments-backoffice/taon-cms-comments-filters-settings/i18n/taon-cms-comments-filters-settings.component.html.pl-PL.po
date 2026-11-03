@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:1
+msgid "Comment filters"
+msgstr "Filtry komentarzy"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:2
+msgid "Comments containing any configured word or phrase are rejected."
+msgstr "Komentarze zawierające skonfigurowane słowo lub frazę są odrzucane."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:5
+msgid "Blocked word or phrase"
+msgstr "Zablokowane słowo lub fraza"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:8
+msgid "Add"
+msgstr "Dodaj"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
+msgid "Delete"
+msgstr "Usuń"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:14
+msgid "Loading blocked phrases..."
+msgstr "Ładowanie zablokowanych fraz..."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:23
+msgid "No blocked words or phrases configured."
+msgstr "Nie skonfigurowano żadnych zablokowanych słów ani fraz."

@@ -1,0 +1,28 @@
+.taon-cms-comments {
+  margin-block: 2rem;
+}
+
+textarea {
+  border: 1px solid gray;
+}
+
+.taon-cms-comment {
+  border-top: 1px solid #ddd;
+  padding: 1rem 0;
+}
+.taon-cms-comment header,
+.taon-cms-comment__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.taon-cms-comment__body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 6rem;
+}

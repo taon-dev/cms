@@ -1,0 +1,95 @@
+<section
+  class="taon-cms-comments"
+  aria-labelledby="taon-comments-title">
+  <h2 id="taon-comments-title">{{ t.gettext('Comments') }}</h2>
+  @if (loading()) {
+    <p role="status">{{ t.gettext('Loading comments...') }}</p>
+  }
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if ((context$ | async)?.user) {
+    <form (submit)="submit($event)">
+      <label>
+        {{ t.gettext('Add a comment') }}
+        <textarea
+          maxlength="500"
+          [value]="body()"
+          (input)="setBody($event)"></textarea>
+      </label>
+      <p>
+        {{
+          t.gettext('Characters remaining: [[ count ]]', {
+            count: 500 - body().length,
+          })
+        }}
+      </p>
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="saving() || !body().trim()">
+        {{ t.gettext('Comment') }}
+      </button>
+    </form>
+  } @else {
+    <p>{{ t.gettext('Sign in to add a comment or vote.') }}</p>
+  }
+  <div class="taon-cms-comments__list">
+    @for (comment of comments(); track comment.id) {
+      <article class="taon-cms-comment">
+        <header>
+          <strong>{{ comment.authorName }}</strong>
+          <time [attr.datetime]="comment.createdAt">
+            {{ comment.createdAt | date: 'medium' }}
+          </time>
+        </header>
+        <p class="taon-cms-comment__body">{{ comment.body }}</p>
+        @if ((context$ | async)?.user) {
+          <div class="taon-cms-comment__actions">
+            @if (comment.currentUserVote === 1) {
+              <span>{{ t.gettext('Your vote: Upvote') }}</span>
+            } @else if (comment.currentUserVote === -1) {
+              <span>{{ t.gettext('Your vote: Downvote') }}</span>
+            }
+            <button
+              mat-button
+              type="button"
+              (click)="vote(comment, 1)">
+              {{ t.gettext('Upvote') }} ({{ comment.upvotes }})
+            </button>
+            <button
+              mat-button
+              type="button"
+              (click)="vote(comment, -1)">
+              {{ t.gettext('Downvote') }} ({{ comment.downvotes }})
+            </button>
+            <button
+              mat-button
+              type="button"
+              [disabled]="comment.currentUserReported"
+              (click)="report(comment)">
+              {{
+                comment.currentUserReported
+                  ? t.gettext('Reported')
+                  : t.gettext('Report spam')
+              }}
+              ({{ comment.spamReports }})
+            </button>
+            @if (canDelete(comment, context$ | async)) {
+              <button
+                mat-button
+                type="button"
+                (click)="remove(comment)">
+                {{ t.gettext('Delete') }}
+              </button>
+            }
+          </div>
+        }
+      </article>
+    } @empty {
+      @if (!loading()) {
+        <p>{{ t.gettext('No comments yet.') }}</p>
+      }
+    }
+  </div>
+</section>

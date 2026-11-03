@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:49
+msgid "ID"
+msgstr "ID"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:50
+msgid "Author"
+msgstr "Autor"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:52
+msgid "Comment"
+msgstr "Komentarz"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:57
+msgid "Post"
+msgstr "Wpis"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:58
+msgid "Created date"
+msgstr "Data utworzenia"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:59
+msgid "Vote score"
+msgstr "Bilans głosów"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:60
+msgid "Spam reports"
+msgstr "Zgłoszenia spamu"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:82
+msgid "Comments could not be loaded."
+msgstr "Nie udało się wczytać komentarzy."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.ts:113
+msgid "The comment could not be deleted."
+msgstr "Nie udało się usunąć komentarza."

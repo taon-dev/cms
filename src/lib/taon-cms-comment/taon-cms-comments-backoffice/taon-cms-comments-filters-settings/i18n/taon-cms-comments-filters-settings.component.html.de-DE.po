@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:1
+msgid "Comment filters"
+msgstr "Kommentarfilter"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:2
+msgid "Comments containing any configured word or phrase are rejected."
+msgstr "Kommentare mit einem konfigurierten Wort oder einer Formulierung werden abgelehnt."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:5
+msgid "Blocked word or phrase"
+msgstr "Gesperrtes Wort oder gesperrte Formulierung"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:8
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:14
+msgid "Loading blocked phrases..."
+msgstr "Gesperrte Formulierungen werden geladen ..."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:23
+msgid "No blocked words or phrases configured."
+msgstr "Es sind keine gesperrten Wörter oder Formulierungen konfiguriert."
