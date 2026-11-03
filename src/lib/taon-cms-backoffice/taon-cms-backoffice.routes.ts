@@ -46,6 +46,20 @@ export const TaonCmsBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
+        isDisabled: ({ context }) => {
+          // console.log('context', { context });
+          return !context?.hasAccess.toManageCms;
+        },
+        path: 'comments',
+        menuItem: t.signal.gettext('Comments'),
+        expandable: true,
+        icon: 'comment',
+        loader: () =>
+          import('@taon-dev/cms/src').then(
+            m => m.TaonCmsCommentsBackofficeRoutes,
+          ),
+      }),
+      adminLazyRoute({
         isDisabled: ({ context }) => !context?.hasAccess.toManageCms,
         path: 'assets',
         menuItem: t.signal.gettext('Assets'),
