@@ -38,6 +38,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
         [mode]="page.create ? 'add' : 'view'"
         (changed)="onChanged($event, page.create)"
         (duplicated)="openPost($event)"
+        (editPostRequested)="openPost($event)"
         (cancelled)="onCancelled(page.create)"
         (actionButtonsTemplate)="setFooterTemplate($event)" />
     }

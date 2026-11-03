@@ -51,6 +51,16 @@ export class TaonCmsContentEntity extends TaonBaseEntity<TaonCmsContentEntity> {
   slug: string;
 
   //#region @websql
+  @Column({ type: 'integer', nullable: true })
+  //#endregion
+  publicVersionPostId: number | null = null;
+
+  //#region @websql
+  @Column({ type: 'integer', nullable: true })
+  //#endregion
+  privateVersionPostId: number | null = null;
+
+  //#region @websql
   @ManyToMany(() => TaonCmsContentEntity)
   @JoinTable({
     name: 'taon_cms_related_posts',

@@ -26,6 +26,11 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 export interface TaonRelatedPostChooserData {
   postId?: number;
   excludedIds: number[];
+  eligibleStatuses?: string[];
+  dialogTitle?: string;
+  confirmLabel?: string;
+  selectionLabel?: string;
+  selectionError?: string;
 }
 
 @Component({
@@ -51,6 +56,8 @@ export class TaonRelatedPostChooserComponent {
       post =>
         post.id !== this.data.postId &&
         !this.data.excludedIds.includes(post.id) &&
+        (!this.data.eligibleStatuses ||
+          this.data.eligibleStatuses.includes(post.status)) &&
         `${post.id} ${post.title} ${post.slug}`.toLowerCase().includes(query),
     );
   });
@@ -104,7 +111,9 @@ export class TaonRelatedPostChooserComponent {
     }
     const post = this.filteredPosts().find(post => post.id === this.selected());
     if (!post) {
-      this.error.set(this.t.gettext('Select a related post.'));
+      this.error.set(
+        this.data.selectionError ?? this.t.gettext('Select a related post.'),
+      );
       return;
     }
     this.ref.close(post);

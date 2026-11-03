@@ -41,7 +41,6 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           import('@taon-dev/cms/src').then(m => m.TaonCmsBackofficeRoutes),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toViewUsers,
         path: 'users',
         menuItem: t.gettext('Users'),
         icon: 'manage_accounts',
@@ -52,7 +51,6 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toViewSessions,
         path: 'session',
         menuItem: t.gettext('Sessions'),
         expandable: false,
@@ -63,7 +61,6 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toViewAuthorization,
         path: 'authorization',
         menuItem: t.gettext('Authorization'),
         icon: 'apps',
@@ -74,7 +71,6 @@ export const TaonBaselineBackofficeRoutes: Routes = [
           ),
       }),
       adminLazyRoute({
-        isDisabled: ({ context }) => !context?.hasAccess.toViewEmail,
         path: 'emails',
         menuItem: t.gettext('Emails'),
         expandable: false,

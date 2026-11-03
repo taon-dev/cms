@@ -36,6 +36,8 @@ import type {
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
+  TaonCmsPostVersionKind,
+  TaonCmsPostVersionLinks,
 } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';
@@ -54,6 +56,8 @@ import { contentError } from './taon-cms-content.validation';
     'restoreContent',
     'listRevisions',
     'listRelatedPosts',
+    'getParentPost',
+    'getPostVersions',
     'listCourses',
     'listPermissions',
     'getPermissionConfiguration',
@@ -71,6 +75,8 @@ import { contentError } from './taon-cms-content.validation';
     'listTagIds',
     'addRelatedPost',
     'deleteRelatedPost',
+    'linkVersionPost',
+    'removeVersionPost',
     'paginationQuery',
   ],
   //#endregion
@@ -411,6 +417,24 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   }
   //#endregion
 
+  @GET()
+  getParentPost(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsContentEntity | null> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.getParentPost(id);
+    //#endregion
+  }
+
+  @GET()
+  getPostVersions(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsPostVersionLinks> {
+    //#region @websqlFunc
+    return async () => this.taonCmsContentRepository.getPostVersions(id);
+    //#endregion
+  }
+
   //#region methods / list permissions
   @GET()
   listPermissions(
@@ -512,6 +536,40 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#endregion
   }
   //#endregion
+
+  @POST()
+  linkVersionPost(
+    @Query('id') id: number,
+    @Query('versionPostId') versionPostId: number,
+    @Query('kind') kind: TaonCmsPostVersionKind,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () =>
+      this.taonCmsContentRepository.linkVersionPost(
+        id,
+        versionPostId,
+        kind,
+        expectedVersion,
+      );
+    //#endregion
+  }
+
+  @DELETE()
+  removeVersionPost(
+    @Query('id') id: number,
+    @Query('kind') kind: TaonCmsPostVersionKind,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return async () =>
+      this.taonCmsContentRepository.removeVersionPost(
+        id,
+        kind,
+        expectedVersion,
+      );
+    //#endregion
+  }
 
   //#region methods / list revisions
   @GET()

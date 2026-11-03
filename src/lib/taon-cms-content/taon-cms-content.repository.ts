@@ -21,6 +21,8 @@ import type {
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
+  TaonCmsPostVersionKind,
+  TaonCmsPostVersionLinks,
 } from './taon-cms-content.models';
 import {
   contentError,
@@ -307,6 +309,75 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async getParentPost(id: number): Promise<TaonCmsContentEntity | null> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager => {
+      const parents = await manager
+        .getRepository<TaonCmsContentEntity>(this.target)
+        .find({
+          where: { relatedPosts: { id } },
+          order: { id: 'ASC' },
+        });
+      if (parents.length > 1) {
+        contentError('A post cannot have multiple parent posts.', 409);
+      }
+      return parents[0] ?? null;
+    });
+    //#endregion
+  }
+
+  async getPostVersions(id: number): Promise<TaonCmsPostVersionLinks> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager => {
+      const repository = manager.getRepository<TaonCmsContentEntity>(
+        this.target,
+      );
+      const post = await this.requireContent(id, manager);
+      const [publicVersionPost, privateVersionPost] = await Promise.all([
+        post.publicVersionPostId
+          ? repository.findOneBy({ id: post.publicVersionPostId })
+          : null,
+        post.privateVersionPostId
+          ? repository.findOneBy({ id: post.privateVersionPostId })
+          : null,
+      ]);
+      const validPublicVersion = Boolean(
+        publicVersionPost &&
+          publicVersionPost.privateVersionPostId === post.id &&
+          publicVersionPost.publicVersionPostId === null,
+      );
+      const validPrivateVersion = Boolean(
+        privateVersionPost &&
+          privateVersionPost.publicVersionPostId === post.id &&
+          privateVersionPost.privateVersionPostId === null,
+      );
+      let staleLinksRemoved = false;
+      if (post.publicVersionPostId && !validPublicVersion) {
+        post.publicVersionPostId = null;
+        staleLinksRemoved = true;
+      }
+      if (post.privateVersionPostId && !validPrivateVersion) {
+        post.privateVersionPostId = null;
+        staleLinksRemoved = true;
+      }
+      if (staleLinksRemoved) {
+        await repository.update(id, {
+          publicVersionPostId: post.publicVersionPostId,
+          privateVersionPostId: post.privateVersionPostId,
+          version: post.version + 1,
+          updatedAt: new Date(),
+        });
+      }
+      return {
+        publicVersionPost: validPublicVersion ? publicVersionPost : null,
+        privateVersionPost: validPrivateVersion ? privateVersionPost : null,
+      };
+    });
+    //#endregion
+  }
+
   async listPermissions(id: number): Promise<TaonPermissionEntity[]> {
     //#region @websqlFunc
     requireContentId(id);
@@ -531,6 +602,177 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async linkVersionPost(
+    id: number,
+    versionPostId: number,
+    kind: TaonCmsPostVersionKind,
+    expectedVersion: number,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    requireContentId(id);
+    requireContentId(versionPostId, 'versionPostId');
+    requireContentVersion(expectedVersion);
+    if (kind !== 'public' && kind !== 'private') {
+      contentError('The post version kind is invalid.');
+    }
+    if (id === versionPostId) {
+      contentError('A post cannot be its own version.');
+    }
+    return this.connection.transaction('SERIALIZABLE', async manager => {
+      const repository = manager.getRepository<TaonCmsContentEntity>(
+        this.target,
+      );
+      const post = await this.requireContent(id, manager);
+      const versionPost = await this.requireContent(versionPostId, manager);
+      if (post.version !== expectedVersion) {
+        contentError('Content has changed. Reload it before editing.', 409);
+      }
+      const versionStatusAllowed =
+        kind === 'public'
+          ? versionPost.status === 'published' &&
+            (post.status === 'draft' || post.status === 'archived')
+          : (versionPost.status === 'draft' ||
+              versionPost.status === 'archived') &&
+            post.status === 'published';
+      if (!versionStatusAllowed) {
+        contentError('The selected post is not eligible for this version link.');
+      }
+
+      const currentVersionId =
+        kind === 'public'
+          ? post.publicVersionPostId
+          : post.privateVersionPostId;
+      const oppositeVersionId =
+        kind === 'public'
+          ? post.privateVersionPostId
+          : post.publicVersionPostId;
+      const reciprocalVersionId =
+        kind === 'public'
+          ? versionPost.privateVersionPostId
+          : versionPost.publicVersionPostId;
+      const oppositeReciprocalVersionId =
+        kind === 'public'
+          ? versionPost.publicVersionPostId
+          : versionPost.privateVersionPostId;
+      if (oppositeVersionId !== null) {
+        contentError('This post is already linked to a different version.', 409);
+      }
+      if (
+        (reciprocalVersionId !== null &&
+          reciprocalVersionId !== post.id) ||
+        oppositeReciprocalVersionId !== null
+      ) {
+        contentError('The selected post is already linked to another pair.', 409);
+      }
+      if (currentVersionId === versionPost.id) {
+        return post;
+      }
+
+      const currentVersion = currentVersionId
+        ? await repository.findOneBy({ id: currentVersionId })
+        : null;
+      if (currentVersion) {
+        const oldReciprocal =
+          kind === 'public'
+            ? currentVersion.privateVersionPostId
+            : currentVersion.publicVersionPostId;
+        if (oldReciprocal !== post.id) {
+          contentError('The existing post version link is conflicting.', 409);
+        }
+        await repository.update(currentVersion.id, {
+          ...(kind === 'public'
+            ? { privateVersionPostId: null }
+            : { publicVersionPostId: null }),
+          version: currentVersion.version + 1,
+          updatedAt: new Date(),
+        });
+      }
+
+      const now = new Date();
+      await repository.update(post.id, {
+        ...(kind === 'public'
+          ? { publicVersionPostId: versionPost.id }
+          : { privateVersionPostId: versionPost.id }),
+        version: post.version + 1,
+        updatedAt: now,
+      });
+      await repository.update(versionPost.id, {
+        ...(kind === 'public'
+          ? { privateVersionPostId: post.id }
+          : { publicVersionPostId: post.id }),
+        version: versionPost.version + 1,
+        updatedAt: now,
+      });
+      return this.requireContent(post.id, manager);
+    });
+    //#endregion
+  }
+
+  async removeVersionPost(
+    id: number,
+    kind: TaonCmsPostVersionKind,
+    expectedVersion: number,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    requireContentId(id);
+    requireContentVersion(expectedVersion);
+    if (kind !== 'public' && kind !== 'private') {
+      contentError('The post version kind is invalid.');
+    }
+    return this.connection.transaction('SERIALIZABLE', async manager => {
+      const repository = manager.getRepository<TaonCmsContentEntity>(
+        this.target,
+      );
+      const post = await this.requireContent(id, manager);
+      if (post.version !== expectedVersion) {
+        contentError('Content has changed. Reload it before editing.', 409);
+      }
+      const canEditVersion =
+        kind === 'public'
+          ? post.status === 'draft' || post.status === 'archived'
+          : post.status === 'published';
+      if (!canEditVersion) {
+        contentError(
+          'Version editing is disabled for the current post status.',
+          409,
+        );
+      }
+      const versionPostId =
+        kind === 'public'
+          ? post.publicVersionPostId
+          : post.privateVersionPostId;
+      if (!versionPostId) {
+        return post;
+      }
+      const versionPost = await repository.findOneBy({ id: versionPostId });
+      if (versionPost) {
+        const reciprocalVersionId =
+          kind === 'public'
+            ? versionPost.privateVersionPostId
+            : versionPost.publicVersionPostId;
+        if (reciprocalVersionId !== post.id) {
+          contentError('The post version link is conflicting.', 409);
+        }
+        await repository.update(versionPost.id, {
+          ...(kind === 'public'
+            ? { privateVersionPostId: null }
+            : { publicVersionPostId: null }),
+          version: versionPost.version + 1,
+          updatedAt: new Date(),
+        });
+      }
+      await repository.update(post.id, {
+        ...(kind === 'public'
+          ? { publicVersionPostId: null }
+          : { privateVersionPostId: null }),
+        version: post.version + 1,
+        updatedAt: new Date(),
+      });
+      return this.requireContent(post.id, manager);
+    });
+    //#endregion
+  }
+
   private async changeRelatedPost(
     id: number,
     relatedPostId: number,
@@ -739,6 +981,18 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     const removed = previousIds.filter(
       postId => !relatedPostIds.includes(postId),
     );
+    for (const relatedPostId of added) {
+      const parents = await repository.find({
+        where: { relatedPosts: { id: relatedPostId } },
+        select: { id: true },
+      });
+      if (parents.some(parent => parent.id !== id)) {
+        contentError('A post cannot have multiple parent posts.', 409);
+      }
+      if (await this.relatedPostPathExists(relatedPostId, id, manager)) {
+        contentError('Related posts cannot contain circular relationships.', 409);
+      }
+    }
     if (added.length || removed.length) {
       await repository
         .createQueryBuilder()
@@ -746,6 +1000,37 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         .of(id)
         .addAndRemove(added, removed);
     }
+    //#endregion
+  }
+
+  private async relatedPostPathExists(
+    startId: number,
+    targetId: number,
+    manager: EntityManager,
+  ): Promise<boolean> {
+    //#region @websqlFunc
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    const pending = [startId];
+    const visited = new Set<number>();
+    while (pending.length) {
+      const currentId = pending.pop();
+      if (currentId === undefined) {
+        continue;
+      }
+      if (currentId === targetId) {
+        return true;
+      }
+      if (visited.has(currentId)) {
+        continue;
+      }
+      visited.add(currentId);
+      const current = await repository.findOne({
+        where: { id: currentId },
+        relations: { relatedPosts: true },
+      });
+      pending.push(...(current?.relatedPosts ?? []).map(post => post.id));
+    }
+    return false;
     //#endregion
   }
 

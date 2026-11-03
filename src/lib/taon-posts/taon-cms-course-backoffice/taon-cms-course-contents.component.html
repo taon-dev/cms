@@ -18,6 +18,29 @@
       {{ t.gettext('Retry') }}
     </button>
   }
+  @if (versionLinksError()) {
+    <p role="alert">{{ versionLinksError() }}</p>
+  }
+  @if (versionLinks()?.privateVersionPost; as privateVersionPost) {
+    <p>
+      {{ t.gettext('Link to private version of this course:') }}
+      <a
+        href="#"
+        (click)="requestPostEditor($event, privateVersionPost)">
+        {{ privateVersionPost.title }} [{{ privateVersionPost.slug }}]
+      </a>
+    </p>
+  }
+  @if (versionLinks()?.publicVersionPost; as publicVersionPost) {
+    <p>
+      {{ t.gettext('Link to public version of this course:') }}
+      <a
+        href="#"
+        (click)="requestPostEditor($event, publicVersionPost)">
+        {{ publicVersionPost.title }} [{{ publicVersionPost.slug }}]
+      </a>
+    </p>
+  }
   <taon-datatable
     [pageSize]="posts().length || 1"
     [data]="posts()"

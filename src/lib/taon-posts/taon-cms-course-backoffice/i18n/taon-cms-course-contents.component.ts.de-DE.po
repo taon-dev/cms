@@ -4,22 +4,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:55
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:65
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:56
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:66
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:82
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:83
+msgid "Course version links could not be loaded."
+msgstr "Die Versionsverknüpfungen des Kurses konnten nicht geladen werden."
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:113
 msgid "Course contents could not be loaded. Please retry."
-msgstr ""
+msgstr "Die Kursinhalte konnten nicht geladen werden. Bitte versuchen Sie es erneut."
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:95
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:126
 msgid "Course slug copied."
-msgstr ""
+msgstr "Der Kurs-Slug wurde kopiert."
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:99
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.ts:130
 msgid "The course slug could not be copied."
-msgstr ""
+msgstr "Der Kurs-Slug konnte nicht kopiert werden."

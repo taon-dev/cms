@@ -34,7 +34,8 @@
 <ng-template #expansionTemplate let-course>
   <taon-cms-course-contents
     [course]="course"
-    [actionsColumn]="actionsColumn">
+    [actionsColumn]="actionsColumn"
+    (editPostRequested)="openDetails($event)">
   </taon-cms-course-contents>
 </ng-template>
 <ng-template

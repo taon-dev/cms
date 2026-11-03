@@ -1,4 +1,5 @@
 import { TaonPermissionEntity } from '@taon-dev/session/src';
+import type { TaonCmsContentEntity } from './taon-cms-content.entity';
 
 export enum TaonCmsContentType {
   Normal = 'normal',
@@ -32,6 +33,13 @@ export interface TaonCmsContentFields {
 export interface TaonCmsPermissionConfiguration {
   permissions: TaonPermissionEntity[];
   source: { id: number; title: string } | null;
+}
+
+export type TaonCmsPostVersionKind = 'public' | 'private';
+
+export interface TaonCmsPostVersionLinks {
+  publicVersionPost: TaonCmsContentEntity | null;
+  privateVersionPost: TaonCmsContentEntity | null;
 }
 
 export interface TaonCmsCreateContent

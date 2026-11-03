@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -59,6 +60,10 @@ import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-conten
 import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-content.config.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
+import type {
+  TaonCmsPostVersionKind,
+  TaonCmsPostVersionLinks,
+} from '../../taon-cms-content/taon-cms-content.models';
 import { TaonCmsContentType } from '../../taon-cms-content/taon-cms-content.models';
 import { resolveTemplateVariables } from '../../taon-cms-content/taon-cms-template-variables';
 import type { TaonCmsTemplateVariable } from '../../taon-cms-content/taon-cms-template-variables';
@@ -91,6 +96,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatButtonModule,
     MatCheckboxModule,
     MatCardModule,
+    MatExpansionModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -123,6 +129,8 @@ export class TaonCmsPostComponent implements AfterViewInit {
   readonly changed = output<TaonCmsContentEntity>();
 
   readonly deleted = output<TaonCmsContentEntity>();
+
+  readonly editPostRequested = output<TaonCmsContentEntity>();
 
   readonly duplicated = output<TaonCmsContentEntity>();
 
@@ -170,6 +178,25 @@ export class TaonCmsPostComponent implements AfterViewInit {
       label: this.t.gettext('Attachment post'),
     },
   ];
+
+  readonly currentPostType = computed(
+    () =>
+      this.postTypes.find(type => type.value === this.draft().type) ??
+      this.postTypes[0],
+  );
+
+  readonly currentPostTypeIcon = computed(() => {
+    switch (this.draft().type) {
+      case TaonCmsContentType.Video:
+        return 'video_library';
+      case TaonCmsContentType.Audio:
+        return 'audiotrack';
+      case TaonCmsContentType.Attachment:
+        return 'attach_file';
+      default:
+        return 'article';
+    }
+  });
 
   private readonly mediaAttachments = [
     {
@@ -280,6 +307,37 @@ export class TaonCmsPostComponent implements AfterViewInit {
   readonly relatedPostsLoading = signal(false);
 
   readonly relatedPostsError = signal('');
+
+  readonly parentPost = signal<TaonCmsContentEntity | null>(null);
+
+  readonly parentPostLoading = signal(false);
+
+  readonly parentPostError = signal('');
+
+  readonly postVersionLinks = signal<TaonCmsPostVersionLinks>({
+    publicVersionPost: null,
+    privateVersionPost: null,
+  });
+
+  readonly postVersionLinksLoading = signal(false);
+
+  readonly postVersionLinksError = signal('');
+
+  readonly canEditPublicVersion = computed(() => {
+    const status = this.currentPost()?.status;
+    return (
+      (status === 'draft' || status === 'archived') &&
+      !this.postVersionLinksLoading() &&
+      !this.postVersionLinksError()
+    );
+  });
+
+  readonly canEditPrivateVersion = computed(
+    () =>
+      this.currentPost()?.status === 'published' &&
+      !this.postVersionLinksLoading() &&
+      !this.postVersionLinksError(),
+  );
 
   readonly applicationHooks = signal<TaonCmsApplicationHookEntity[]>([]);
 
@@ -392,6 +450,10 @@ export class TaonCmsPostComponent implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   private relatedPostsLoad?: Subscription;
+
+  private parentPostRequest = 0;
+
+  private postVersionLinksRequest = 0;
 
   private applicationHooksLoad?: Subscription;
 
@@ -881,6 +943,114 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
+  private loadParentPost(post: TaonCmsContentEntity | null): void {
+    const request = ++this.parentPostRequest;
+    this.parentPost.set(null);
+    this.parentPostError.set('');
+    if (!post) {
+      this.parentPostLoading.set(false);
+      return;
+    }
+    this.parentPostLoading.set(true);
+    void this.api
+      .getParentPost(post.id)
+      .then(parent => {
+        if (request === this.parentPostRequest) {
+          this.parentPost.set(parent);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error('[taon-cms-post] Unable to load parent post', error);
+        if (request === this.parentPostRequest) {
+          this.parentPostError.set(
+            this.t.gettext('The parent post could not be loaded. Please retry.'),
+          );
+        }
+      })
+      .finally(() => {
+        if (request === this.parentPostRequest) {
+          this.parentPostLoading.set(false);
+        }
+      });
+  }
+
+  loadPostVersionLinks(post: TaonCmsContentEntity | null): void {
+    const request = ++this.postVersionLinksRequest;
+    this.postVersionLinks.set({
+      publicVersionPost: null,
+      privateVersionPost: null,
+    });
+    this.postVersionLinksError.set('');
+    if (!post) {
+      this.postVersionLinksLoading.set(false);
+      return;
+    }
+    this.postVersionLinksLoading.set(true);
+    void this.api
+      .getPostVersions(post.id)
+      .then(links => {
+        if (request === this.postVersionLinksRequest) {
+          this.postVersionLinks.set(links);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error('[taon-cms-post] Unable to load post versions', error);
+        if (request === this.postVersionLinksRequest) {
+          this.postVersionLinksError.set(
+            this.t.gettext(
+              'Post version links could not be loaded. Please retry.',
+            ),
+          );
+        }
+      })
+      .finally(() => {
+        if (request === this.postVersionLinksRequest) {
+          this.postVersionLinksLoading.set(false);
+        }
+      });
+  }
+
+  requestPostEditor(event: Event, post: TaonCmsContentEntity): void {
+    event.preventDefault();
+    this.editPostRequested.emit(post);
+  }
+
+  removeParentPost(): void {
+    const post = this.currentPost();
+    const parent = this.parentPost();
+    if (
+      !this.editing() ||
+      !post ||
+      !parent ||
+      this.busy() ||
+      this.dialogOpen()
+    ) {
+      return;
+    }
+    this.busy.set(true);
+    this.error.set('');
+    this.api
+      .deleteRelatedPost(parent.id, post.id, parent.version)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.busy.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.parentPost.set(null);
+          this.loadPermissions();
+        },
+        error: (error: unknown) => {
+          console.error('[taon-cms-post] Unable to remove parent post', error);
+          this.error.set(
+            this.t.gettext(
+              'The parent post could not be removed. Please try again.',
+            ),
+          );
+        },
+      });
+  }
+
   //#region methods / add related post
   addRelatedPost(): void {
     if (
@@ -960,13 +1130,19 @@ export class TaonCmsPostComponent implements AfterViewInit {
         this.api
           .addRelatedPost(parent.id, post.id, parent.version)
           .pipe(
-            switchMap(() => from(this.api.getById(post.id))),
+            switchMap(() =>
+              forkJoin({
+                post: from(this.api.getById(post.id)),
+                parent: from(this.api.getById(parent.id)),
+              }),
+            ),
             takeUntilDestroyed(this.destroyRef),
             finalize(() => this.busy.set(false)),
           )
           .subscribe({
-            next: refreshedPost => {
-              this.currentPost.set(refreshedPost);
+            next: refreshed => {
+              this.currentPost.set(refreshed.post);
+              this.parentPost.set(refreshed.parent);
               this.permissionsLoad?.unsubscribe();
               this.permissionsLoading.set(false);
               this.loadPermissions();
@@ -1001,6 +1177,129 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.relatedPosts.update(posts => posts.filter(post => post.id !== id));
   }
   //#endregion
+
+  selectVersionPost(kind: TaonCmsPostVersionKind): void {
+    const post = this.currentPost();
+    const canEdit =
+      kind === 'public'
+        ? this.canEditPublicVersion()
+        : this.canEditPrivateVersion();
+    if (
+      !this.editing() ||
+      !post ||
+      !canEdit ||
+      this.busy() ||
+      this.dialogOpen()
+    ) {
+      return;
+    }
+    this.dialogOpen.set(true);
+    const isPublicVersion = kind === 'public';
+    const ref = this.dialog.open<
+      TaonRelatedPostChooserComponent,
+      TaonRelatedPostChooserData,
+      TaonCmsContentEntity
+    >(TaonRelatedPostChooserComponent, {
+      data: {
+        postId: post.id,
+        excludedIds: [],
+        eligibleStatuses: isPublicVersion
+          ? ['published']
+          : ['draft', 'archived'],
+        dialogTitle: isPublicVersion
+          ? this.t.gettext('Select the public version post')
+          : this.t.gettext('Select the private version post'),
+        confirmLabel: this.t.gettext('Link post version'),
+        selectionLabel: this.t.gettext('Post version'),
+        selectionError: this.t.gettext('Select an eligible post version.'),
+      },
+      width: '560px',
+      maxWidth: '95vw',
+      disableClose: true,
+    });
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(versionPost => {
+        this.dialogOpen.set(false);
+        const currentPost = this.currentPost();
+        if (!versionPost || !currentPost) {
+          return;
+        }
+        this.busy.set(true);
+        this.error.set('');
+        this.api
+          .linkVersionPost(
+            currentPost.id,
+            versionPost.id,
+            kind,
+            currentPost.version,
+          )
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.busy.set(false)),
+          )
+          .subscribe({
+            next: updatedPost => {
+              this.currentPost.set(updatedPost);
+              this.loadPostVersionLinks(updatedPost);
+            },
+            error: (error: unknown) => {
+              console.error(
+                '[taon-cms-post] Unable to link post version',
+                error,
+              );
+              this.error.set(
+                this.t.gettext(
+                  'The post version could not be linked. Reload the post and try again.',
+                ),
+              );
+            },
+          });
+      });
+  }
+
+  removeVersionPost(kind: TaonCmsPostVersionKind): void {
+    const post = this.currentPost();
+    const canEdit =
+      kind === 'public'
+        ? this.canEditPublicVersion()
+        : this.canEditPrivateVersion();
+    if (
+      !this.editing() ||
+      !post ||
+      !canEdit ||
+      this.busy() ||
+      this.dialogOpen()
+    ) {
+      return;
+    }
+    this.busy.set(true);
+    this.error.set('');
+    this.api
+      .removeVersionPost(post.id, kind, post.version)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.busy.set(false)),
+      )
+      .subscribe({
+        next: updatedPost => {
+          this.currentPost.set(updatedPost);
+          this.loadPostVersionLinks(updatedPost);
+        },
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-post] Unable to remove post version',
+            error,
+          );
+          this.error.set(
+            this.t.gettext(
+              'The post version could not be removed. Reload the post and try again.',
+            ),
+          );
+        },
+      });
+  }
 
   //#region methods / application hooks
   loadApplicationHooks(): void {
@@ -1164,6 +1463,22 @@ export class TaonCmsPostComponent implements AfterViewInit {
     if (event.target instanceof HTMLTextAreaElement) {
       this.updateDraft('body', event.target.value);
     }
+  }
+
+  setContentTab(index: number): void {
+    const editor = this.contentEditor();
+    if (editor && this.contentTab() === 0 && index !== 0) {
+      this.updateDraft('body', toHTML(editor.view.state.doc, editor.schema));
+    }
+    if (editor && index === 0) {
+      this.loadingEditorContent = true;
+      try {
+        editor.setContent(this.draft().body);
+      } finally {
+        this.loadingEditorContent = false;
+      }
+    }
+    this.contentTab.set(index);
   }
 
   insertVariable(variable: TaonCmsTemplateVariable): void {
@@ -1626,6 +1941,12 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.mediaPreviewSignature = '';
     this.mediaPreviewRequest += 1;
     this.currentPost.set(post);
+    this.loadParentPost(
+      post && this.mode() !== 'view-clean' ? post : null,
+    );
+    this.loadPostVersionLinks(
+      post && this.mode() !== 'view-clean' ? post : null,
+    );
     this.relatedPosts.set(post?.relatedPosts ?? []);
     this.permissions.set(post?.permissions ?? []);
     this.permissionSource.set(null);

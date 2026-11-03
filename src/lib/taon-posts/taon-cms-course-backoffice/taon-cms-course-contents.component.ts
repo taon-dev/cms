@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   inject,
+  output,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -47,6 +48,15 @@ export class TaonCmsCourseContentsComponent implements OnInit {
 
   readonly copyFeedback = signal('');
 
+  readonly versionLinks = signal<{
+    publicVersionPost: TaonCmsContentEntity | null;
+    privateVersionPost: TaonCmsContentEntity | null;
+  } | null>(null);
+
+  readonly versionLinksError = signal('');
+
+  readonly editPostRequested = output<TaonCmsContentEntity>();
+
   columns: MtxGridColumn[] = [];
 
   ngOnInit(): void {
@@ -57,6 +67,27 @@ export class TaonCmsCourseContentsComponent implements OnInit {
       this.actionsColumn,
     ];
     this.reload();
+    void this.loadVersionLinks();
+  }
+
+  private async loadVersionLinks(): Promise<void> {
+    this.versionLinksError.set('');
+    try {
+      this.versionLinks.set(await this.api.getPostVersions(this.course.id));
+    } catch (error: unknown) {
+      console.error(
+        '[taon-cms-course-contents] Unable to load course version links',
+        error,
+      );
+      this.versionLinksError.set(
+        this.t.gettext('Course version links could not be loaded.'),
+      );
+    }
+  }
+
+  requestPostEditor(event: Event, post: TaonCmsContentEntity): void {
+    event.preventDefault();
+    this.editPostRequested.emit(post);
   }
 
   reload(): void {

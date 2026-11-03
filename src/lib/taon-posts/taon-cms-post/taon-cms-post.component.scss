@@ -2,6 +2,10 @@
   display: block;
 }
 
+mat-expansion-panel {
+  border-radius: 0px !important;
+}
+
 .post-actions {
   display: flex;
   align-items: center;
@@ -141,10 +145,22 @@ ngx-editor {
   margin-bottom: 1.5rem;
 }
 
+.post-type-accordion {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.post-type-accordion mat-panel-title {
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .media-attachment,
 .post-thumbnail,
 .post-taxonomy,
+.parent-post,
 .related-posts,
+.post-version-links,
 .application-hook,
 .post-permissions {
   margin-top: 1.5rem;
@@ -191,6 +207,16 @@ ngx-editor {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
+  }
+}
+
+.post-version-link {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #8883;
+
+  h3 {
+    font-size: 0.95rem;
   }
 }
 

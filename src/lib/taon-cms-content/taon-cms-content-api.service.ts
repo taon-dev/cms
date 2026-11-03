@@ -17,6 +17,8 @@ import type {
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
+  TaonCmsPostVersionKind,
+  TaonCmsPostVersionLinks,
 } from './taon-cms-content.models';
 import { trackCmsUpload } from './taon-cms-upload-progress';
 
@@ -295,6 +297,22 @@ export class TaonCmsContentApiService<
   }
   //#endregion
 
+  public async getParentPost(
+    id: number,
+  ): Promise<TaonCmsContentEntity | null> {
+    return (
+      await this.taonCmsContentController.getParentPost(id).request()
+    ).body.json;
+  }
+
+  public async getPostVersions(
+    id: number,
+  ): Promise<TaonCmsPostVersionLinks> {
+    return (
+      await this.taonCmsContentController.getPostVersions(id).request()
+    ).body.json;
+  }
+
   //#region API / list permissions
   public listPermissions(id: number): Observable<TaonPermissionEntity[]> {
     return this.taonCmsContentController.listPermissions(id)
@@ -338,6 +356,29 @@ export class TaonCmsContentApiService<
     ).request!().observable.pipe(map(res => res.body.json));
   }
   //#endregion
+
+  public linkVersionPost(
+    id: number,
+    versionPostId: number,
+    kind: TaonCmsPostVersionKind,
+    expectedVersion: number,
+  ): Observable<TaonCmsContentEntity> {
+    return this.taonCmsContentController
+      .linkVersionPost(id, versionPostId, kind, expectedVersion)
+      .request!()
+      .observable.pipe(map(res => res.body.json));
+  }
+
+  public removeVersionPost(
+    id: number,
+    kind: TaonCmsPostVersionKind,
+    expectedVersion: number,
+  ): Observable<TaonCmsContentEntity> {
+    return this.taonCmsContentController
+      .removeVersionPost(id, kind, expectedVersion)
+      .request!()
+      .observable.pipe(map(res => res.body.json));
+  }
 
   //#region API / get all entites
   /**

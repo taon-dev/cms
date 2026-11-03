@@ -29,6 +29,10 @@ msgstr "Loading posts..."
 msgid "Try again"
 msgstr "Try again"
 
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:28
+msgid "Related post"
+msgstr ""
+
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
 msgstr "No matching posts available."

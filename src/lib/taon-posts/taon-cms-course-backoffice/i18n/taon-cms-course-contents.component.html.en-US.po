@@ -20,3 +20,11 @@ msgstr ""
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:18
 msgid "Retry"
 msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:26
+msgid "Link to private version of this course:"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component.html:36
+msgid "Link to public version of this course:"
+msgstr ""

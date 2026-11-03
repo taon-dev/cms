@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ t.gettext('Add related post') }}</h2>
+<h2 mat-dialog-title>{{ data.dialogTitle ?? t.gettext('Add related post') }}</h2>
 <mat-dialog-content>
   <label class="search-field">
     <span>{{ t.gettext('Search posts') }}</span>
@@ -25,7 +25,7 @@
     </button>
   } @else {
     <mat-radio-group
-      [attr.aria-label]="t.gettext('Related post')"
+      [attr.aria-label]="data.selectionLabel ?? t.gettext('Related post')"
       [value]="selected()"
       (change)="selected.set($event.value)">
       @for (post of filteredPosts(); track post.id) {
@@ -51,6 +51,6 @@
     type="button"
     [disabled]="loading() || !!error() || selected() === null"
     (click)="choose()">
-    {{ t.gettext('Add related post') }}
+    {{ data.confirmLabel ?? t.gettext('Add related post') }}
   </button>
 </mat-dialog-actions>

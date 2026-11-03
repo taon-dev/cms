@@ -97,603 +97,892 @@
   @if (editing()) {
     <mat-tab-group animationDuration="0ms">
       <mat-tab [label]="t.gettext('CONTENT')">
-    <mat-radio-group
-      class="post-type-selector"
-      [attr.aria-label]="t.gettext('Post type')"
-      [value]="draft().type"
-      [disabled]="busy() || dialogOpen()"
-      (change)="updateDraft('type', $event.value)">
-      @for (type of postTypes; track type.value) {
-        <mat-radio-button [value]="type.value">{{
-          type.label
-        }}</mat-radio-button>
-      }
-    </mat-radio-group>
-    <div
-      class="post-title editable"
-      contenteditable="true"
-      role="textbox"
-      [attr.aria-label]="t.gettext('Post title')"
-      aria-required="true"
-      [attr.data-placeholder]="placeholderTitle()"
-      [attr.contenteditable]="!busy() && !dialogOpen()"
-      [taonCmsEditableSingleLine]="true"
-      [taonCmsEditable]="draft().title"
-      (taonCmsEditableChange)="updateDraft('title', $event)"></div>
-    <div
-      class="post-excerpt editable"
-      contenteditable="true"
-      role="textbox"
-      [attr.aria-label]="t.gettext('Post excerpt')"
-      aria-multiline="true"
-      [attr.data-placeholder]="placeholderShortIntro()"
-      [attr.contenteditable]="!busy() && !dialogOpen()"
-      [taonCmsEditable]="draft().excerpt"
-      (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
-    <section class="post-content-editor">
-      <mat-tab-group
-        [selectedIndex]="contentTab()"
-        (selectedIndexChange)="contentTab.set($event)"
-        [preserveContent]="true"
-        animationDuration="0ms">
-        <mat-tab [label]="t.gettext('Editor')">
-          @if (contentEditor(); as editor) {
-            <ngx-editor-menu
-              [editor]="editor"
-              [toolbar]="contentToolbar"
-              [disabled]="busy() || dialogOpen()" />
-            <ngx-editor
-              [editor]="editor"
-              [placeholder]="placeholderTellYourStory()" />
-          }
-        </mat-tab>
-        <mat-tab [label]="t.gettext('Raw')">
-          <textarea
-            #rawContent
-            class="raw-content"
-            [attr.aria-label]="t.gettext('Post body HTML')"
-            [value]="draft().body"
-            [disabled]="busy() || dialogOpen()"
-            (input)="updateRawContent($event)"
-            spellcheck="false"></textarea>
-        </mat-tab>
-        <mat-tab [label]="t.gettext('Preview')">
-          <div
-            class="post-body content-preview"
-            [innerHTML]="resolvedBody()"></div>
-        </mat-tab>
-      </mat-tab-group>
-      @if (contentTab() !== 2) {
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen() || !contentEditor()"
-          [matMenuTriggerFor]="variableMenu"
-          [matMenuTriggerRestoreFocus]="false">
-          {{ t.gettext('Insert variable') }}
-        </button>
-      }
-      <mat-menu #variableMenu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="siteVariableMenu">
-          {{ t.gettext('Site') }}
-        </button>
-        <button mat-menu-item [matMenuTriggerFor]="postVariableMenu">
-          {{ t.gettext('Post') }}
-        </button>
-      </mat-menu>
-      <mat-menu #siteVariableMenu="matMenu">
-        <button mat-menu-item (click)="insertVariable('frontendUrl')">
-          {{ t.gettext('Frontend URL') }}
-        </button>
-        <button mat-menu-item (click)="insertVariable('site.name')">
-          {{ t.gettext('Site name') }}
-        </button>
-        <button mat-menu-item (click)="insertVariable('currentYear')">
-          {{ t.gettext('Current year') }}
-        </button>
-      </mat-menu>
-      <mat-menu #postVariableMenu="matMenu">
-        <button mat-menu-item (click)="insertVariable('post.title')">
-          {{ t.gettext('Post title') }}
-        </button>
-        <button mat-menu-item (click)="insertVariable('post.url')">
-          {{ t.gettext('Post URL') }}
-        </button>
-        <button mat-menu-item (click)="insertVariable('post.id')">
-          {{ t.gettext('Post ID') }}
-        </button>
-        <button mat-menu-item (click)="insertVariable('post.thumbnailUrl')">
-          {{ t.gettext('Post Thumbnail URL') }}
-        </button>
-      </mat-menu>
-    </section>
-    <label class="slug-field">
-      <span>{{ t.gettext('URL slug') }}</span>
-      <input
-        [attr.aria-label]="t.gettext('URL slug')"
-        [value]="draft().slug"
-        [disabled]="busy() || dialogOpen()"
-        (input)="updateSlug($event)"
-        [placeholder]="t.gettext('my-post')" />
-    </label>
-      </mat-tab>
-      <mat-tab [label]="t.gettext('SETTINGS')">
-        <div class="post-settings">
-    @if (mediaAttachment(); as media) {
-      <mat-card class="post-setting-card">
-      <section
-        class="media-attachment"
-        aria-labelledby="media-attachment-heading">
-        <h2 id="media-attachment-heading">{{ media.heading }}</h2>
-        @if (uploading()) {
-          <mat-progress-bar
-            mode="determinate"
-            [value]="uploadProgress()"
-            [attr.aria-label]="t.gettext('Media upload progress')" />
-        }
-        @if (draft()[media.key]; as key) {
-          @if (mediaPreviewLoading()) {
-            <p role="status">{{ t.gettext('Loading media preview...') }}</p>
-          }
-          @if (mediaPreviewError()) {
-            <p
-              class="error"
-              role="alert">
-              {{ mediaPreviewError() }}
-            </p>
-          }
-          @if (media.type === 'video' && mediaPreviewUrl()) {
-            <video
-              controls
-              preload="none"
-              [src]="mediaPreviewUrl()">
-              {{ t.gettext('Your browser does not support video playback.') }}
-            </video>
-          } @else if (media.type === 'audio' && mediaPreviewUrl()) {
-            <audio
-              controls
-              preload="none"
-              [src]="mediaPreviewUrl()">
-              {{ t.gettext('Your browser does not support audio playback.') }}
-            </audio>
-          } @else if (media.type === 'attachment' && mediaPreviewUrl()) {
-            <p>
-              {{
-                t.gettext('Attached file: [[ fileName ]]', {
-                  fileName: mediaFileName(key),
-                })
-              }}
-              <a
-                [href]="mediaPreviewUrl()"
-                target="_blank"
-                rel="noopener"
-                >{{ t.gettext('Download or open') }}</a
-              >
-            </p>
-          }
-          <input
-            #mediaInput
-            hidden
-            type="file"
-            [accept]="media.accept"
-            [disabled]="busy() || dialogOpen()"
-            (change)="fileSelected($event)" />
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="mediaInput.click()">
-            {{ t.gettext('Replace') }}
-          </button>
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="removeMedia()">
-            {{ t.gettext('Remove') }}
-          </button>
-        } @else {
-          <input
-            #mediaInput
-            hidden
-            type="file"
-            [accept]="media.accept"
-            [disabled]="busy() || dialogOpen()"
-            (change)="fileSelected($event)" />
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="mediaInput.click()">
-            {{ media.uploadLabel }}
-          </button>
-        }
-      </section>
-      </mat-card>
-    }
-    <mat-card class="post-setting-card">
-    <section
-      class="post-thumbnail"
-      aria-labelledby="thumbnail-heading">
-      <h2 id="thumbnail-heading">{{ t.gettext('Thumbnail') }}</h2>
-      @if (thumbnailPreviewUrl()) {
-        <img
-          class="thumbnail-preview"
-          [src]="thumbnailPreviewUrl()"
-          [alt]="t.gettext('Post thumbnail')" />
-      } @else {
-        <p>{{ t.gettext('No thumbnail selected.') }}</p>
-      }
-      @if (thumbnailError()) {
-        <p role="alert">{{ thumbnailError() }}</p>
-      }
-      <input
-        #thumbnailInput
-        hidden
-        type="file"
-        accept="image/*"
-        [disabled]="busy() || dialogOpen()"
-        (change)="thumbnailSelected($event)" />
-      <div class="buttons">
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen()"
-          (click)="thumbnailInput.click()">
-          {{ t.gettext('Upload Thumbnail') }}
-        </button>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen()"
-          (click)="applyDefaultThumbnail()">
-          {{ t.gettext('Apply Default Placeholder') }}
-        </button>
-      </div>
-    </section>
-    </mat-card>
-    <mat-card class="post-setting-card">
-    <section
-      class="post-taxonomy"
-      aria-labelledby="category-heading">
-      <h2 id="category-heading">{{ t.gettext('Category / Tags') }}</h2>
-      @if (taxonomyLoading()) {
-        <p role="status">{{ t.gettext('Loading categories and tags...') }}</p>
-      }
-      @if (taxonomyError()) {
-        <p role="alert">{{ taxonomyError() }}</p>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy()"
-          (click)="loadTaxonomy()">
-          {{ t.gettext('Try again') }}
-        </button>
-      }
-      <mat-form-field appearance="outline">
-        <mat-label>{{ t.gettext('Category') }}</mat-label>
-        <mat-select
-          [value]="draft().categoryId"
-          [disabled]="
-            busy() || dialogOpen() || taxonomyLoading() || !!taxonomyError()
-          "
-          (selectionChange)="updateDraft('categoryId', $event.value)">
-          <mat-option [value]="null">{{ t.gettext('None') }}</mat-option>
-          @for (category of categories(); track category.id) {
-            <mat-option [value]="category.id">{{ category.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <h3>{{ t.gettext('Tags') }}</h3>
-      <mat-chip-set [attr.aria-label]="t.gettext('Selected tags')">
-        @for (tag of selectedTags(); track tag.id) {
-          <mat-chip
-            [disabled]="busy() || dialogOpen() || taxonomyLoading()"
-            (removed)="removeTag(tag.id)">
-            {{ tag.name }}
-            <button
-              matChipRemove
-              type="button"
-              [disabled]="busy() || dialogOpen() || taxonomyLoading()"
-              [attr.aria-label]="
-                t.gettext('Remove tag [[ name ]]', { name: tag.name })
-              ">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-        }
-      </mat-chip-set>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ t.gettext('Search tags') }}</mat-label>
-        <input
-          matInput
-          [value]="tagSearch()"
-          (input)="filterTags($event)"
-          [disabled]="busy() || dialogOpen() || taxonomyLoading()" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ t.gettext('Add tag') }}</mat-label>
-        <mat-select
-          [value]="null"
-          [disabled]="
-            busy() || dialogOpen() || taxonomyLoading() || !!taxonomyError()
-          "
-          (selectionChange)="addTag($event.value)">
-          @for (tag of filteredTags(); track tag.id) {
-            <mat-option [value]="tag.id">{{ tag.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <div class="buttons">
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen() || taxonomyLoading()"
-          (click)="createTaxonomy('category')">
-          <mat-icon>add</mat-icon> {{ t.gettext('Add category') }}
-        </button>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen() || taxonomyLoading()"
-          (click)="createTaxonomy('tag')">
-          <mat-icon>add</mat-icon> {{ t.gettext('Add tag') }}
-        </button>
-      </div>
-    </section>
-    </mat-card>
-    <mat-card class="post-setting-card">
-    <section
-      class="related-posts"
-      aria-labelledby="related-posts-heading">
-      <h2 id="related-posts-heading">{{ t.gettext('Related posts') }}</h2>
-      @if (relatedPostsLoading()) {
-        <p role="status">{{ t.gettext('Loading related posts...') }}</p>
-      } @else if (relatedPostsError()) {
-        <p
-          class="error"
-          role="alert">
-          {{ relatedPostsError() }}
-        </p>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen()"
-          (click)="loadRelatedPosts()">
-          {{ t.gettext('Try again') }}
-        </button>
-      } @else {
-        <ul>
-          @for (post of relatedPosts(); track post.id) {
-            <li>
-              <span>#{{ post.id }} - {{ post.title }}</span>
-              <button
-                mat-icon-button
-                type="button"
-                [attr.aria-label]="
-                  t.gettext('Remove related post [[ title ]]', {
-                    title: post.title,
+        <mat-accordion class="post-type-accordion">
+          <mat-expansion-panel #postTypePanel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>{{ currentPostTypeIcon() }}</mat-icon>
+                {{
+                  t.gettext('Current post type: [[ postType ]]', {
+                    postType: currentPostType().label,
                   })
-                "
+                }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-radio-group
+              class="post-type-selector"
+              [attr.aria-label]="t.gettext('Post type')"
+              [value]="draft().type"
+              [disabled]="busy() || dialogOpen()"
+              (change)="updateDraft('type', $event.value)">
+              @for (type of postTypes; track type.value) {
+                <mat-radio-button
+                  [value]="type.value"
+                  (click)="postTypePanel.close()"
+                  >{{ type.label }}</mat-radio-button
+                >
+              }
+            </mat-radio-group>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <div
+          class="post-title editable"
+          contenteditable="true"
+          role="textbox"
+          [attr.aria-label]="t.gettext('Post title')"
+          aria-required="true"
+          [attr.data-placeholder]="placeholderTitle()"
+          [attr.contenteditable]="!busy() && !dialogOpen()"
+          [taonCmsEditableSingleLine]="true"
+          [taonCmsEditable]="draft().title"
+          (taonCmsEditableChange)="updateDraft('title', $event)"></div>
+        <div
+          class="post-excerpt editable"
+          contenteditable="true"
+          role="textbox"
+          [attr.aria-label]="t.gettext('Post excerpt')"
+          aria-multiline="true"
+          [attr.data-placeholder]="placeholderShortIntro()"
+          [attr.contenteditable]="!busy() && !dialogOpen()"
+          [taonCmsEditable]="draft().excerpt"
+          (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
+        <section class="post-content-editor">
+          <mat-tab-group
+            [selectedIndex]="contentTab()"
+            (selectedIndexChange)="setContentTab($event)"
+            [preserveContent]="true"
+            animationDuration="0ms">
+            <mat-tab [label]="t.gettext('Editor')">
+              @if (contentEditor(); as editor) {
+                <ngx-editor-menu
+                  [editor]="editor"
+                  [toolbar]="contentToolbar"
+                  [disabled]="busy() || dialogOpen()" />
+                <ngx-editor
+                  [editor]="editor"
+                  [placeholder]="placeholderTellYourStory()" />
+              }
+            </mat-tab>
+            <mat-tab [label]="t.gettext('Raw')">
+              <textarea
+                #rawContent
+                class="raw-content"
+                [attr.aria-label]="t.gettext('Post body HTML')"
+                [value]="draft().body"
                 [disabled]="busy() || dialogOpen()"
-                (click)="removeRelatedPost(post.id)">
-                <mat-icon>close</mat-icon>
-              </button>
-            </li>
-          } @empty {
-            <li>{{ t.gettext('No related posts yet.') }}</li>
-          }
-        </ul>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen()"
-          (click)="addRelatedPost()">
-          <mat-icon>add</mat-icon> {{ t.gettext('Add related post') }}
-        </button>
-        @if (currentPost()) {
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="addAsChildOf()">
-            <mat-icon>account_tree</mat-icon>
-            {{ t.gettext('Add as child of') }}
-          </button>
-        }
-      }
-    </section>
-    </mat-card>
-
-    @if (!mediaAttachment()) {
-      <mat-card class="post-setting-card">
-      <section
-        class="application-hook"
-        aria-labelledby="application-hook-heading">
-        <h2 id="application-hook-heading">
-          {{ t.gettext('Hooks') }}
-        </h2>
-        @if (applicationHooksLoading()) {
-          <p role="status">{{ t.gettext('Loading application hooks...') }}</p>
-        } @else if (applicationHooksError()) {
-          <p
-            class="error"
-            role="alert">
-            {{ applicationHooksError() }}
-          </p>
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="loadApplicationHooks()">
-            {{ t.gettext('Try again') }}
-          </button>
-        } @else {
-          <mat-checkbox
-            [checked]="useAsApplicationHook()"
-            [disabled]="busy() || dialogOpen()"
-            (change)="setUseAsApplicationHook($event.checked)">
-            {{ t.gettext('Use as application hook') }}
-          </mat-checkbox>
-          @if (useAsApplicationHook()) {
-            <mat-form-field
-              appearance="outline"
-              subscriptSizing="dynamic">
-              <mat-label>{{ t.gettext('Application Hook') }}</mat-label>
-              <mat-select
-                [value]="selectedApplicationHook()"
-                [disabled]="busy() || dialogOpen()"
-                (selectionChange)="selectedApplicationHook.set($event.value)">
-                @for (
-                  applicationHook of applicationHooks();
-                  track applicationHook.id
-                ) {
-                  <mat-option
-                    [value]="applicationHook.hook"
-                    [disabled]="
-                      applicationHookInUseByAnotherPost(applicationHook)
-                    ">
-                    {{ applicationHookLabel(applicationHook.hook) }}
-                    @if (applicationHookInUseByAnotherPost(applicationHook)) {
-                      {{
-                        t.gettext('(in use by post # [[ postId ]])', {
-                          postId: applicationHook.contentId,
-                        })
-                      }}
-                    }
-                  </mat-option>
-                } @empty {
-                  <mat-option [disabled]="true">{{
-                    t.gettext('No application hooks configured')
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          }
-        }
-      </section>
-      </mat-card>
-    }
-    <mat-card class="post-setting-card">
-    <section
-      class="post-permissions"
-      aria-labelledby="post-permissions-heading">
-      <h2 id="post-permissions-heading">{{ t.gettext('Permissions') }}</h2>
-      @if (permissionSource(); as source) {
-        <p role="note">
-          {{
-            t.gettext(
-              'Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them.',
-              { postId: source.id, title: source.title }
-            )
-          }}
-        </p>
-      }
-      @if (permissionsLoading()) {
-        <p role="status">{{ t.gettext('Loading assigned permissions...') }}</p>
-      } @else if (permissionsError()) {
-        <p
-          class="error"
-          role="alert">
-          {{ permissionsError() }}
-        </p>
-        <button
-          mat-button
-          type="button"
-          [disabled]="busy() || dialogOpen()"
-          (click)="loadPermissions()">
-          {{ t.gettext('Try again') }}
-        </button>
-      } @else {
-        <ul>
-          @for (permission of permissions(); track permission.id) {
-            <li>
-              <span>{{ permission.name }} ({{ permission.code }})</span>
-              <button
-                mat-icon-button
-                type="button"
-                [attr.aria-label]="
-                  t.gettext('Remove permission [[ name ]]', {
-                    name: permission.name,
-                  })
-                "
-                [disabled]="busy() || dialogOpen() || !!permissionSource()"
-                (click)="removePermission(permission.id)">
-                <mat-icon>close</mat-icon>
-              </button>
-            </li>
-          } @empty {
-            <li>{{ t.gettext('No permissions assigned.') }}</li>
-          }
-        </ul>
-        @if (permissionOptionsError()) {
-          <p
-            class="error"
-            role="alert">
-            {{ permissionOptionsError() }}
-          </p>
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen() || permissionOptionsLoading()"
-            (click)="loadPermissionOptions()">
-            {{ t.gettext('Try again') }}
-          </button>
-        } @else {
-          <div class="permission-assignment">
-            <mat-form-field
-            class="w-full"
-              appearance="outline"
-              subscriptSizing="dynamic">
-              <mat-label>{{ t.gettext('Permission') }}</mat-label>
-              <mat-select
-                [value]="selectedPermissionId()"
-                [disabled]="
-                  busy() ||
-                  dialogOpen() ||
-                  permissionOptionsLoading() ||
-                  !!permissionSource()
-                "
-                (selectionChange)="selectedPermissionId.set($event.value)">
-                @for (
-                  permission of availablePermissions();
-                  track permission.id
-                ) {
-                  <mat-option [value]="permission.id"
-                    >{{ permission.name }} ({{ permission.code }})</mat-option
-                  >
-                } @empty {
-                  <mat-option [disabled]="true">{{
-                    t.gettext('No permissions available')
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+                (input)="updateRawContent($event)"
+                spellcheck="false"></textarea>
+            </mat-tab>
+            <mat-tab [label]="t.gettext('Preview')">
+              <div
+                class="post-body content-preview"
+                [innerHTML]="resolvedBody()"></div>
+            </mat-tab>
+          </mat-tab-group>
+          @if (contentTab() !== 2) {
             <button
               mat-button
               type="button"
-              [disabled]="
-                busy() ||
-                dialogOpen() ||
-                !selectedPermissionId() ||
-                !!permissionSource()
-              "
-              (click)="addPermission()">
-              <mat-icon>add</mat-icon> {{ t.gettext('Assign permission') }}
+              [disabled]="busy() || dialogOpen() || !contentEditor()"
+              [matMenuTriggerFor]="variableMenu"
+              [matMenuTriggerRestoreFocus]="false">
+              {{ t.gettext('Insert variable') }}
             </button>
-          </div>
-        }
-      }
-      @if (!permissionSource()) {
-        <mat-checkbox
-          [checked]="applyPermissionsToRelatedPosts()"
-          [disabled]="busy() || dialogOpen()"
-          (change)="applyPermissionsToRelatedPosts.set($event.checked)">
-          {{ t.gettext('Apply permissions to related posts') }}
-        </mat-checkbox>
-      }
-    </section>
-    </mat-card>
+          }
+          <mat-menu #variableMenu="matMenu">
+            <button
+              mat-menu-item
+              [matMenuTriggerFor]="siteVariableMenu">
+              {{ t.gettext('Site') }}
+            </button>
+            <button
+              mat-menu-item
+              [matMenuTriggerFor]="postVariableMenu">
+              {{ t.gettext('Post') }}
+            </button>
+          </mat-menu>
+          <mat-menu #siteVariableMenu="matMenu">
+            <button
+              mat-menu-item
+              (click)="insertVariable('frontendUrl')">
+              {{ t.gettext('Frontend URL') }}
+            </button>
+            <button
+              mat-menu-item
+              (click)="insertVariable('site.name')">
+              {{ t.gettext('Site name') }}
+            </button>
+            <button
+              mat-menu-item
+              (click)="insertVariable('currentYear')">
+              {{ t.gettext('Current year') }}
+            </button>
+          </mat-menu>
+          <mat-menu #postVariableMenu="matMenu">
+            <button
+              mat-menu-item
+              (click)="insertVariable('post.title')">
+              {{ t.gettext('Post title') }}
+            </button>
+            <button
+              mat-menu-item
+              (click)="insertVariable('post.url')">
+              {{ t.gettext('Post URL') }}
+            </button>
+            <button
+              mat-menu-item
+              (click)="insertVariable('post.id')">
+              {{ t.gettext('Post ID') }}
+            </button>
+            <button
+              mat-menu-item
+              (click)="insertVariable('post.thumbnailUrl')">
+              {{ t.gettext('Post Thumbnail URL') }}
+            </button>
+          </mat-menu>
+        </section>
+        <label class="slug-field">
+          <span>{{ t.gettext('URL slug') }}</span>
+          <input
+            [attr.aria-label]="t.gettext('URL slug')"
+            [value]="draft().slug"
+            [disabled]="busy() || dialogOpen()"
+            (input)="updateSlug($event)"
+            [placeholder]="t.gettext('my-post')" />
+        </label>
+      </mat-tab>
+      <mat-tab [label]="t.gettext('SETTINGS')">
+        <div class="post-settings">
+          @if (mediaAttachment(); as media) {
+            <mat-card class="post-setting-card">
+              <section
+                class="media-attachment"
+                aria-labelledby="media-attachment-heading">
+                <h2 id="media-attachment-heading">{{ media.heading }}</h2>
+                @if (uploading()) {
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="uploadProgress()"
+                    [attr.aria-label]="t.gettext('Media upload progress')" />
+                }
+                @if (draft()[media.key]; as key) {
+                  @if (mediaPreviewLoading()) {
+                    <p role="status">
+                      {{ t.gettext('Loading media preview...') }}
+                    </p>
+                  }
+                  @if (mediaPreviewError()) {
+                    <p
+                      class="error"
+                      role="alert">
+                      {{ mediaPreviewError() }}
+                    </p>
+                  }
+                  @if (media.type === 'video' && mediaPreviewUrl()) {
+                    <video
+                      controls
+                      preload="none"
+                      [src]="mediaPreviewUrl()">
+                      {{
+                        t.gettext(
+                          'Your browser does not support video playback.'
+                        )
+                      }}
+                    </video>
+                  } @else if (media.type === 'audio' && mediaPreviewUrl()) {
+                    <audio
+                      controls
+                      preload="none"
+                      [src]="mediaPreviewUrl()">
+                      {{
+                        t.gettext(
+                          'Your browser does not support audio playback.'
+                        )
+                      }}
+                    </audio>
+                  } @else if (
+                    media.type === 'attachment' && mediaPreviewUrl()
+                  ) {
+                    <p>
+                      {{
+                        t.gettext('Attached file: [[ fileName ]]', {
+                          fileName: mediaFileName(key),
+                        })
+                      }}
+                      <a
+                        [href]="mediaPreviewUrl()"
+                        target="_blank"
+                        rel="noopener"
+                        >{{ t.gettext('Download or open') }}</a
+                      >
+                    </p>
+                  }
+                  <input
+                    #mediaInput
+                    hidden
+                    type="file"
+                    [accept]="media.accept"
+                    [disabled]="busy() || dialogOpen()"
+                    (change)="fileSelected($event)" />
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="busy() || dialogOpen()"
+                    (click)="mediaInput.click()">
+                    {{ t.gettext('Replace') }}
+                  </button>
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="busy() || dialogOpen()"
+                    (click)="removeMedia()">
+                    {{ t.gettext('Remove') }}
+                  </button>
+                } @else {
+                  <input
+                    #mediaInput
+                    hidden
+                    type="file"
+                    [accept]="media.accept"
+                    [disabled]="busy() || dialogOpen()"
+                    (change)="fileSelected($event)" />
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="busy() || dialogOpen()"
+                    (click)="mediaInput.click()">
+                    {{ media.uploadLabel }}
+                  </button>
+                }
+              </section>
+            </mat-card>
+          }
+          <mat-card class="post-setting-card">
+            <section
+              class="post-thumbnail"
+              aria-labelledby="thumbnail-heading">
+              <h2 id="thumbnail-heading">{{ t.gettext('Thumbnail') }}</h2>
+              @if (thumbnailPreviewUrl()) {
+                <img
+                  class="thumbnail-preview"
+                  [src]="thumbnailPreviewUrl()"
+                  [alt]="t.gettext('Post thumbnail')" />
+              } @else {
+                <p>{{ t.gettext('No thumbnail selected.') }}</p>
+              }
+              @if (thumbnailError()) {
+                <p role="alert">{{ thumbnailError() }}</p>
+              }
+              <input
+                #thumbnailInput
+                hidden
+                type="file"
+                accept="image/*"
+                [disabled]="busy() || dialogOpen()"
+                (change)="thumbnailSelected($event)" />
+              <div class="buttons">
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="thumbnailInput.click()">
+                  {{ t.gettext('Upload Thumbnail') }}
+                </button>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="applyDefaultThumbnail()">
+                  {{ t.gettext('Apply Default Placeholder') }}
+                </button>
+              </div>
+            </section>
+          </mat-card>
+          <mat-card class="post-setting-card">
+            <section
+              class="post-taxonomy"
+              aria-labelledby="category-heading">
+              <h2 id="category-heading">{{ t.gettext('Category / Tags') }}</h2>
+              @if (taxonomyLoading()) {
+                <p role="status">
+                  {{ t.gettext('Loading categories and tags...') }}
+                </p>
+              }
+              @if (taxonomyError()) {
+                <p role="alert">{{ taxonomyError() }}</p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy()"
+                  (click)="loadTaxonomy()">
+                  {{ t.gettext('Try again') }}
+                </button>
+              }
+              <mat-form-field appearance="outline">
+                <mat-label>{{ t.gettext('Category') }}</mat-label>
+                <mat-select
+                  [value]="draft().categoryId"
+                  [disabled]="
+                    busy() ||
+                    dialogOpen() ||
+                    taxonomyLoading() ||
+                    !!taxonomyError()
+                  "
+                  (selectionChange)="updateDraft('categoryId', $event.value)">
+                  <mat-option [value]="null">{{
+                    t.gettext('None')
+                  }}</mat-option>
+                  @for (category of categories(); track category.id) {
+                    <mat-option [value]="category.id">{{
+                      category.name
+                    }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <h3>{{ t.gettext('Tags') }}</h3>
+              <mat-chip-set [attr.aria-label]="t.gettext('Selected tags')">
+                @for (tag of selectedTags(); track tag.id) {
+                  <mat-chip
+                    [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+                    (removed)="removeTag(tag.id)">
+                    {{ tag.name }}
+                    <button
+                      matChipRemove
+                      type="button"
+                      [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+                      [attr.aria-label]="
+                        t.gettext('Remove tag [[ name ]]', { name: tag.name })
+                      ">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ t.gettext('Search tags') }}</mat-label>
+                <input
+                  matInput
+                  [value]="tagSearch()"
+                  (input)="filterTags($event)"
+                  [disabled]="busy() || dialogOpen() || taxonomyLoading()" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ t.gettext('Add tag') }}</mat-label>
+                <mat-select
+                  [value]="null"
+                  [disabled]="
+                    busy() ||
+                    dialogOpen() ||
+                    taxonomyLoading() ||
+                    !!taxonomyError()
+                  "
+                  (selectionChange)="addTag($event.value)">
+                  @for (tag of filteredTags(); track tag.id) {
+                    <mat-option [value]="tag.id">{{ tag.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <div class="buttons">
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+                  (click)="createTaxonomy('category')">
+                  <mat-icon>add</mat-icon> {{ t.gettext('Add category') }}
+                </button>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen() || taxonomyLoading()"
+                  (click)="createTaxonomy('tag')">
+                  <mat-icon>add</mat-icon> {{ t.gettext('Add tag') }}
+                </button>
+              </div>
+            </section>
+          </mat-card>
+          <mat-card class="post-setting-card">
+            <section
+              class="parent-post"
+              aria-labelledby="parent-post-heading">
+              <h2 id="parent-post-heading">{{ t.gettext('Parent Post') }}</h2>
+              @if (parentPostLoading()) {
+                <p role="status">{{ t.gettext('Loading parent post...') }}</p>
+              } @else if (parentPostError()) {
+                <p
+                  class="error"
+                  role="alert">
+                  {{ parentPostError() }}
+                </p>
+              } @else if (parentPost(); as parent) {
+                <p>
+                  <a
+                    href="#"
+                    (click)="requestPostEditor($event, parent)">
+                    {{ parent.title }}
+                  </a>
+                </p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="removeParentPost()">
+                  <mat-icon>link_off</mat-icon>
+                  {{ t.gettext('Remove from parent') }}
+                </button>
+              } @else {
+                <p>{{ t.gettext('No parent added') }}</p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen() || !currentPost()"
+                  (click)="addAsChildOf()">
+                  <mat-icon>account_tree</mat-icon>
+                  @if (currentPost()) {
+                    {{ t.gettext('Add as a child') }}
+                  } @else {
+                    {{
+                      t.gettext(
+                        'Add as a child (disabled — please save the post first)'
+                      )
+                    }}
+                  }
+                </button>
+              }
+            </section>
+          </mat-card>
+          <mat-card class="post-setting-card">
+            <section
+              class="related-posts"
+              aria-labelledby="related-posts-heading">
+              <h2 id="related-posts-heading">
+                {{ t.gettext('Related posts') }}
+              </h2>
+              @if (relatedPostsLoading()) {
+                <p role="status">{{ t.gettext('Loading related posts...') }}</p>
+              } @else if (relatedPostsError()) {
+                <p
+                  class="error"
+                  role="alert">
+                  {{ relatedPostsError() }}
+                </p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="loadRelatedPosts()">
+                  {{ t.gettext('Try again') }}
+                </button>
+              } @else {
+                <ul>
+                  @for (post of relatedPosts(); track post.id) {
+                    <li>
+                      <span>
+                        #{{ post.id }} -
+                        <a
+                          href="#"
+                          (click)="requestPostEditor($event, post)">
+                          {{ post.title }}
+                        </a>
+                      </span>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        [attr.aria-label]="
+                          t.gettext('Remove related post [[ title ]]', {
+                            title: post.title,
+                          })
+                        "
+                        [disabled]="busy() || dialogOpen()"
+                        (click)="removeRelatedPost(post.id)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </li>
+                  } @empty {
+                    <li>{{ t.gettext('No related posts yet.') }}</li>
+                  }
+                </ul>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="addRelatedPost()">
+                  <mat-icon>add</mat-icon> {{ t.gettext('Add related post') }}
+                </button>
+              }
+            </section>
+          </mat-card>
+          <mat-card class="post-setting-card">
+            <section
+              class="post-version-links"
+              aria-labelledby="post-version-links-heading">
+              <h2 id="post-version-links-heading">
+                {{ t.gettext('Post versions') }}
+              </h2>
+              @if (!currentPost()) {
+                <p role="note">
+                  {{
+                    t.gettext('Save the post first to manage version links.')
+                  }}
+                </p>
+              }
+              @if (postVersionLinksLoading()) {
+                <p role="status">{{ t.gettext('Loading post versions...') }}</p>
+              }
+              @if (postVersionLinksError()) {
+                <p
+                  class="error"
+                  role="alert">
+                  {{ postVersionLinksError() }}
+                </p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="loadPostVersionLinks(currentPost())">
+                  {{ t.gettext('Try again') }}
+                </button>
+              }
+              <div class="post-version-link">
+                <h3>{{ t.gettext('Public post version') }}</h3>
+                @if (postVersionLinks().publicVersionPost; as versionPost) {
+                  <p>
+                    <a
+                      href="#"
+                      (click)="requestPostEditor($event, versionPost)">
+                      {{ versionPost.title }}
+                    </a>
+                    [{{ versionPost.slug }}]
+                  </p>
+                  @if (canEditPublicVersion()) {
+                    <button
+                      mat-button
+                      type="button"
+                      [disabled]="busy() || dialogOpen()"
+                      (click)="selectVersionPost('public')">
+                      {{ t.gettext('Replace public version') }}
+                    </button>
+                    <button
+                      mat-button
+                      type="button"
+                      [disabled]="busy() || dialogOpen()"
+                      (click)="removeVersionPost('public')">
+                      {{ t.gettext('Remove public version') }}
+                    </button>
+                  } @else {
+                    <p>
+                      {{
+                        t.gettext(
+                          'Version editing is disabled for the current post status.'
+                        )
+                      }}
+                    </p>
+                  }
+                } @else {
+                  @if (!postVersionLinksLoading() && !postVersionLinksError()) {
+                    <p>{{ t.gettext('No public post version linked.') }}</p>
+                  }
+                  @if (
+                    currentPost() &&
+                    !postVersionLinksLoading() &&
+                    !postVersionLinksError() &&
+                    !canEditPublicVersion()
+                  ) {
+                    <p>
+                      {{
+                        t.gettext(
+                          'Version editing is disabled for the current post status.'
+                        )
+                      }}
+                    </p>
+                  }
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="
+                      busy() || dialogOpen() || !canEditPublicVersion()
+                    "
+                    (click)="selectVersionPost('public')">
+                    <mat-icon>add</mat-icon>
+                    {{ t.gettext('Add public post version') }}
+                  </button>
+                }
+              </div>
+              <div class="post-version-link">
+                <h3>{{ t.gettext('Private post version') }}</h3>
+                @if (postVersionLinks().privateVersionPost; as versionPost) {
+                  <p>
+                    <a
+                      href="#"
+                      (click)="requestPostEditor($event, versionPost)">
+                      {{ versionPost.title }}
+                    </a>
+                    [{{ versionPost.slug }}]
+                  </p>
+                  @if (canEditPrivateVersion()) {
+                    <button
+                      mat-button
+                      type="button"
+                      [disabled]="busy() || dialogOpen()"
+                      (click)="selectVersionPost('private')">
+                      {{ t.gettext('Replace private version') }}
+                    </button>
+                    <button
+                      mat-button
+                      type="button"
+                      [disabled]="busy() || dialogOpen()"
+                      (click)="removeVersionPost('private')">
+                      {{ t.gettext('Remove private version') }}
+                    </button>
+                  } @else {
+                    <p>
+                      {{
+                        t.gettext(
+                          'Version editing is disabled for the current post status.'
+                        )
+                      }}
+                    </p>
+                  }
+                } @else {
+                  @if (!postVersionLinksLoading() && !postVersionLinksError()) {
+                    <p>{{ t.gettext('No private post version linked.') }}</p>
+                  }
+                  @if (
+                    currentPost() &&
+                    !postVersionLinksLoading() &&
+                    !postVersionLinksError() &&
+                    !canEditPrivateVersion()
+                  ) {
+                    <p>
+                      {{
+                        t.gettext(
+                          'Version editing is disabled for the current post status.'
+                        )
+                      }}
+                    </p>
+                  }
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="
+                      busy() || dialogOpen() || !canEditPrivateVersion()
+                    "
+                    (click)="selectVersionPost('private')">
+                    <mat-icon>add</mat-icon>
+                    {{ t.gettext('Add private post version') }}
+                  </button>
+                }
+              </div>
+            </section>
+          </mat-card>
+
+          @if (!mediaAttachment()) {
+            <mat-card class="post-setting-card">
+              <section
+                class="application-hook"
+                aria-labelledby="application-hook-heading">
+                <h2 id="application-hook-heading">
+                  {{ t.gettext('Hooks') }}
+                </h2>
+                @if (applicationHooksLoading()) {
+                  <p role="status">
+                    {{ t.gettext('Loading application hooks...') }}
+                  </p>
+                } @else if (applicationHooksError()) {
+                  <p
+                    class="error"
+                    role="alert">
+                    {{ applicationHooksError() }}
+                  </p>
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="busy() || dialogOpen()"
+                    (click)="loadApplicationHooks()">
+                    {{ t.gettext('Try again') }}
+                  </button>
+                } @else {
+                  <mat-checkbox
+                    [checked]="useAsApplicationHook()"
+                    [disabled]="busy() || dialogOpen()"
+                    (change)="setUseAsApplicationHook($event.checked)">
+                    {{ t.gettext('Use as application hook') }}
+                  </mat-checkbox>
+                  @if (useAsApplicationHook()) {
+                    <mat-form-field
+                      appearance="outline"
+                      subscriptSizing="dynamic">
+                      <mat-label>{{ t.gettext('Application Hook') }}</mat-label>
+                      <mat-select
+                        [value]="selectedApplicationHook()"
+                        [disabled]="busy() || dialogOpen()"
+                        (selectionChange)="
+                          selectedApplicationHook.set($event.value)
+                        ">
+                        @for (
+                          applicationHook of applicationHooks();
+                          track applicationHook.id
+                        ) {
+                          <mat-option
+                            [value]="applicationHook.hook"
+                            [disabled]="
+                              applicationHookInUseByAnotherPost(applicationHook)
+                            ">
+                            {{ applicationHookLabel(applicationHook.hook) }}
+                            @if (
+                              applicationHookInUseByAnotherPost(applicationHook)
+                            ) {
+                              {{
+                                t.gettext('(in use by post # [[ postId ]])', {
+                                  postId: applicationHook.contentId,
+                                })
+                              }}
+                            }
+                          </mat-option>
+                        } @empty {
+                          <mat-option [disabled]="true">{{
+                            t.gettext('No application hooks configured')
+                          }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  }
+                }
+              </section>
+            </mat-card>
+          }
+          <mat-card class="post-setting-card">
+            <section
+              class="post-permissions"
+              aria-labelledby="post-permissions-heading">
+              <h2 id="post-permissions-heading">
+                {{ t.gettext('Permissions') }}
+              </h2>
+              @if (permissionSource(); as source) {
+                <p role="note">
+                  {{
+                    t.gettext(
+                      'Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them.',
+                      { postId: source.id, title: source.title }
+                    )
+                  }}
+                </p>
+              }
+              @if (permissionsLoading()) {
+                <p role="status">
+                  {{ t.gettext('Loading assigned permissions...') }}
+                </p>
+              } @else if (permissionsError()) {
+                <p
+                  class="error"
+                  role="alert">
+                  {{ permissionsError() }}
+                </p>
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="busy() || dialogOpen()"
+                  (click)="loadPermissions()">
+                  {{ t.gettext('Try again') }}
+                </button>
+              } @else {
+                <ul>
+                  @for (permission of permissions(); track permission.id) {
+                    <li>
+                      <span>{{ permission.name }} ({{ permission.code }})</span>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        [attr.aria-label]="
+                          t.gettext('Remove permission [[ name ]]', {
+                            name: permission.name,
+                          })
+                        "
+                        [disabled]="
+                          busy() || dialogOpen() || !!permissionSource()
+                        "
+                        (click)="removePermission(permission.id)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </li>
+                  } @empty {
+                    <li>{{ t.gettext('No permissions assigned.') }}</li>
+                  }
+                </ul>
+                @if (permissionOptionsError()) {
+                  <p
+                    class="error"
+                    role="alert">
+                    {{ permissionOptionsError() }}
+                  </p>
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="
+                      busy() || dialogOpen() || permissionOptionsLoading()
+                    "
+                    (click)="loadPermissionOptions()">
+                    {{ t.gettext('Try again') }}
+                  </button>
+                } @else {
+                  <div class="permission-assignment">
+                    <mat-form-field
+                      class="w-full"
+                      appearance="outline"
+                      subscriptSizing="dynamic">
+                      <mat-label>{{ t.gettext('Permission') }}</mat-label>
+                      <mat-select
+                        [value]="selectedPermissionId()"
+                        [disabled]="
+                          busy() ||
+                          dialogOpen() ||
+                          permissionOptionsLoading() ||
+                          !!permissionSource()
+                        "
+                        (selectionChange)="
+                          selectedPermissionId.set($event.value)
+                        ">
+                        @for (
+                          permission of availablePermissions();
+                          track permission.id
+                        ) {
+                          <mat-option [value]="permission.id"
+                            >{{ permission.name }} ({{
+                              permission.code
+                            }})</mat-option
+                          >
+                        } @empty {
+                          <mat-option [disabled]="true">{{
+                            t.gettext('No permissions available')
+                          }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                    <button
+                      mat-button
+                      type="button"
+                      [disabled]="
+                        busy() ||
+                        dialogOpen() ||
+                        !selectedPermissionId() ||
+                        !!permissionSource()
+                      "
+                      (click)="addPermission()">
+                      <mat-icon>add</mat-icon>
+                      {{ t.gettext('Assign permission') }}
+                    </button>
+                  </div>
+                }
+              }
+              @if (!permissionSource()) {
+                <mat-checkbox
+                  [checked]="applyPermissionsToRelatedPosts()"
+                  [disabled]="busy() || dialogOpen()"
+                  (change)="applyPermissionsToRelatedPosts.set($event.checked)">
+                  {{ t.gettext('Apply permissions to related posts') }}
+                </mat-checkbox>
+              }
+            </section>
+          </mat-card>
         </div>
       </mat-tab>
     </mat-tab-group>

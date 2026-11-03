@@ -17,24 +17,24 @@ msgid "Reload courses"
 msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:31
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:60
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:61
 msgid "Public"
 msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:31
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:61
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:62
 msgid "Private"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:44
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:45
 msgid "ID"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:51
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:52
 msgid "Title"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:58
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:59
 msgid "Visibility"
 msgstr ""
 
