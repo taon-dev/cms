@@ -14,6 +14,7 @@ import {
   ClassHelpers,
   apiPrefix,
   Models,
+  Taon,
 } from 'taon/src';
 import { UtilsJwt } from 'tnp-core/src';
 
@@ -118,6 +119,42 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
   async isMediaObjectAvailable(key: string): Promise<boolean> {
     //#region @backendFunc
     return this.storageObjectExists(key);
+    //#endregion
+  }
+
+  async copyMediaObjectForDuplication(sourceKey: string): Promise<string> {
+    //#region @backendFunc
+    const fileName = sourceKey.split('/').pop();
+    if (!fileName) {
+      contentError('The media storage key is invalid.');
+    }
+    const destinationKey = `${crypto.randomUUID()}__${fileName}`;
+    try {
+      await Taon.getResponseValue(
+        this.copy(sourceKey, destinationKey, {}),
+      );
+    } catch (error) {
+      try {
+        await Taon.getResponseValue(this.delete(destinationKey));
+      } catch (cleanupError) {
+        console.error(
+          '[taon-cms-content-storage] Unable to clean up copied media',
+          cleanupError,
+        );
+        contentError(
+          'The media copy failed and its incomplete file could not be removed.',
+          500,
+        );
+      }
+      throw error;
+    }
+    return destinationKey;
+    //#endregion
+  }
+
+  async deleteMediaObjectForDuplication(key: string): Promise<void> {
+    //#region @backendFunc
+    await Taon.getResponseValue(this.delete(key));
     //#endregion
   }
 

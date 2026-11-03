@@ -10,31 +10,31 @@ msgstr "Wpisy CMS"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:22
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:29
 msgid "Title"
-msgstr ""
+msgstr "Tytuł"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:36
 msgid "Slug"
-msgstr ""
+msgstr "Identyfikator URL"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:43
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:45
 msgid "Published"
-msgstr ""
+msgstr "Opublikowany"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:46
 msgid "Draft"
-msgstr ""
+msgstr "Szkic"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:47
 msgid "Archived"
-msgstr ""
+msgstr "Zarchiwizowany"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:3
 msgid "Loading posts..."

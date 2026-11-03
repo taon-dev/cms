@@ -75,6 +75,12 @@ export function validateContentInput(
     contentError('applyPermissionsToRelatedPosts must be a boolean.');
   }
   if (
+    input.applyVisibilityToRelatedPosts !== undefined &&
+    typeof input.applyVisibilityToRelatedPosts !== 'boolean'
+  ) {
+    contentError('applyVisibilityToRelatedPosts must be a boolean.');
+  }
+  if (
     input.status !== undefined &&
     !['draft', 'published', 'archived'].includes(input.status)
   ) {

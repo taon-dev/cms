@@ -10,7 +10,7 @@ msgstr "Tytuł"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:57
 msgid "Slug"
-msgstr ""
+msgstr "Identyfikator URL"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.ts:58
 msgid "Status"

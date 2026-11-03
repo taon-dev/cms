@@ -38,6 +38,7 @@ import type {
   TaonCmsPermissionConfiguration,
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
+  TaonCmsVisibilityConfiguration,
 } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';
@@ -52,12 +53,14 @@ import { contentError } from './taon-cms-content.validation';
     'getPublicBySlug',
     'createContent',
     'duplicateContent',
+    'permanentlyDeleteContent',
     'updateContent',
     'deleteContent',
     'restoreContent',
     'listRevisions',
     'listRelatedPosts',
     'getParentPost',
+    'getVisibilityConfiguration',
     'getPostVersions',
     'listCourses',
     'listPermissions',
@@ -406,9 +409,42 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   @POST()
   duplicateContent(
     @Query('id') id: number,
+    @Query('includeChildren') includeChildren = false,
   ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
-    return async () => this.taonCmsContentRepository.duplicateContent(id);
+    return async () =>
+      this.taonCmsContentRepository.duplicateContent(
+        id,
+        includeChildren,
+        key =>
+          this.taonCmsContentStorageController.copyMediaObjectForDuplication(
+            key,
+          ),
+        key =>
+          this.taonCmsContentStorageController.deleteMediaObjectForDuplication(
+            key,
+          ),
+      );
+    //#endregion
+  }
+
+  @DELETE()
+  permanentlyDeleteContent(
+    @Query('id') id: number,
+    @Query('expectedVersion') expectedVersion: number,
+  ): Taon.Response<boolean> {
+    //#region @websqlFunc
+    return async () => {
+      await this.taonCmsContentRepository.permanentlyDeleteContent(
+        id,
+        expectedVersion,
+        key =>
+          this.taonCmsContentStorageController.deleteMediaObjectForDuplication(
+            key,
+          ),
+      );
+      return true;
+    };
     //#endregion
   }
 
@@ -454,6 +490,16 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   ): Taon.Response<TaonCmsContentEntity | null> {
     //#region @websqlFunc
     return async () => this.taonCmsContentRepository.getParentPost(id);
+    //#endregion
+  }
+
+  @GET()
+  getVisibilityConfiguration(
+    @Query('id') id: number,
+  ): Taon.Response<TaonCmsVisibilityConfiguration> {
+    //#region @websqlFunc
+    return async () =>
+      this.taonCmsContentRepository.getVisibilityConfiguration(id);
     //#endregion
   }
 

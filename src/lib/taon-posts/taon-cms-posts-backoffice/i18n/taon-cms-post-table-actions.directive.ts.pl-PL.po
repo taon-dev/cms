@@ -4,43 +4,65 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:41
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:45
 msgid "Actions"
-msgstr ""
+msgstr "Akcje"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:48
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:52
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:135
 msgid "Duplicate post"
-msgstr ""
+msgstr "Duplikuj wpis"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:55
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:59
 msgid "Post details"
-msgstr ""
+msgstr "Szczegóły wpisu"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:61
-msgid "Delete (archive) post"
-msgstr ""
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:65
+msgid "Archive or permanently delete post"
+msgstr "Archiwizuj lub trwale usuń wpis"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:83
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:102
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:88
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:107
 msgid "The Post details route is unavailable."
-msgstr ""
+msgstr "Trasa szczegółów wpisu jest niedostępna."
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:129
-msgid "The post could not be duplicated. Please try again."
-msgstr ""
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:144
-msgid "Delete post?"
-msgstr ""
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:139
+msgid "Duplicate only this post"
+msgstr "Duplikuj tylko ten wpis"
 
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:145
+msgid "Duplicate this post and its children"
+msgstr "Duplikuj ten wpis i jego wpisy podrzędne"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:171
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:198
+msgid "The post could not be duplicated. Please try again."
+msgstr "Nie udało się zduplikować wpisu. Spróbuj ponownie."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:215
+msgid "Permanently delete post?"
+msgstr "Trwale usunąć wpis?"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:216
+msgid "Archive post?"
+msgstr "Zarchiwizować wpis?"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:218
+msgid "This permanently deletes the post and its assets. This action cannot be undone."
+msgstr "Ta operacja trwale usuwa wpis i jego zasoby. Nie można jej cofnąć."
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:221
 msgid "This archives the post. It can be restored from its revisions."
-msgstr ""
+msgstr "Ta operacja archiwizuje wpis. Można go przywrócić z jednej z jego wersji."
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:148
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:225
+msgid "Permanently delete"
+msgstr "Usuń trwale"
+
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:226
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:174
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-post-table-actions.directive.ts:255
 msgid "The post could not be deleted. Refresh the table before retrying."
-msgstr ""
+msgstr "Nie udało się usunąć wpisu. Odśwież tabelę przed ponowną próbą."

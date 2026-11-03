@@ -19,6 +19,7 @@ import type {
   TaonCmsPermissionConfiguration,
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
+  TaonCmsVisibilityConfiguration,
 } from './taon-cms-content.models';
 import { trackCmsUpload } from './taon-cms-upload-progress';
 
@@ -252,8 +253,11 @@ export class TaonCmsContentApiService<
   //#endregion
 
   //#region API / duplicate content
-  public duplicateContent(id: number): Observable<TaonCmsContentEntity> {
-    return this.taonCmsContentController.duplicateContent(id)
+  public duplicateContent(
+    id: number,
+    includeChildren = false,
+  ): Observable<TaonCmsContentEntity> {
+    return this.taonCmsContentController.duplicateContent(id, includeChildren)
       .request!().observable.pipe(map(res => res.body.json));
   }
   //#endregion
@@ -277,6 +281,16 @@ export class TaonCmsContentApiService<
       .request!().observable.pipe(map(res => res.body.json));
   }
   //#endregion
+
+  public permanentlyDeleteContent(
+    id: number,
+    expectedVersion: number,
+  ): Observable<boolean> {
+    return this.taonCmsContentController
+      .permanentlyDeleteContent(id, expectedVersion)
+      .request!()
+      .observable.pipe(map(res => res.body.json));
+  }
 
   //#region API / restore content
   public restoreContent(
@@ -312,6 +326,16 @@ export class TaonCmsContentApiService<
   ): Promise<TaonCmsContentEntity | null> {
     return (
       await this.taonCmsContentController.getParentPost(id).request()
+    ).body.json;
+  }
+
+  public async getVisibilityConfiguration(
+    id: number,
+  ): Promise<TaonCmsVisibilityConfiguration> {
+    return (
+      await this.taonCmsContentController
+        .getVisibilityConfiguration(id)
+        .request()
     ).body.json;
   }
 

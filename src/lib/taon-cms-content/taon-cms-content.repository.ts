@@ -11,6 +11,7 @@ import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/
 import { TaonCmsContentRevisionRepository } from '../taon-cms-content-revision/taon-cms-content-revision.repository';
 import { TaonCmsContentTagRepository } from '../taon-cms-content-tag/taon-cms-content-tag.repository';
 import { TaonCmsTagRepository } from '../taon-cms-tag/taon-cms-tag.repository';
+import { TaonCmsContentAssetEntity } from '../taon-cms-content-asset/taon-cms-content-asset.entity';
 
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
 import { TaonCmsContentType } from './taon-cms-content.models';
@@ -23,6 +24,7 @@ import type {
   TaonCmsPermissionConfiguration,
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
+  TaonCmsVisibilityConfiguration,
 } from './taon-cms-content.models';
 import {
   contentError,
@@ -63,6 +65,18 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async getVisibilityConfiguration(
+    id: number,
+  ): Promise<TaonCmsVisibilityConfiguration> {
+    //#region @websqlFunc
+    requireContentId(id);
+    return this.connection.transaction(async manager => {
+      const content = await this.requireContent(id, manager);
+      return this.resolveVisibilityConfiguration(content, manager);
+    });
+    //#endregion
+  }
+
   async createContent(
     input: TaonCmsCreateContent,
   ): Promise<TaonCmsContentEntity> {
@@ -74,53 +88,200 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
-  async duplicateContent(id: number): Promise<TaonCmsContentEntity> {
+  private async resolveVisibilityConfiguration(
+    post: TaonCmsContentEntity,
+    manager: EntityManager,
+  ): Promise<TaonCmsVisibilityConfiguration> {
+    //#region @websqlFunc
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    let childId = post.id;
+    const visited = new Set<number>([childId]);
+    while (true) {
+      const parents = await repository.find({
+        where: { relatedPosts: { id: childId } },
+      });
+      if (parents.length > 1) {
+        contentError('A post cannot have multiple parent posts.', 409);
+      }
+      const parent = parents[0];
+      if (!parent) {
+        return { status: this.contentStatus(post.status), source: null };
+      }
+      if (visited.has(parent.id)) {
+        contentError('Related posts cannot contain circular relationships.', 409);
+      }
+      visited.add(parent.id);
+      if (parent.applyVisibilityToRelatedPosts) {
+        return {
+          status: this.contentStatus(parent.status),
+          source: { id: parent.id, title: parent.title },
+        };
+      }
+      childId = parent.id;
+    }
+    //#endregion
+  }
+
+  async duplicateContent(
+    id: number,
+    includeChildren: boolean,
+    copyStorageObject: (key: string) => Promise<string>,
+    deleteStorageObject: (key: string) => Promise<void>,
+  ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     requireContentId(id);
-    return this.connection.transaction('SERIALIZABLE', async manager => {
-      const source = await this.requireContent(id, manager);
-      const snapshot = await this.snapshotOf(source, manager);
-      const configuration = await this.resolvePermissionConfiguration(
-        source,
-        manager,
+    const copiedKeys: string[] = [];
+    try {
+      return await this.connection.transaction(
+        'SERIALIZABLE',
+        async manager => {
+          const processed = new Set<number>();
+          const duplicateNode = async (
+            source: TaonCmsContentEntity,
+            inheritedStatus?: TaonCmsContentFields['status'],
+          ): Promise<TaonCmsContentEntity> => {
+            if (processed.has(source.id)) {
+              contentError(
+                'The related post hierarchy contains a cycle or duplicate post.',
+                409,
+              );
+            }
+            processed.add(source.id);
+            const sourcePost = await this.requireContent(source.id, manager);
+            const snapshot = await this.snapshotOf(sourcePost, manager);
+            const configuration = await this.resolvePermissionConfiguration(
+              sourcePost,
+              manager,
+            );
+            const children: TaonCmsContentEntity[] = [];
+            const status = inheritedStatus ?? snapshot.status;
+            const descendantStatus =
+              inheritedStatus ??
+              (snapshot.applyVisibilityToRelatedPosts ? status : undefined);
+            if (includeChildren) {
+              for (const child of sourcePost.relatedPosts ?? []) {
+                children.push(await duplicateNode(child, descendantStatus));
+              }
+            }
+            const titleAndSlug = await this.nextCopyTitleAndSlug(
+              sourcePost.title,
+              sourcePost.slug,
+              manager,
+            );
+            const copiedSnapshot = { ...snapshot, status };
+            const copiedAssetKeys = new Map<string, string>();
+            for (const field of [
+              'videoKey',
+              'audioKey',
+              'attachmentKey',
+              'thumbnailKey',
+            ] as const) {
+              const key = copiedSnapshot[field];
+              if (key && !key.startsWith('cms-placeholder:')) {
+                let copiedKey = copiedAssetKeys.get(key);
+                if (!copiedKey) {
+                  copiedKey = await copyStorageObject(key);
+                  copiedKeys.push(copiedKey);
+                  copiedAssetKeys.set(key, copiedKey);
+                }
+                copiedSnapshot[field] = copiedKey;
+              }
+            }
+            const duplicate = await this.createContentWithManager(
+              {
+                ...copiedSnapshot,
+                ...titleAndSlug,
+                relatedPostIds: children.map(child => child.id),
+                applicationHook: null,
+                permissionIds: configuration.permissions.map(
+                  permission => permission.id,
+                ),
+              },
+              manager,
+            );
+            const assetRepository =
+              manager.getRepository<TaonCmsContentAssetEntity>(
+                TaonCmsContentAssetEntity,
+              );
+            const sourceAssets = await assetRepository.find({
+              where: { contentId: sourcePost.id },
+            });
+            for (const asset of sourceAssets) {
+              const copiedKey = copiedAssetKeys.get(asset.key);
+              if (!copiedKey) {
+                continue;
+              }
+              await assetRepository.save(
+                assetRepository.create({
+                  version: 1,
+                  contentId: duplicate.id,
+                  type: asset.type,
+                  storageProvider: asset.storageProvider,
+                  bucket: asset.bucket,
+                  key: copiedKey,
+                  originalFilename: asset.originalFilename,
+                  mimeType: asset.mimeType,
+                  size: asset.size,
+                  durationSeconds: asset.durationSeconds,
+                  metadata: asset.metadata,
+                  createdAt: new Date(),
+                }),
+              );
+            }
+            return duplicate;
+          };
+          return duplicateNode(await this.requireContent(id, manager));
+        },
       );
-      const titleSuffix = source.title.match(/\s+COPY(\d+)$/i);
-      const slugSuffix = source.slug.match(/-copy(\d+)$/i);
-      const baseTitle = source.title.replace(/(?:\s+COPY\d+)+$/i, '');
-      const baseSlug = source.slug.replace(/(?:-copy\d+)+$/i, '');
-      let number =
-        Math.max(Number(titleSuffix?.[1] ?? 0), Number(slugSuffix?.[1] ?? 0)) +
-        1;
-      const repository = manager.getRepository<TaonCmsContentEntity>(
-        this.target,
-      );
-      while (Number.isSafeInteger(number)) {
-        const title = `${baseTitle} COPY${number}`;
-        const slug = `${baseSlug}-copy${number}`;
-        const existing = await repository.findOne({
-          where: [{ title }, { slug }],
-        });
-        if (!existing) {
-          return this.createContentWithManager(
-            {
-              ...snapshot,
-              title,
-              slug,
-              relatedPostIds: [],
-              applicationHook: null,
-              // Inherited permissions become independent without related links.
-              permissionIds: configuration.permissions.map(
-                permission => permission.id,
-              ),
-            },
-            manager,
-          );
+    } catch (error) {
+      const cleanupErrors: unknown[] = [];
+      for (const key of copiedKeys.reverse()) {
+        try {
+          await deleteStorageObject(key);
+        } catch (cleanupError) {
+          cleanupErrors.push(cleanupError);
         }
-        number += 1;
       }
-      contentError('No available copy number could be generated.', 409);
-    });
+      if (cleanupErrors.length) {
+        console.error(
+          '[taon-cms-content] Unable to clean up duplicated media',
+          cleanupErrors,
+        );
+        contentError(
+          'Post duplication failed and one or more copied asset files could not be removed.',
+          500,
+        );
+      }
+      throw error;
+    }
     //#endregion
+  }
+
+  private async nextCopyTitleAndSlug(
+    title: string,
+    slug: string,
+    manager: EntityManager,
+  ): Promise<{ title: string; slug: string }> {
+    const titleSuffix = title.match(/\s+COPY(\d+)$/i);
+    const slugSuffix = slug.match(/-copy(\d+)$/i);
+    const baseTitle = title.replace(/(?:\s+COPY\d+)+$/i, '');
+    const baseSlug = slug.replace(/(?:-copy\d+)+$/i, '');
+    let number =
+      Math.max(Number(titleSuffix?.[1] ?? 0), Number(slugSuffix?.[1] ?? 0)) +
+      1;
+    const repository = manager.getRepository<TaonCmsContentEntity>(this.target);
+    while (Number.isSafeInteger(number)) {
+      const copyTitle = `${baseTitle} COPY${number}`;
+      const copySlug = `${baseSlug}-copy${number}`;
+      const existing = await repository.findOne({
+        where: [{ title: copyTitle }, { slug: copySlug }],
+      });
+      if (!existing) {
+        return { title: copyTitle, slug: copySlug };
+      }
+      number += 1;
+    }
+    contentError('No available copy number could be generated.', 409);
   }
 
   private async createContentWithManager(
@@ -129,6 +290,9 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     const fields = this.contentFields(input);
+    if (fields.status === 'published' && fields.publishedAt === null) {
+      fields.publishedAt = new Date();
+    }
     const tagIds = [...new Set(input.tagIds ?? [])];
     const relatedPostIds = [...new Set(input.relatedPostIds ?? [])];
     const permissionIds = [...new Set(input.permissionIds ?? [])];
@@ -150,6 +314,14 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       manager,
     );
     await this.replaceRelatedPosts(content.id, relatedPostIds, [], manager);
+    if (fields.applyVisibilityToRelatedPosts && relatedPostIds.length) {
+      await this.propagateVisibilityToRelatedPosts(
+        content.id,
+        fields.status,
+        manager,
+        new Set([content.id]),
+      );
+    }
     await this.validatePermissionInheritance(manager);
     await this.replacePermissions(content.id, permissionIds, [], manager);
     await this.replaceApplicationHook(
@@ -177,7 +349,31 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     return this.connection.transaction('SERIALIZABLE', async manager => {
       const current = await this.requireContent(id, manager);
       const snapshot = await this.snapshotOf(current, manager);
+      const visibility = await this.resolveVisibilityConfiguration(
+        current,
+        manager,
+      );
+      if (
+        input.status !== undefined &&
+        visibility.source &&
+        input.status !== visibility.status
+      ) {
+        contentError(
+          'Visibility is inherited from a parent post and cannot be changed here.',
+          409,
+        );
+      }
       const fields = this.contentFields(input, snapshot);
+      if (visibility.source) {
+        fields.status = visibility.status;
+      }
+      if (
+        input.status === 'published' &&
+        snapshot.status !== 'published' &&
+        input.publishedAt === undefined
+      ) {
+        fields.publishedAt = new Date();
+      }
       const tagIds =
         input.tagIds === undefined
           ? snapshot.tagIds
@@ -207,6 +403,134 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     return this.updateContent(id, { status: 'archived', expectedVersion });
+    //#endregion
+  }
+
+  async permanentlyDeleteContent(
+    id: number,
+    expectedVersion: number,
+    deleteStorageObject: (key: string) => Promise<void>,
+  ): Promise<void> {
+    //#region @websqlFunc
+    requireContentId(id);
+    requireContentVersion(expectedVersion);
+    const assetKeys = await this.connection.transaction(
+      'SERIALIZABLE',
+      async manager => {
+        const content = await this.requireContent(id, manager);
+        if (content.version !== expectedVersion) {
+          contentError('Content has changed. Reload it before editing.', 409);
+        }
+        if (content.status !== 'archived') {
+          contentError('Only archived posts can be permanently deleted.', 409);
+        }
+        const repository = manager.getRepository<TaonCmsContentEntity>(
+          this.target,
+        );
+        const assetRepository =
+          manager.getRepository<TaonCmsContentAssetEntity>(
+            TaonCmsContentAssetEntity,
+          );
+        const assetKeys = [
+          content.videoKey,
+          content.audioKey,
+          content.attachmentKey,
+          content.thumbnailKey,
+        ].filter(
+          (key): key is string =>
+            !!key && !key.startsWith('cms-placeholder:'),
+        );
+        const unusedAssetKeys: string[] = [];
+        for (const key of new Set(assetKeys)) {
+          const references = await repository.find({
+            where: [
+              { videoKey: key },
+              { audioKey: key },
+              { attachmentKey: key },
+              { thumbnailKey: key },
+            ],
+          });
+          const assetReferences = await assetRepository.find({
+            where: { key },
+          });
+          if (
+            !references.some(reference => reference.id !== id) &&
+            !assetReferences.some(asset => asset.contentId !== id)
+          ) {
+            unusedAssetKeys.push(key);
+          }
+        }
+        if (content.relatedPosts?.length) {
+          await repository
+            .createQueryBuilder()
+            .relation('relatedPosts')
+            .of(id)
+            .remove(content.relatedPosts.map(post => post.id));
+        }
+        const parents = await repository.find({
+          where: { relatedPosts: { id } },
+        });
+        for (const parent of parents) {
+          await repository
+            .createQueryBuilder()
+            .relation('relatedPosts')
+            .of(parent.id)
+            .remove(id);
+        }
+        const versionPosts = await repository.find({
+          where: [{ publicVersionPostId: id }, { privateVersionPostId: id }],
+        });
+        for (const versionPost of versionPosts) {
+          if (versionPost.publicVersionPostId === id) {
+            versionPost.publicVersionPostId = null;
+          }
+          if (versionPost.privateVersionPostId === id) {
+            versionPost.privateVersionPostId = null;
+          }
+          versionPost.version += 1;
+          versionPost.updatedAt = new Date();
+          await repository.save(versionPost);
+        }
+        await this.taonCmsContentTagRepository.replaceTags(
+          id,
+          [],
+          manager,
+        );
+        await this.replacePermissions(
+          id,
+          [],
+          content.permissions.map(permission => permission.id),
+          manager,
+        );
+        await this.replaceApplicationHook(id, null, manager);
+        await assetRepository.delete({ contentId: id });
+        await manager
+          .getRepository<TaonCmsContentRevisionEntity>(
+            this.taonCmsContentRevisionRepository.target,
+          )
+          .delete({ contentId: id });
+        await repository.delete({ id });
+        return unusedAssetKeys;
+      },
+    );
+    const cleanupErrors: unknown[] = [];
+    for (const key of assetKeys) {
+      try {
+        await deleteStorageObject(key);
+      } catch (error) {
+        cleanupErrors.push(error);
+      }
+    }
+    if (cleanupErrors.length) {
+      console.error(
+        '[taon-cms-content] Unable to clean up permanently deleted assets',
+        cleanupErrors,
+      );
+      contentError(
+        'The post was deleted, but one or more asset files could not be removed.',
+        500,
+      );
+    }
     //#endregion
   }
 
@@ -874,6 +1198,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
         input.applyPermissionsToRelatedPosts ??
         current?.applyPermissionsToRelatedPosts ??
         false,
+      applyVisibilityToRelatedPosts:
+        input.applyVisibilityToRelatedPosts ??
+        current?.applyVisibilityToRelatedPosts ??
+        false,
     };
   }
 
@@ -1098,6 +1426,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     snapshot: TaonCmsContentSnapshot,
     manager: EntityManager,
     applicationHook?: TaonCmsApplicationHook | null,
+    propagateVisibility = true,
   ): Promise<TaonCmsContentEntity> {
     //#region @websqlFunc
     if (current.version !== expectedVersion) {
@@ -1171,7 +1500,64 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       },
       manager,
     );
+    if (propagateVisibility) {
+      const visibility = await this.resolveVisibilityConfiguration(
+        updated,
+        manager,
+      );
+      if (snapshot.applyVisibilityToRelatedPosts || visibility.source) {
+        await this.propagateVisibilityToRelatedPosts(
+          updated.id,
+          snapshot.status,
+          manager,
+          new Set([updated.id]),
+        );
+      }
+    }
     return updated;
+    //#endregion
+  }
+
+  private async propagateVisibilityToRelatedPosts(
+    parentId: number,
+    status: TaonCmsContentFields['status'],
+    manager: EntityManager,
+    visited: Set<number>,
+  ): Promise<void> {
+    //#region @websqlFunc
+    const parent = await this.requireContent(parentId, manager);
+    for (const relatedPost of parent.relatedPosts ?? []) {
+      if (visited.has(relatedPost.id)) {
+        contentError(
+          'Related posts cannot contain circular relationships.',
+          409,
+        );
+      }
+      visited.add(relatedPost.id);
+      const child = await this.requireContent(relatedPost.id, manager);
+      if (child.status !== status) {
+        const snapshot = await this.snapshotOf(child, manager);
+        const previousStatus = snapshot.status;
+        snapshot.status = status;
+        if (status === 'published' && previousStatus !== 'published') {
+          snapshot.publishedAt = new Date();
+        }
+        await this.commitUpdate(
+          child,
+          child.version,
+          snapshot,
+          manager,
+          undefined,
+          false,
+        );
+      }
+      await this.propagateVisibilityToRelatedPosts(
+        child.id,
+        status,
+        manager,
+        visited,
+      );
+    }
     //#endregion
   }
 

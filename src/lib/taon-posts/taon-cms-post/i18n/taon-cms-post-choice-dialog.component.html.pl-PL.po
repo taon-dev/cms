@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Language: pl-PL\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post-choice-dialog.component.html:13
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post-choice-dialog.component.html:16
+msgid "OK"
+msgstr "OK"

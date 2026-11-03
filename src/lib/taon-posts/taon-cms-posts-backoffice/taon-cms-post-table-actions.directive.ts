@@ -5,11 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MtxGridColumn } from '@ng-matero/extensions/grid';
 import { Translation } from '@taon-dev/i18n/src';
 import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
-import { finalize } from 'rxjs';
+import { finalize, take } from 'rxjs';
 import { Taon } from 'taon/src';
 
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
+import { TaonCmsPostChoiceDialogComponent } from '../taon-cms-post/taon-cms-post-choice-dialog.component';
+import type { TaonCmsPostChoiceDialogData } from '../taon-cms-post/taon-cms-post-choice-dialog.component';
 
 const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
 
@@ -58,9 +60,10 @@ export abstract class TaonCmsPostTableActions {
       {
         type: 'icon',
         icon: 'delete',
-        tooltip: this.actionsTranslation.gettext('Delete (archive) post'),
-        disabled: (post: TaonCmsContentEntity) =>
-          post.status === 'archived' || this.deleting() !== null,
+        tooltip: this.actionsTranslation.gettext(
+          'Archive or permanently delete post',
+        ),
+        disabled: () => this.deleting() !== null,
         click: (post: TaonCmsContentEntity) => this.delete(post),
       },
     ],
@@ -80,7 +83,9 @@ export abstract class TaonCmsPostTableActions {
     const postsRoute = this.route.parent;
     if (!postsRoute) {
       this.error.set(
-        this.actionsTranslation.gettext('The Post details route is unavailable.'),
+        this.actionsTranslation.gettext(
+          'The Post details route is unavailable.',
+        ),
       );
       return;
     }
@@ -94,10 +99,7 @@ export abstract class TaonCmsPostTableActions {
         queryParamsHandling: 'preserve',
       })
       .catch(error => {
-        console.error(
-          '[taon-cms-posts-backoffice] Unable to open post',
-          error,
-        );
+        console.error('[taon-cms-posts-backoffice] Unable to open post', error);
         this.error.set(
           this.actionsTranslation.gettext(
             'The Post details route is unavailable.',
@@ -113,7 +115,71 @@ export abstract class TaonCmsPostTableActions {
     this.duplicating.set(true);
     this.error.set('');
     this.taonCmsContentApiService
-      .duplicateContent(post.id)
+      .listRelatedPosts(post.id)
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: children => {
+          if (!children.length) {
+            this.runDuplication(post, false);
+            return;
+          }
+          const ref = this.dialog.open<
+            TaonCmsPostChoiceDialogComponent<'single' | 'hierarchy'>,
+            TaonCmsPostChoiceDialogData<'single' | 'hierarchy'>,
+            'single' | 'hierarchy'
+          >(TaonCmsPostChoiceDialogComponent, {
+            data: {
+              title: this.actionsTranslation.gettext('Duplicate post'),
+              options: [
+                {
+                  value: 'single',
+                  label: this.actionsTranslation.gettext(
+                    'Duplicate only this post',
+                  ),
+                },
+                {
+                  value: 'hierarchy',
+                  label: this.actionsTranslation.gettext(
+                    'Duplicate this post and its children',
+                  ),
+                },
+              ],
+              selected: 'single',
+            },
+            disableClose: true,
+          });
+          ref
+            .afterClosed()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(choice => {
+              if (!choice) {
+                this.duplicating.set(false);
+                return;
+              }
+              this.runDuplication(post, choice === 'hierarchy');
+            });
+        },
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-posts-backoffice] Unable to load children for duplication',
+            error,
+          );
+          this.error.set(
+            this.actionsTranslation.gettext(
+              'The post could not be duplicated. Please try again.',
+            ),
+          );
+          this.duplicating.set(false);
+        },
+      });
+  }
+
+  private runDuplication(
+    post: TaonCmsContentEntity,
+    includeChildren: boolean,
+  ): void {
+    this.taonCmsContentApiService
+      .duplicateContent(post.id, includeChildren)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.duplicating.set(false)),
@@ -135,17 +201,26 @@ export abstract class TaonCmsPostTableActions {
   }
 
   delete(post: TaonCmsContentEntity): void {
-    if (this.deleting() !== null || post.status === 'archived') {
+    if (this.deleting() !== null) {
       return;
     }
     this.deleting.set(post.id);
+    const archived = post.status === 'archived';
     const ref = this.dialog.open(TaonConfirmDialogComponent, {
       data: {
-        title: this.actionsTranslation.gettext('Delete post?'),
-        message: this.actionsTranslation.gettext(
-          'This archives the post. It can be restored from its revisions.',
-        ),
-        confirmText: this.actionsTranslation.gettext('Delete'),
+        title: archived
+          ? this.actionsTranslation.gettext('Permanently delete post?')
+          : this.actionsTranslation.gettext('Archive post?'),
+        message: archived
+          ? this.actionsTranslation.gettext(
+              'This permanently deletes the post and its assets. This action cannot be undone.',
+            )
+          : this.actionsTranslation.gettext(
+              'This archives the post. It can be restored from its revisions.',
+            ),
+        confirmText: archived
+          ? this.actionsTranslation.gettext('Permanently delete')
+          : this.actionsTranslation.gettext('Delete'),
       },
     });
     ref
@@ -157,26 +232,49 @@ export abstract class TaonCmsPostTableActions {
           return;
         }
         this.error.set('');
-        this.taonCmsContentApiService
-          .deleteContent(post.id, post.version)
-          .pipe(
-            takeUntilDestroyed(this.destroyRef),
-            finalize(() => this.deleting.set(null)),
-          )
-          .subscribe({
-            next: () => this.reload(),
-            error: (error: unknown) => {
-              console.error(
-                '[taon-cms-posts-backoffice] Unable to delete post',
-                error,
-              );
-              this.error.set(
-                this.actionsTranslation.gettext(
-                  'The post could not be deleted. Refresh the table before retrying.',
-                ),
-              );
-            },
-          });
+        if (archived) {
+          this.taonCmsContentApiService
+            .permanentlyDeleteContent(post.id, post.version)
+            .pipe(
+              takeUntilDestroyed(this.destroyRef),
+              finalize(() => this.deleting.set(null)),
+            )
+            .subscribe({
+              next: () => this.reload(),
+              error: (error: unknown) => {
+                console.error(
+                  '[taon-cms-posts-backoffice] Unable to delete post',
+                  error,
+                );
+                this.error.set(
+                  this.actionsTranslation.gettext(
+                    'The post could not be deleted. Refresh the table before retrying.',
+                  ),
+                );
+              },
+            });
+        } else {
+          this.taonCmsContentApiService
+            .deleteContent(post.id, post.version)
+            .pipe(
+              takeUntilDestroyed(this.destroyRef),
+              finalize(() => this.deleting.set(null)),
+            )
+            .subscribe({
+              next: () => this.reload(),
+              error: (error: unknown) => {
+                console.error(
+                  '[taon-cms-posts-backoffice] Unable to delete post',
+                  error,
+                );
+                this.error.set(
+                  this.actionsTranslation.gettext(
+                    'The post could not be deleted. Refresh the table before retrying.',
+                  ),
+                );
+              },
+            });
+        }
       });
   }
 }

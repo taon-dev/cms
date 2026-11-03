@@ -28,10 +28,16 @@ export interface TaonCmsContentFields {
   status: 'draft' | 'published' | 'archived';
   publishedAt: Date | null;
   applyPermissionsToRelatedPosts: boolean;
+  applyVisibilityToRelatedPosts: boolean;
 }
 
 export interface TaonCmsPermissionConfiguration {
   permissions: TaonPermissionEntity[];
+  source: { id: number; title: string } | null;
+}
+
+export interface TaonCmsVisibilityConfiguration {
+  status: TaonCmsContentFields['status'];
   source: { id: number; title: string } | null;
 }
 

@@ -26,23 +26,6 @@
         </button>
       }
       @if (mode() !== 'add' && currentPost()) {
-        @if (canPublish()) {
-          <button
-            mat-flat-button
-            type="button"
-            [disabled]="busy() || dialogOpen() || (editing() && !canSave())"
-            (click)="publish()">
-            {{ t.gettext('Publish') }}
-          </button>
-        } @else {
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="unpublish()">
-            {{ t.gettext('Unpublish') }}
-          </button>
-        }
         <button
           mat-button
           type="button"
@@ -50,15 +33,13 @@
           (click)="revert()">
           <mat-icon>history</mat-icon> {{ t.gettext('Revert') }}
         </button>
-        @if (currentPost()?.status !== 'archived') {
-          <button
-            mat-button
-            type="button"
-            [disabled]="busy() || dialogOpen()"
-            (click)="delete()">
-            <mat-icon>delete</mat-icon> {{ t.gettext('Delete') }}
-          </button>
-        }
+        <button
+          mat-button
+          type="button"
+          [disabled]="busy() || dialogOpen()"
+          (click)="delete()">
+          <mat-icon>delete</mat-icon> {{ t.gettext('Delete') }}
+        </button>
         <button
           mat-button
           type="button"
@@ -70,9 +51,29 @@
     </div>
   </ng-template>
   <header class="post-actions">
-    <span class="post-status">{{
-      mode() === 'add' ? t.gettext('New draft') : currentPost()?.status
-    }}</span>
+    @if (visibilitySource(); as source) {
+      <span
+        class="post-status"
+        tabindex="0"
+        [matTooltip]="visibilityInheritedTooltip()"
+        [attr.aria-label]="visibilityInheritedTooltip()">
+        <button
+          mat-button
+          type="button"
+          [disabled]="true">
+          {{ statusLabel() }}
+        </button>
+      </span>
+    } @else {
+      <button
+        class="post-status"
+        mat-button
+        type="button"
+        [disabled]="statusControlDisabled()"
+        (click)="selectStatus()">
+        {{ statusLabel() }}
+      </button>
+    }
     <ng-container [ngTemplateOutlet]="actionButtonsTemplate" />
     @if (busy()) {
       <span role="status">{{
@@ -136,6 +137,15 @@
           [taonCmsEditableSingleLine]="true"
           [taonCmsEditable]="draft().title"
           (taonCmsEditableChange)="updateDraft('title', $event)"></div>
+        @if (subtitleEmpty()) {
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="generateLoremIpsum('excerpt')">
+            {{ t.gettext('Generate Lorem Ipsum') }}
+          </button>
+        }
         <div
           class="post-excerpt editable"
           contenteditable="true"
@@ -146,6 +156,15 @@
           [attr.contenteditable]="!busy() && !dialogOpen()"
           [taonCmsEditable]="draft().excerpt"
           (taonCmsEditableChange)="updateDraft('excerpt', $event)"></div>
+        @if (descriptionEmpty()) {
+          <button
+            mat-button
+            type="button"
+            [disabled]="busy() || dialogOpen()"
+            (click)="generateLoremIpsum('body')">
+            {{ t.gettext('Generate Lorem Ipsum') }}
+          </button>
+        }
         <section class="post-content-editor">
           <mat-tab-group
             [selectedIndex]="contentTab()"
@@ -609,6 +628,12 @@
                   <mat-icon>add</mat-icon> {{ t.gettext('Add related post') }}
                 </button>
               }
+              <mat-checkbox
+                [checked]="applyVisibilityToRelatedPosts()"
+                [disabled]="busy() || dialogOpen()"
+                (change)="applyVisibilityToRelatedPosts.set($event.checked)">
+                {{ t.gettext('Apply visibility to related posts') }}
+              </mat-checkbox>
             </section>
           </mat-card>
           <mat-card class="post-setting-card">

@@ -32,6 +32,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Translation } from '@taon-dev/i18n/src';
 import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
@@ -60,6 +61,7 @@ import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-conten
 import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-content.config.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
+import type { TaonCmsContentFields } from '../../taon-cms-content/taon-cms-content.models';
 import type {
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
@@ -73,6 +75,10 @@ import { TaonCmsTaxonomyQuickCreateDialogComponent } from '../../taon-cms-taxono
 import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/taon-cms-revision-chooser.component';
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
+import {
+  TaonCmsPostChoiceDialogComponent,
+} from './taon-cms-post-choice-dialog.component';
+import type { TaonCmsPostChoiceDialogData } from './taon-cms-post-choice-dialog.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
 import { TaonCmsCommentsComponent } from '../../taon-cms-comment/taon-cms-comments.component';
@@ -108,6 +114,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     MatProgressBarModule,
     MatRadioModule,
     MatSelectModule,
+    MatTooltipModule,
     TaonCmsEditableDirective,
     TaonCmsCommentsComponent,
     NgTemplateOutlet,
@@ -150,6 +157,10 @@ export class TaonCmsPostComponent implements AfterViewInit {
   );
 
   readonly placeholderTitle = this.t.signal.gettext('Title');
+
+  readonly visibilityInheritedTooltip = this.t.signal.gettext(
+    'Visibility inherited from parent',
+  );
 
   readonly placeholderTellYourStory =
     this.t.signal.gettext('Tell your story...');
@@ -357,6 +368,26 @@ export class TaonCmsPostComponent implements AfterViewInit {
 
   readonly applyPermissionsToRelatedPosts = signal(false);
 
+  readonly applyVisibilityToRelatedPosts = signal(false);
+
+  readonly visibilitySource = signal<{ id: number; title: string } | null>(
+    null,
+  );
+
+  readonly visibilityLoading = signal(false);
+
+  readonly visibilityError = signal(false);
+
+  readonly draftStatus = signal<TaonCmsContentFields['status']>('draft');
+
+  readonly subtitleEmpty = computed(() =>
+    this.isEmptyContent(this.draft().excerpt),
+  );
+
+  readonly descriptionEmpty = computed(() =>
+    this.isEmptyContent(this.draft().body),
+  );
+
   readonly permissionSource = signal<{ id: number; title: string } | null>(
     null,
   );
@@ -401,10 +432,29 @@ export class TaonCmsPostComponent implements AfterViewInit {
       !this.taxonomyError(),
   );
 
-  readonly canPublish = computed(() => {
-    const post = this.currentPost();
-    return !!post && post.status !== 'published';
+  readonly statusLabel = computed(() => {
+    const status = this.mode() === 'add'
+      ? this.draftStatus()
+      : this.currentPost()?.status ?? 'draft';
+    switch (status) {
+      case 'published':
+        return this.t.gettext('Status: Published');
+      case 'archived':
+        return this.t.gettext('Status: Archived');
+      default:
+        return this.t.gettext('Status: Draft');
+    }
   });
+
+  readonly statusControlDisabled = computed(
+    () =>
+      this.busy() ||
+      this.dialogOpen() ||
+      this.visibilityLoading() ||
+      this.visibilityError() ||
+      !!this.visibilitySource() ||
+      (this.mode() === 'edit' && !this.canSave()),
+  );
 
   private readonly api = inject(TaonCmsContentApiService);
 
@@ -454,6 +504,8 @@ export class TaonCmsPostComponent implements AfterViewInit {
   private relatedPostsLoad?: Subscription;
 
   private parentPostRequest = 0;
+
+  private visibilityRequest = 0;
 
   private postVersionLinksRequest = 0;
 
@@ -972,6 +1024,41 @@ export class TaonCmsPostComponent implements AfterViewInit {
       .finally(() => {
         if (request === this.parentPostRequest) {
           this.parentPostLoading.set(false);
+        }
+      });
+  }
+
+  private loadVisibilityConfiguration(post: TaonCmsContentEntity | null): void {
+    const request = ++this.visibilityRequest;
+    this.visibilitySource.set(null);
+    this.visibilityError.set(false);
+    if (!post) {
+      this.visibilityLoading.set(false);
+      return;
+    }
+    this.visibilityLoading.set(true);
+    void this.api
+      .getVisibilityConfiguration(post.id)
+      .then(configuration => {
+        if (request === this.visibilityRequest) {
+          this.visibilitySource.set(configuration.source);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error(
+          '[taon-cms-post] Unable to load visibility inheritance',
+          error,
+        );
+        if (request === this.visibilityRequest) {
+          this.visibilityError.set(true);
+          this.error.set(
+            this.t.gettext('The post visibility could not be verified.'),
+          );
+        }
+      })
+      .finally(() => {
+        if (request === this.visibilityRequest) {
+          this.visibilityLoading.set(false);
         }
       });
   }
@@ -1728,6 +1815,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
           relatedPostIds: this.relatedPosts().map(post => post.id),
           permissionIds: this.permissions().map(permission => permission.id),
           applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
+          applyVisibilityToRelatedPosts:
+            this.applyVisibilityToRelatedPosts(),
+          status: this.draftStatus(),
           applicationHook: this.useAsApplicationHook()
             ? this.selectedApplicationHook()
             : null,
@@ -1742,55 +1832,111 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
-  //#region methods / publish
-  publish(): void {
-    if (
-      this.busy() ||
-      this.dialogOpen() ||
-      !this.canPublish() ||
-      this.mode() === 'view-clean' ||
-      this.mode() === 'add'
-    ) {
+  //#region methods / status selection
+  selectStatus(): void {
+    if (this.statusControlDisabled() || this.mode() === 'view-clean') {
       return;
     }
-    if (this.editing() && !this.canSave()) {
-      this.error.set(this.t.gettext('A title and slug are required.'));
-      return;
-    }
-    const post = this.requirePost();
-    if (post) {
-      this.persist(
-        this.api.updateContent(post.id, {
-          ...(this.editing()
-            ? this.updateInput(post)
-            : { expectedVersion: post.version }),
-          status: 'published',
-          publishedAt: new Date(),
-        }),
-      );
-    }
+    const currentStatus = this.draftStatus();
+    this.dialogOpen.set(true);
+    const ref = this.dialog.open<
+      TaonCmsPostChoiceDialogComponent<TaonCmsContentFields['status']>,
+      TaonCmsPostChoiceDialogData<TaonCmsContentFields['status']>,
+      TaonCmsContentFields['status']
+    >(TaonCmsPostChoiceDialogComponent, {
+      data: {
+        title: this.t.gettext('Change post status'),
+        options: [
+          { value: 'published', label: this.t.gettext('Published') },
+          { value: 'draft', label: this.t.gettext('Draft') },
+          { value: 'archived', label: this.t.gettext('Archived') },
+        ],
+        selected: currentStatus,
+      },
+      disableClose: true,
+    });
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(status => {
+        this.dialogOpen.set(false);
+        if (!status || status === currentStatus) {
+          return;
+        }
+        if (this.mode() === 'add') {
+          this.draftStatus.set(status);
+          return;
+        }
+        if (this.editing() && !this.canSave()) {
+          this.error.set(this.t.gettext('A title and slug are required.'));
+          return;
+        }
+        const post = this.requirePost();
+        if (!post) {
+          return;
+        }
+        this.persist(
+          this.api.updateContent(post.id, {
+            ...(this.editing()
+              ? this.updateInput(post)
+              : { expectedVersion: post.version }),
+            status,
+            ...(status === 'published' && post.status !== 'published'
+              ? { publishedAt: new Date() }
+              : {}),
+          }),
+        );
+      });
   }
   //#endregion
 
-  //#region methods / unpublish
-  unpublish(): void {
-    const post = this.currentPost();
-    if (
-      !post ||
-      post.status !== 'published' ||
-      this.busy() ||
-      this.dialogOpen() ||
-      this.mode() === 'view-clean' ||
-      this.mode() === 'add'
-    ) {
+  //#region methods / generate placeholder text
+  private isEmptyContent(value: string): boolean {
+    if (/<(?:img|video|audio|iframe|object|embed|table|hr)\b/i.test(value)) {
+      return false;
+    }
+    return !value
+      .replace(/<[^>]*>/g, '')
+      .replace(/&(?:nbsp|#160|#x0*a0);/gi, ' ')
+      .trim();
+  }
+
+  generateLoremIpsum(field: 'excerpt' | 'body'): void {
+    if (!this.editing() || this.busy() || this.dialogOpen()) {
       return;
     }
-    this.persist(
-      this.api.updateContent(post.id, {
-        expectedVersion: post.version,
-        status: 'draft',
-      }),
-    );
+    const existing = this.draft()[field] ?? '';
+    if (!this.isEmptyContent(existing)) {
+      return;
+    }
+    const title = this.draft().title.trim() || this.t.gettext('this post');
+    if (field === 'excerpt') {
+      this.updateDraft(
+        'excerpt',
+        `Lorem ipsum dolor sit amet, ${title}; consectetur adipiscing elit.`,
+      );
+      return;
+    }
+    const description =
+      `Lorem ipsum dolor sit amet, ${title}. ` +
+      'Consectetur adipiscing elit. Integer nec odio. Praesent libero. ' +
+      'Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh ' +
+      'elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce ' +
+      'nec tellus sed augue semper porta.';
+    const escapedDescription = description
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    this.updateDraft('body', `<p>${escapedDescription}</p>`);
+    const editor = this.contentEditor();
+    if (editor) {
+      this.loadingEditorContent = true;
+      try {
+        editor.setContent(this.draft().body);
+      } finally {
+        this.loadingEditorContent = false;
+      }
+    }
   }
   //#endregion
 
@@ -1835,18 +1981,28 @@ export class TaonCmsPostComponent implements AfterViewInit {
       !post ||
       this.busy() ||
       this.dialogOpen() ||
-      this.mode() === 'view-clean'
+      this.mode() === 'view-clean' ||
+      this.mode() === 'add'
     ) {
       return;
     }
+    const archived = post.status === 'archived';
     this.dialogOpen.set(true);
     const ref = this.dialog.open(TaonConfirmDialogComponent, {
       data: {
-        title: this.t.gettext('Delete post?'),
-        message: this.t.gettext(
-          'This archives the post. It can be restored from its revisions.',
-        ),
-        confirmText: this.t.gettext('Delete'),
+        title: archived
+          ? this.t.gettext('Permanently delete post?')
+          : this.t.gettext('Archive post?'),
+        message: archived
+          ? this.t.gettext(
+              'This permanently deletes the post and its assets. This action cannot be undone.',
+            )
+          : this.t.gettext(
+              'This archives the post. It can be restored from its revisions.',
+            ),
+        confirmText: archived
+          ? this.t.gettext('Permanently delete')
+          : this.t.gettext('Delete'),
       },
     });
     ref
@@ -1855,7 +2011,32 @@ export class TaonCmsPostComponent implements AfterViewInit {
       .subscribe(confirmed => {
         this.dialogOpen.set(false);
         if (confirmed) {
-          this.persist(this.api.deleteContent(post.id, post.version), true);
+          if (!archived) {
+            this.persist(this.api.deleteContent(post.id, post.version), true);
+            return;
+          }
+          this.busy.set(true);
+          this.error.set('');
+          this.api
+            .permanentlyDeleteContent(post.id, post.version)
+            .pipe(
+              takeUntilDestroyed(this.destroyRef),
+              finalize(() => this.busy.set(false)),
+            )
+            .subscribe({
+              next: () => this.deleted.emit(post),
+              error: (error: unknown) => {
+                console.error(
+                  '[taon-cms-post] Unable to permanently delete post',
+                  error,
+                );
+                this.error.set(
+                  this.t.gettext(
+                    'The post could not be permanently deleted. Please refresh before retrying.',
+                  ),
+                );
+              },
+            });
         }
       });
   }
@@ -1873,7 +2054,74 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.busy.set(true);
     this.error.set('');
     this.api
-      .duplicateContent(post.id)
+      .listRelatedPosts(post.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        take(1),
+      )
+      .subscribe({
+        next: children => {
+          if (!children.length) {
+            this.runDuplication(post, false);
+            return;
+          }
+          this.dialogOpen.set(true);
+          const ref = this.dialog.open<
+            TaonCmsPostChoiceDialogComponent<'single' | 'hierarchy'>,
+            TaonCmsPostChoiceDialogData<'single' | 'hierarchy'>,
+            'single' | 'hierarchy'
+          >(TaonCmsPostChoiceDialogComponent, {
+            data: {
+              title: this.t.gettext('Duplicate post'),
+              options: [
+                {
+                  value: 'single',
+                  label: this.t.gettext('Duplicate only this post'),
+                },
+                {
+                  value: 'hierarchy',
+                  label: this.t.gettext(
+                    'Duplicate this post and its children',
+                  ),
+                },
+              ],
+              selected: 'single',
+            },
+            disableClose: true,
+          });
+          ref
+            .afterClosed()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(choice => {
+              this.dialogOpen.set(false);
+              if (!choice) {
+                this.busy.set(false);
+                return;
+              }
+              this.runDuplication(post, choice === 'hierarchy');
+            });
+        },
+        error: (error: unknown) => {
+          console.error(
+            '[taon-cms-post] Unable to load children for duplication',
+            error,
+          );
+          this.busy.set(false);
+          this.error.set(
+            this.t.gettext(
+              'The post could not be duplicated. Please try again.',
+            ),
+          );
+        },
+      });
+  }
+
+  private runDuplication(
+    post: TaonCmsContentEntity,
+    includeChildren: boolean,
+  ): void {
+    this.api
+      .duplicateContent(post.id, includeChildren)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.busy.set(false)),
@@ -1903,6 +2151,8 @@ export class TaonCmsPostComponent implements AfterViewInit {
             permissionIds: this.permissions().map(permission => permission.id),
           }),
       applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
+      applyVisibilityToRelatedPosts:
+        this.applyVisibilityToRelatedPosts(),
       applicationHook: this.useAsApplicationHook()
         ? this.selectedApplicationHook()
         : null,
@@ -1943,6 +2193,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.mediaPreviewSignature = '';
     this.mediaPreviewRequest += 1;
     this.currentPost.set(post);
+    this.loadVisibilityConfiguration(
+      post && this.mode() !== 'view-clean' ? post : null,
+    );
     this.loadParentPost(
       post && this.mode() !== 'view-clean' ? post : null,
     );
@@ -1954,6 +2207,14 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.permissionSource.set(null);
     this.applyPermissionsToRelatedPosts.set(
       post?.applyPermissionsToRelatedPosts ?? false,
+    );
+    this.applyVisibilityToRelatedPosts.set(
+      post?.applyVisibilityToRelatedPosts ?? false,
+    );
+    this.draftStatus.set(
+      post?.status === 'published' || post?.status === 'archived'
+        ? post.status
+        : 'draft',
     );
     this.selectedPermissionId.set(null);
     this.setApplicationHookSelection(post, this.applicationHooks());
