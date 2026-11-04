@@ -49,315 +49,315 @@ msgstr "Obecny typ wpisu: [[ postType ]]"
 msgid "Generate Lorem Ipsum"
 msgstr "Generuj Lorem Ipsum"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:208
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:221
 msgid "Insert variable"
 msgstr "Wstaw zmienną"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:215
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:228
 msgid "Site"
 msgstr "Witryna"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:220
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:233
 msgid "Post"
 msgstr "Wpis"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:227
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:240
 msgid "Frontend URL"
 msgstr "Adres URL frontendu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:232
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:245
 msgid "Site name"
 msgstr "Nazwa witryny"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:237
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:250
 msgid "Current year"
 msgstr "Bieżący rok"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:244
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:257
 msgid "Post title"
 msgstr "Tytuł wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:249
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:262
 msgid "Post URL"
 msgstr "Adres URL wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:254
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:267
 msgid "Post ID"
 msgstr "ID wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:259
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:272
 msgid "Post Thumbnail URL"
 msgstr "Adres URL miniatury wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:264
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:277
 msgid "URL slug"
 msgstr "Slug URL"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:290
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:303
 msgid "Loading media preview..."
 msgstr "Ładowanie podglądu multimediów..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:306
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1053
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:319
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1066
 msgid "Your browser does not support video playback."
 msgstr "Twoja przeglądarka nie obsługuje odtwarzania wideo."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:317
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1066
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:330
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1079
 msgid "Your browser does not support audio playback."
 msgstr "Twoja przeglądarka nie obsługuje odtwarzania dźwięku."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:327
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1071
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:340
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1084
 msgid "Attached file: [[ fileName ]]"
 msgstr "Załączony plik: [[ fileName ]]"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:335
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1079
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:348
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1092
 msgid "Download or open"
 msgstr "Pobierz lub otwórz"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:351
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:364
 msgid "Replace"
 msgstr "Zastąp"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:358
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:371
 msgid "Remove"
 msgstr "Usuń"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:383
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:396
 msgid "Thumbnail"
 msgstr "Miniatura"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:390
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:403
 msgid "No thumbnail selected."
 msgstr "Nie wybrano miniatury."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:408
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:421
 msgid "Upload Thumbnail"
 msgstr "Prześlij miniaturę"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:415
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:428
 msgid "Apply Default Placeholder"
 msgstr "Użyj domyślnego obrazu zastępczego"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:424
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:437
 msgid "Category / Tags"
 msgstr "Kategoria / tagi"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:427
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:440
 msgid "Loading categories and tags..."
 msgstr "Ładowanie kategorii i tagów..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:437
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:592
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:667
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:826
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:910
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:949
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:450
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:605
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:680
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:839
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:923
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:962
 msgid "Try again"
 msgstr "Spróbuj jeszcze raz."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:441
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:454
 msgid "Category"
 msgstr "Kategoria"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:452
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:465
 msgid "None"
 msgstr "Brak"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:461
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:474
 msgid "Tags"
 msgstr "Tagi"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:473
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:486
 msgid "Remove tag [[ name ]]"
 msgstr "Usuń tag [[ name ]]"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:481
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:494
 msgid "Search tags"
 msgstr "Szukaj tagów"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:489
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:517
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:502
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:530
 msgid "Add tag"
 msgstr "Dodaj tag"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:510
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:523
 msgid "Add category"
 msgstr "Dodaj kategorię"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:526
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:539
 msgid "Parent Post"
 msgstr "Wpis nadrzędny"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:528
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:541
 msgid "Loading parent post..."
 msgstr "Ładowanie wpisu nadrzędnego..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:549
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:562
 msgid "Remove from parent"
 msgstr "Usuń z wpisu nadrzędnego"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:552
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:565
 msgid "No parent added"
 msgstr "Nie dodano wpisu nadrzędnego"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:560
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:573
 msgid "Add as a child"
 msgstr "Dodaj jako wpis podrzędny"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:563
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:576
 msgid "Add as a child (disabled — please save the post first)"
 msgstr "Dodaj jako wpis podrzędny (niedostępne — najpierw zapisz wpis)"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:577
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:590
 msgid "Related posts"
 msgstr "Powiązane wpisy"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:580
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:593
 msgid "Loading related posts..."
 msgstr "Ładowanie powiązanych wpisów..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:610
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:623
 msgid "Remove related post [[ title ]]"
 msgstr "Usuń powiązany wpis [[ title ]]"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:620
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:633
 msgid "No related posts yet."
 msgstr "Brak powiązanych wpisów."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:628
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:641
 msgid "Add related post"
 msgstr "Dodaj powiązany wpis"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:635
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:648
 msgid "Apply visibility to related posts"
 msgstr "Zastosuj widoczność do powiązanych wpisów"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:644
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:657
 msgid "Post versions"
 msgstr "Wersje wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:649
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:662
 msgid "Save the post first to manage version links."
 msgstr "Najpierw zapisz wpis, aby zarządzać powiązaniami wersji."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:654
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:667
 msgid "Loading post versions..."
 msgstr "Ładowanie wersji wpisu..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:671
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:684
 msgid "Public post version"
 msgstr "Publiczna wersja wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:687
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:700
 msgid "Replace public version"
 msgstr "Zastąp publiczną wersję"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:694
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:707
 msgid "Remove public version"
 msgstr "Usuń publiczną wersję"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:699
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:717
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:764
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:782
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:712
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:730
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:777
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:795
 msgid "Version editing is disabled for the current post status."
 msgstr "Edycja wersji jest wyłączona dla bieżącego statusu wpisu."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:707
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:720
 msgid "No public post version linked."
 msgstr "Nie powiązano publicznej wersji wpisu."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:731
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:744
 msgid "Add public post version"
 msgstr "Dodaj publiczną wersję wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:736
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:749
 msgid "Private post version"
 msgstr "Prywatna wersja wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:752
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:765
 msgid "Replace private version"
 msgstr "Zastąp prywatną wersję"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:759
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:772
 msgid "Remove private version"
 msgstr "Usuń prywatną wersję"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:772
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:785
 msgid "No private post version linked."
 msgstr "Nie powiązano prywatnej wersji wpisu."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:796
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:809
 msgid "Add private post version"
 msgstr "Dodaj prywatną wersję wpisu"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:809
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:822
 msgid "Hooks"
 msgstr "Hooki"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:813
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:826
 msgid "Loading application hooks..."
 msgstr "Ładowanie hooków aplikacji..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:833
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:846
 msgid "Use as application hook"
 msgstr "Użyj jako hooka aplikacji"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:839
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:852
 msgid "Application Hook"
 msgstr "Hook aplikacji"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:860
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:873
 msgid "(in use by post # [[ postId ]])"
 msgstr "(używany przez wpis # [[ postId ]])"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:868
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:881
 msgid "No application hooks configured"
 msgstr "Nie skonfigurowano hooków aplikacji"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:883
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:896
 msgid "Permissions"
 msgstr "Uprawnienia"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:888
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:901
 msgid "Permissions are inherited from # [[ postId ]] - [[ title ]]. Edit the source post to change them."
 msgstr "Uprawnienia są dziedziczone z wpisu # [[ postId ]] - [[ title ]]. Edytuj wpis źródłowy, aby je zmienić."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:897
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:910
 msgid "Loading assigned permissions..."
 msgstr "Ładowanie przypisanych uprawnień..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:921
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:934
 msgid "Remove permission [[ name ]]"
 msgstr "Usuń uprawnienie [[ name ]]"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:933
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:946
 msgid "No permissions assigned."
 msgstr "Nie przypisano żadnych uprawnień."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:957
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:970
 msgid "Permission"
 msgstr "Uprawnienie"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:980
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:993
 msgid "No permissions available"
 msgstr "Brak dostępnych uprawnień"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:996
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1009
 msgid "Assign permission"
 msgstr "Przypisz uprawnienie"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1006
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1019
 msgid "Apply permissions to related posts"
 msgstr "Zastosuj uprawnienia do powiązanych wpisów"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1034
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1047
 msgid "Loading media..."
 msgstr "Ładowanie multimediów..."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1089
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.html:1104
 msgid "No post is loaded."
 msgstr "Żaden wpis nie jest załadowany."

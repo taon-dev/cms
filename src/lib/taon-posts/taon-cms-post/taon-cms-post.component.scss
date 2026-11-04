@@ -2,6 +2,32 @@
   display: block;
 }
 
+:host ::ng-deep .NgxEditor .ProseMirror {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 12px 0;
+  }
+
+  td,
+  th {
+    position: relative;
+    min-width: 60px;
+    border: 1px solid #aaa;
+    padding: 8px;
+    vertical-align: top;
+
+    > p {
+      margin: 0;
+    }
+  }
+
+  .selectedCell {
+    background: rgba(63, 81, 181, 0.12);
+  }
+}
+
 mat-expansion-panel {
   border-radius: 0px !important;
 }

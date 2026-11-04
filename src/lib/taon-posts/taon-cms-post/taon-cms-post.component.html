@@ -173,8 +173,45 @@
             animationDuration="0ms">
             <mat-tab [label]="t.gettext('Editor')">
               @if (contentEditor(); as editor) {
+                <ng-template #customMenu>
+                  <button
+                    type="button"
+                    class="NgxEditor__MenuItem"
+                    title="Table"
+                    aria-label="Table actions"
+                    [disabled]="busy() || dialogOpen()"
+                    [matMenuTriggerFor]="tableMenu"
+                    [matMenuTriggerRestoreFocus]="false"
+                    (mousedown)="$event.preventDefault()">
+                    <mat-icon>table_chart</mat-icon>
+                  </button>
+
+                  <mat-menu #tableMenu="matMenu">
+                    <button
+                      mat-menu-item
+                      type="button"
+                      (click)="insertTable($event)">
+                      <mat-icon>add</mat-icon>
+                      <span>Insert table</span>
+                    </button>
+
+                    <mat-divider />
+
+                    @for (item of tableCommands; track item.label) {
+                      <button
+                        mat-menu-item
+                        type="button"
+                        [disabled]="!canRunTableCommand(item.command)"
+                        (click)="runTableCommand($event, item.command)">
+                        {{ item.label }}
+                      </button>
+                    }
+                  </mat-menu>
+                </ng-template>
+
                 <ngx-editor-menu
                   [editor]="editor"
+                  [customMenuRef]="customMenu"
                   [toolbar]="contentToolbar"
                   [disabled]="busy() || dialogOpen()" />
                 <ngx-editor
@@ -1083,7 +1120,9 @@
       }
     }
     @if (mode() === 'view-clean') {
-      <taon-cms-comments [contentId]="post.id" class="w-full" />
+      <taon-cms-comments
+        [contentId]="post.id"
+        class="w-full" />
     }
   } @else {
     <p role="status">{{ t.gettext('No post is loaded.') }}</p>

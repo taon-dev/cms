@@ -1,4 +1,5 @@
 //#region imports
+import { NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -16,13 +17,14 @@ import {
   signal,
   untracked,
   viewChild,
+  OnDestroy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,9 +38,24 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Translation } from '@taon-dev/i18n/src';
 import { TaonPermissionApiService } from '@taon-dev/session/src';
 import type { TaonPermissionEntity } from '@taon-dev/session/src';
-import { TaonConfirmDialogComponent } from '@taon-dev/ui/src';
+import {
+  editorTableSchema,
+  TaonConfirmDialogComponent,
+} from '@taon-dev/ui/src';
+import { createTableEditor, insertTable } from '@taon-dev/ui/src';
 import { Editor, NgxEditorModule, toHTML } from 'ngx-editor';
 import type { Toolbar } from 'ngx-editor';
+import type { Command } from 'prosemirror-state';
+import {
+  addRowBefore,
+  addRowAfter,
+  deleteRow,
+  addColumnBefore,
+  addColumnAfter,
+  deleteColumn,
+  deleteTable,
+} from 'prosemirror-tables';
+import { tableEditing } from 'prosemirror-tables';
 import {
   Observable,
   Subscription,
@@ -57,6 +74,7 @@ import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-ho
 import type { TaonCmsApplicationHook } from '../../taon-cms-application-hooks';
 import { TaonCmsCategoryApiService } from '../../taon-cms-category/taon-cms-category-api.service';
 import type { TaonCmsCategoryEntity } from '../../taon-cms-category/taon-cms-category.entity';
+import { TaonCmsCommentsComponent } from '../../taon-cms-comment/taon-cms-comments.component';
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-content.config.service';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
@@ -75,20 +93,17 @@ import { TaonCmsTaxonomyQuickCreateDialogComponent } from '../../taon-cms-taxono
 import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/taon-cms-revision-chooser.component';
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
-import {
-  TaonCmsPostChoiceDialogComponent,
-} from './taon-cms-post-choice-dialog.component';
-import type { TaonCmsPostChoiceDialogData } from './taon-cms-post-choice-dialog.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
-import { TaonCmsCommentsComponent } from '../../taon-cms-comment/taon-cms-comments.component';
+import { TaonCmsPostChoiceDialogComponent } from './taon-cms-post-choice-dialog.component';
+import type { TaonCmsPostChoiceDialogData } from './taon-cms-post-choice-dialog.component';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 import {
   defaultThumbnailKey,
   defaultThumbnailUrl,
   generateVideoThumbnail,
 } from './taon-cms-thumbnail';
-import { NgTemplateOutlet } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
 
 //#endregion
 
@@ -118,6 +133,7 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     TaonCmsEditableDirective,
     TaonCmsCommentsComponent,
     NgTemplateOutlet,
+    MatDividerModule,
   ],
   providers: [
     TaonCmsContentApiService,
@@ -127,10 +143,10 @@ const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
     TaonCmsTagApiService,
   ],
 })
-export class TaonCmsPostComponent implements AfterViewInit {
+export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
+  //#region fields and getters
   readonly t = t.for(this);
 
-  //#region fields and getters
   readonly post = input<TaonCmsContentEntity | null>(null);
 
   readonly mode = model<TaonCmsPostMode>('view');
@@ -234,6 +250,16 @@ export class TaonCmsPostComponent implements AfterViewInit {
       accept: '',
     },
   ] as const;
+
+  protected readonly tableCommands = [
+    { label: 'Add row above', command: addRowBefore },
+    { label: 'Add row below', command: addRowAfter },
+    { label: 'Delete row', command: deleteRow },
+    { label: 'Add column before', command: addColumnBefore },
+    { label: 'Add column after', command: addColumnAfter },
+    { label: 'Delete column', command: deleteColumn },
+    { label: 'Delete table', command: deleteTable },
+  ];
 
   readonly mediaAttachment = computed(() =>
     this.mediaAttachments.find(media => media.type === this.draft().type),
@@ -433,9 +459,10 @@ export class TaonCmsPostComponent implements AfterViewInit {
   );
 
   readonly statusLabel = computed(() => {
-    const status = this.mode() === 'add'
-      ? this.draftStatus()
-      : this.currentPost()?.status ?? 'draft';
+    const status =
+      this.mode() === 'add'
+        ? this.draftStatus()
+        : (this.currentPost()?.status ?? 'draft');
     switch (status) {
       case 'published':
         return this.t.gettext('Status: Published');
@@ -512,17 +539,31 @@ export class TaonCmsPostComponent implements AfterViewInit {
   private applicationHooksLoad?: Subscription;
 
   private permissionsLoad?: Subscription;
+
+  protected insertTable(event: MouseEvent): void {
+    event.preventDefault();
+
+    const editor = this.contentEditor();
+
+    if (!editor || this.busy() || this.dialogOpen()) {
+      return;
+    }
+
+    insertTable(editor);
+  }
   //#endregion
 
+  //#region methods / ng after view init
   ngAfterViewInit(): void {
     if (this.actionButtonsTemplateRef) {
       this.actionButtonsTemplate.emit(this.actionButtonsTemplateRef);
     }
   }
+  //#endregion
 
   //#region constructor
   constructor() {
-    const editor = new Editor({
+    const editor = createTableEditor({
       attributes: {
         'aria-label': this.t.gettext('Post body'),
         style: 'min-height: 20rem',
@@ -755,6 +796,8 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
+  ngOnDestroy(): void {}
+
   //#region methods / load related posts
   loadTaxonomy(preserveSelectedTags = false): void {
     this.taxonomyLoad?.unsubscribe();
@@ -800,25 +843,32 @@ export class TaonCmsPostComponent implements AfterViewInit {
       });
   }
 
+  //#region methods / add tag
   addTag(id: number): void {
     if (!this.draft().tagIds.includes(id)) {
       this.updateDraft('tagIds', [...this.draft().tagIds, id]);
     }
   }
+  //#endregion
 
+  //#region methods / remove tag
   removeTag(id: number): void {
     this.updateDraft(
       'tagIds',
       this.draft().tagIds.filter(selected => selected !== id),
     );
   }
+  //#endregion
 
+  //#region methods / filter tags
   filterTags(event: Event): void {
     if (event.target instanceof HTMLInputElement) {
       this.tagSearch.set(event.target.value);
     }
   }
+  //#endregion
 
+  //#region methods / create taxonomy
   createTaxonomy(taxonomy: 'category' | 'tag'): void {
     if (this.busy() || this.dialogOpen()) {
       return;
@@ -888,7 +938,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
           });
       });
   }
+  //#endregion
 
+  //#region methods / apply default thumbnail
   applyDefaultThumbnail(): void {
     if (!this.editing() || this.busy() || this.dialogOpen()) {
       return;
@@ -897,7 +949,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.stagedThumbnail.set(null);
     this.updateDraft('thumbnailKey', defaultThumbnailKey(this.draft().type));
   }
+  //#endregion
 
+  //#region methods / thumbnail selected
   async thumbnailSelected(event: Event): Promise<void> {
     if (!(event.target instanceof HTMLInputElement)) {
       return;
@@ -929,7 +983,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
       this.busy.set(false);
     }
   }
+  //#endregion
 
+  //#region methods / store thumbnail
   private async storeThumbnail(file: File, session: number): Promise<void> {
     if (session !== this.editorSession || this.destroyRef.destroyed) {
       return;
@@ -959,14 +1015,18 @@ export class TaonCmsPostComponent implements AfterViewInit {
       }
     }
   }
+  //#endregion
 
+  //#region methods / release thumbnail preview
   private releaseThumbnailPreview(): void {
     if (this.thumbnailObjectUrl) {
       URL.revokeObjectURL(this.thumbnailObjectUrl);
       this.thumbnailObjectUrl = '';
     }
   }
+  //#endregion
 
+  //#region methods / load related posts
   loadRelatedPosts(): void {
     if (this.busy() || this.relatedPostsLoading()) {
       return;
@@ -996,7 +1056,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
       });
   }
   //#endregion
+  //#endregion
 
+  //#region methods / load parent post
   private loadParentPost(post: TaonCmsContentEntity | null): void {
     const request = ++this.parentPostRequest;
     this.parentPost.set(null);
@@ -1017,7 +1079,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
         console.error('[taon-cms-post] Unable to load parent post', error);
         if (request === this.parentPostRequest) {
           this.parentPostError.set(
-            this.t.gettext('The parent post could not be loaded. Please retry.'),
+            this.t.gettext(
+              'The parent post could not be loaded. Please retry.',
+            ),
           );
         }
       })
@@ -1027,7 +1091,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
         }
       });
   }
+  //#endregion
 
+  //#region methods / load visibility configuration
   private loadVisibilityConfiguration(post: TaonCmsContentEntity | null): void {
     const request = ++this.visibilityRequest;
     this.visibilitySource.set(null);
@@ -1062,7 +1128,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
         }
       });
   }
+  //#endregion
 
+  //#region methods / load post version links
   loadPostVersionLinks(post: TaonCmsContentEntity | null): void {
     const request = ++this.postVersionLinksRequest;
     this.postVersionLinks.set({
@@ -1098,12 +1166,16 @@ export class TaonCmsPostComponent implements AfterViewInit {
         }
       });
   }
+  //#endregion
 
+  //#region methods / request post editor
   requestPostEditor(event: Event, post: TaonCmsContentEntity): void {
     event.preventDefault();
     this.editPostRequested.emit(post);
   }
+  //#endregion
 
+  //#region methods / remove parent post
   removeParentPost(): void {
     const post = this.currentPost();
     const parent = this.parentPost();
@@ -1139,6 +1211,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
         },
       });
   }
+  //#endregion
 
   //#region methods / add related post
   addRelatedPost(): void {
@@ -1267,6 +1340,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
+  //#region methods / select version post
   selectVersionPost(kind: TaonCmsPostVersionKind): void {
     const post = this.currentPost();
     const canEdit =
@@ -1347,7 +1421,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
           });
       });
   }
+  //#endregion
 
+  //#region methods / remove version post
   removeVersionPost(kind: TaonCmsPostVersionKind): void {
     const post = this.currentPost();
     const canEdit =
@@ -1377,10 +1453,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
           this.loadPostVersionLinks(updatedPost);
         },
         error: (error: unknown) => {
-          console.error(
-            '[taon-cms-post] Unable to remove post version',
-            error,
-          );
+          console.error('[taon-cms-post] Unable to remove post version', error);
           this.error.set(
             this.t.gettext(
               'The post version could not be removed. Reload the post and try again.',
@@ -1389,6 +1462,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
         },
       });
   }
+  //#endregion
 
   //#region methods / application hooks
   loadApplicationHooks(): void {
@@ -1422,10 +1496,13 @@ export class TaonCmsPostComponent implements AfterViewInit {
       });
   }
 
+  //#region methods / set use as application hook
   setUseAsApplicationHook(enabled: boolean): void {
     this.useAsApplicationHook.set(enabled);
   }
+  //#endregion
 
+  //#region methods / application hook in use by another post
   applicationHookInUseByAnotherPost(
     applicationHook: TaonCmsApplicationHookEntity,
   ): boolean {
@@ -1434,10 +1511,13 @@ export class TaonCmsPostComponent implements AfterViewInit {
       applicationHook.contentId !== this.currentPost()?.id
     );
   }
+  //#endregion
 
+  //#region methods / application hook label
   applicationHookLabel(hook: TaonCmsApplicationHook): string {
     return hook.split('-').join('_').toUpperCase();
   }
+  //#endregion
   //#endregion
 
   //#region methods / load permissions
@@ -1547,6 +1627,33 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
+  protected canRunTableCommand(command: Command): boolean {
+    const editor = this.contentEditor();
+
+    return (
+      !!editor &&
+      !this.busy() &&
+      !this.dialogOpen() &&
+      command(editor.view.state)
+    );
+  }
+
+  protected runTableCommand(event: MouseEvent, command: Command): void {
+    event.preventDefault();
+
+    const editor = this.contentEditor();
+
+    if (!editor || this.busy() || this.dialogOpen()) {
+      return;
+    }
+
+    const view = editor.view;
+
+    command(view.state, transaction => view.dispatch(transaction), view);
+
+    view.focus();
+  }
+
   //#region methods / update draft
   updateRawContent(event: Event): void {
     if (event.target instanceof HTMLTextAreaElement) {
@@ -1554,6 +1661,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     }
   }
 
+  //#region methods / set content tab
   setContentTab(index: number): void {
     const editor = this.contentEditor();
     if (editor && this.contentTab() === 0 && index !== 0) {
@@ -1569,7 +1677,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
     }
     this.contentTab.set(index);
   }
+  //#endregion
 
+  //#region methods / insert variable
   insertVariable(variable: TaonCmsTemplateVariable): void {
     if (!this.editing() || this.busy() || this.dialogOpen()) {
       return;
@@ -1593,7 +1703,9 @@ export class TaonCmsPostComponent implements AfterViewInit {
       editor?.view.focus();
     }
   }
+  //#endregion
 
+  //#region methods / update draft
   updateDraft<K extends keyof TaonCmsPostDraft>(
     field: K,
     value: TaonCmsPostDraft[K],
@@ -1609,6 +1721,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     }
     this.draft.update(draft => ({ ...draft, [field]: value }));
   }
+  //#endregion
   //#endregion
 
   //#region methods / file selected
@@ -1815,8 +1928,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
           relatedPostIds: this.relatedPosts().map(post => post.id),
           permissionIds: this.permissions().map(permission => permission.id),
           applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
-          applyVisibilityToRelatedPosts:
-            this.applyVisibilityToRelatedPosts(),
+          applyVisibilityToRelatedPosts: this.applyVisibilityToRelatedPosts(),
           status: this.draftStatus(),
           applicationHook: this.useAsApplicationHook()
             ? this.selectedApplicationHook()
@@ -1901,6 +2013,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
       .trim();
   }
 
+  //#region methods / generate lorem ipsum
   generateLoremIpsum(field: 'excerpt' | 'body'): void {
     if (!this.editing() || this.busy() || this.dialogOpen()) {
       return;
@@ -1938,6 +2051,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
       }
     }
   }
+  //#endregion
   //#endregion
 
   //#region methods / revert
@@ -2055,10 +2169,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.error.set('');
     this.api
       .listRelatedPosts(post.id)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        take(1),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef), take(1))
       .subscribe({
         next: children => {
           if (!children.length) {
@@ -2080,9 +2191,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
                 },
                 {
                   value: 'hierarchy',
-                  label: this.t.gettext(
-                    'Duplicate this post and its children',
-                  ),
+                  label: this.t.gettext('Duplicate this post and its children'),
                 },
               ],
               selected: 'single',
@@ -2116,6 +2225,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
       });
   }
 
+  //#region methods / run duplication
   private runDuplication(
     post: TaonCmsContentEntity,
     includeChildren: boolean,
@@ -2139,6 +2249,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
       });
   }
   //#endregion
+  //#endregion
 
   //#region methods / update input
   private updateInput(post: TaonCmsContentEntity): TaonCmsUpdateContent {
@@ -2151,8 +2262,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
             permissionIds: this.permissions().map(permission => permission.id),
           }),
       applyPermissionsToRelatedPosts: this.applyPermissionsToRelatedPosts(),
-      applyVisibilityToRelatedPosts:
-        this.applyVisibilityToRelatedPosts(),
+      applyVisibilityToRelatedPosts: this.applyVisibilityToRelatedPosts(),
       applicationHook: this.useAsApplicationHook()
         ? this.selectedApplicationHook()
         : null,
@@ -2196,9 +2306,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.loadVisibilityConfiguration(
       post && this.mode() !== 'view-clean' ? post : null,
     );
-    this.loadParentPost(
-      post && this.mode() !== 'view-clean' ? post : null,
-    );
+    this.loadParentPost(post && this.mode() !== 'view-clean' ? post : null);
     this.loadPostVersionLinks(
       post && this.mode() !== 'view-clean' ? post : null,
     );
@@ -2247,6 +2355,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
   }
   //#endregion
 
+  //#region methods / set application hook selection
   private setApplicationHookSelection(
     post: TaonCmsContentEntity | null,
     hooks: TaonCmsApplicationHookEntity[],
@@ -2259,6 +2368,7 @@ export class TaonCmsPostComponent implements AfterViewInit {
     this.useAsApplicationHook.set(!!assignedHook);
     this.selectedApplicationHook.set(assignedHook ?? null);
   }
+  //#endregion
 
   //#region methods / accept post
   private acceptPost(post: TaonCmsContentEntity): void {
