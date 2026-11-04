@@ -20,13 +20,13 @@ msgstr "Zablokowane słowo lub fraza"
 msgid "Add"
 msgstr "Dodaj"
 
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
-msgid "Delete"
-msgstr "Usuń"
-
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:14
 msgid "Loading blocked phrases..."
 msgstr "Ładowanie zablokowanych fraz..."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
+msgid "Delete"
+msgstr "Usuń"
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:23
 msgid "No blocked words or phrases configured."

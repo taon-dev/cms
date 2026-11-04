@@ -13,22 +13,20 @@ msgstr "Restore a revision"
 msgid "Restoring replaces the post, including its status, with the selected revision."
 msgstr "Restoring replaces the post, including its status, with the selected revision."
 
-#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:67
-msgid "Cancel"
-msgstr "Cancel"
-
-#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:74
-msgid "Apply"
-msgstr "Apply"
-
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:11
 msgid "Loading revisions..."
 msgstr "Loading revisions..."
 
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:14
+msgid "Post revisions"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:22
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:23
 msgid "Revision [[ revisionNumber ]]"
 msgstr "Revision [[ revisionNumber ]]"
 
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:32
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:33
 msgid "User [[ userId ]]"
 msgstr "User [[ userId ]]"
@@ -48,3 +46,11 @@ msgstr "Reload revisions"
 #: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:58
 msgid "Restoring..."
 msgstr "Restoring..."
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:67
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/lib/taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component.html:74
+msgid "Apply"
+msgstr "Apply"

@@ -17,10 +17,6 @@ msgstr "Search posts"
 msgid "Search posts by ID, title or slug"
 msgstr ""
 
-#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
-msgid "Cancel"
-msgstr "Cancel"
-
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
 msgid "Loading posts..."
 msgstr "Loading posts..."
@@ -36,3 +32,7 @@ msgstr ""
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
 msgstr "No matching posts available."
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
+msgid "Cancel"
+msgstr "Cancel"

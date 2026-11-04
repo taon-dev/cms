@@ -10,7 +10,7 @@ msgstr "Beiträge"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:40
 msgid "Courses"
-msgstr ""
+msgstr "Kurse"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:54
 msgid "Comments"

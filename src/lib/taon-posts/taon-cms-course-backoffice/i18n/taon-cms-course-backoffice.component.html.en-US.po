@@ -9,11 +9,15 @@ msgid "Courses"
 msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:2
-msgid "Course is just a post with related posts and thumbnail. Any non archived post can be course."
+msgid "A course is a post with related posts and a thumbnail. Any post that is not archived can be a course."
 msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:4
 msgid "Reload courses"
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:7
+msgid "Loading courses..."
 msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:31
@@ -36,8 +40,4 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:59
 msgid "Visibility"
-msgstr ""
-
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:7
-msgid "Loading courses..."
 msgstr ""

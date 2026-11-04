@@ -6,7 +6,7 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-post-details-page/taon-cms-post-details-page.component.ts:32
 msgid "Back to Courses"
-msgstr ""
+msgstr "Zurück zu den Kursen"
 
 #: src/lib/taon-posts/taon-cms-post-details-page/taon-cms-post-details-page.component.ts:33
 msgid "Back to Posts"

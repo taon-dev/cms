@@ -6,38 +6,38 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:1
 msgid "Courses"
-msgstr ""
+msgstr "Kursy"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:2
-msgid "Course is just a post with related posts and thumbnail. Any non archived post can be course."
-msgstr ""
+msgid "A course is a post with related posts and a thumbnail. Any post that is not archived can be a course."
+msgstr "Kurs to wpis z powiązanymi wpisami i miniaturą. Kursem może być każdy wpis, który nie został zarchiwizowany."
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:4
 msgid "Reload courses"
-msgstr ""
+msgstr "Odśwież kursy"
+
+#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:7
+msgid "Loading courses..."
+msgstr "Ładowanie kursów..."
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:31
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:61
 msgid "Public"
-msgstr ""
+msgstr "Publiczny"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:31
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:62
 msgid "Private"
-msgstr ""
+msgstr "Prywatny"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:45
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:52
 msgid "Title"
-msgstr ""
+msgstr "Tytuł"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:59
 msgid "Visibility"
-msgstr ""
-
-#: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.html:7
-msgid "Loading courses..."
-msgstr ""
+msgstr "Widoczność"

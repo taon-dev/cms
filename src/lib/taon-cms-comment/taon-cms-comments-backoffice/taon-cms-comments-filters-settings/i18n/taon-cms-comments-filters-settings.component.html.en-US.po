@@ -20,12 +20,12 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
-msgid "Delete"
-msgstr ""
-
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:14
 msgid "Loading blocked phrases..."
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
+msgid "Delete"
 msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:23

@@ -20,13 +20,13 @@ msgstr "Gesperrtes Wort oder gesperrte Formulierung"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
-msgid "Delete"
-msgstr "Löschen"
-
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:14
 msgid "Loading blocked phrases..."
 msgstr "Gesperrte Formulierungen werden geladen ..."
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:20
+msgid "Delete"
+msgstr "Löschen"
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-filters-settings/taon-cms-comments-filters-settings.component.html:23
 msgid "No blocked words or phrases configured."

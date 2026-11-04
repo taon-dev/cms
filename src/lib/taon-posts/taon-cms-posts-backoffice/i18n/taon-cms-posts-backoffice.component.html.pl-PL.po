@@ -8,6 +8,10 @@ msgstr ""
 msgid "CMS posts"
 msgstr "Wpisy CMS"
 
+#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:3
+msgid "Loading posts..."
+msgstr "Ładowanie wpisów..."
+
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:22
 msgid "ID"
 msgstr "ID"
@@ -35,7 +39,3 @@ msgstr "Szkic"
 #: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:47
 msgid "Archived"
 msgstr "Zarchiwizowany"
-
-#: src/lib/taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.component.html:3
-msgid "Loading posts..."
-msgstr "Ładowanie wpisów..."

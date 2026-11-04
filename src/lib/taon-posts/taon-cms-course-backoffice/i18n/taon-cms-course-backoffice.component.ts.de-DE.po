@@ -6,16 +6,16 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:77
 msgid "Cover"
-msgstr ""
+msgstr "Titelbild"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:82
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:84
 msgid "Visibility"
-msgstr ""
+msgstr "Sichtbarkeit"
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.component.ts:117
 msgid "Courses could not be loaded. Please try reloading."
-msgstr ""
+msgstr "Die Kurse konnten nicht geladen werden. Bitte versuchen Sie, die Seite neu zu laden."

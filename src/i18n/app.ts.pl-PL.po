@@ -18,7 +18,7 @@ msgstr "Wersja Angulara: [[ version ]]"
 
 #: src/app.ts:143
 msgid "Taon backend: [[ mode ]]"
-msgstr "Taon backend: [[ mode ]]"
+msgstr "Backend Taon: [[ mode ]]"
 
 #: src/app.ts:166
 msgctxt "header-taon-admin"

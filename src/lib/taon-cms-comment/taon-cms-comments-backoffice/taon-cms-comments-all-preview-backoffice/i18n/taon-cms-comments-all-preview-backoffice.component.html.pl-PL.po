@@ -25,6 +25,10 @@ msgstr "Autor"
 msgid "Apply filters"
 msgstr "Zastosuj filtry"
 
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:18
+msgid "Loading comments..."
+msgstr "Ładowanie komentarzy..."
+
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:25
 msgid "Full comment"
 msgstr "Pełny komentarz"
@@ -60,7 +64,3 @@ msgstr "Strona [[ page ]]"
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:53
 msgid "Next"
 msgstr "Następna"
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:18
-msgid "Loading comments..."
-msgstr "Ładowanie komentarzy..."

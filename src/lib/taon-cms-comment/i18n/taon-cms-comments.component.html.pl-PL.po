@@ -16,6 +16,7 @@ msgstr "Ładowanie komentarzy..."
 msgid "Add a comment"
 msgstr "Dodaj komentarz"
 
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:21
 #: src/lib/taon-cms-comment/taon-cms-comments.component.html:22
 msgid "Characters remaining: [[ count ]]"
 msgstr "Pozostało znaków: [[ count ]]"
@@ -44,10 +45,12 @@ msgstr "Głosuj za"
 msgid "Downvote"
 msgstr "Głosuj przeciw"
 
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:71
 #: src/lib/taon-cms-comment/taon-cms-comments.component.html:73
 msgid "Reported"
 msgstr "Zgłoszono"
 
+#: src/lib/taon-cms-comment/taon-cms-comments.component.html:71
 #: src/lib/taon-cms-comment/taon-cms-comments.component.html:74
 msgid "Report spam"
 msgstr "Zgłoś spam"

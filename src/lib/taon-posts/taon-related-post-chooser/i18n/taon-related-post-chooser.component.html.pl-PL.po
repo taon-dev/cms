@@ -17,10 +17,6 @@ msgstr "Szukaj wpisów"
 msgid "Search posts by ID, title or slug"
 msgstr "Szukaj wpisów według ID, tytułu lub sluga"
 
-#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
-msgid "Cancel"
-msgstr "Anuluj"
-
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
 msgid "Loading posts..."
 msgstr "Ładowanie wpisów..."
@@ -36,3 +32,7 @@ msgstr "Powiązany wpis"
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
 msgstr "Nie znaleziono pasujących wpisów."
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
+msgid "Cancel"
+msgstr "Anuluj"

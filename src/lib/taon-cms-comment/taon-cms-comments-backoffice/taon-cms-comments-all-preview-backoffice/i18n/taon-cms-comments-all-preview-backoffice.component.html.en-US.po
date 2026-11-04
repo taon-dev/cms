@@ -25,6 +25,10 @@ msgstr ""
 msgid "Apply filters"
 msgstr ""
 
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:18
+msgid "Loading comments..."
+msgstr ""
+
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:25
 msgid "Full comment"
 msgstr ""
@@ -59,8 +63,4 @@ msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:53
 msgid "Next"
-msgstr ""
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component.html:18
-msgid "Loading comments..."
 msgstr ""

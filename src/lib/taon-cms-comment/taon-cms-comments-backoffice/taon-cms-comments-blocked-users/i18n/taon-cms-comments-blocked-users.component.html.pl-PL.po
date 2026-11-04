@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:1
-msgid "Comment-blocked users"
+msgid "Users blocked from commenting"
 msgstr "Użytkownicy z blokadą komentowania"
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:2
@@ -21,6 +21,10 @@ msgstr "ID użytkownika"
 msgid "Block commenting"
 msgstr "Zablokuj komentowanie"
 
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:14
+msgid "Loading blocked users..."
+msgstr "Ładowanie zablokowanych użytkowników..."
+
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:18
 msgid "Actions"
 msgstr "Akcje"
@@ -28,6 +32,10 @@ msgstr "Akcje"
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:24
 msgid "Activate commenting"
 msgstr "Przywróć możliwość komentowania"
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:27
+msgid "No users are blocked from commenting."
+msgstr "Żaden użytkownik nie ma zablokowanego komentowania."
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:32
 msgid "Previous"
@@ -40,11 +48,3 @@ msgstr "Strona [[ page ]]"
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:34
 msgid "Next"
 msgstr "Następna"
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:14
-msgid "Loading blocked users..."
-msgstr "Ładowanie zablokowanych użytkowników..."
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:27
-msgid "No users are blocked from commenting."
-msgstr "Żaden użytkownik nie ma zablokowanego komentowania."

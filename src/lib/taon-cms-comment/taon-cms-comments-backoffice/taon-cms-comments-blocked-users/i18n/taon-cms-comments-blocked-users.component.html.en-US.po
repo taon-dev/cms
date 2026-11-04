@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:1
-msgid "Comment-blocked users"
+msgid "Users blocked from commenting"
 msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:2
@@ -21,12 +21,20 @@ msgstr ""
 msgid "Block commenting"
 msgstr ""
 
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:14
+msgid "Loading blocked users..."
+msgstr ""
+
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:18
 msgid "Actions"
 msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:24
 msgid "Activate commenting"
+msgstr ""
+
+#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:27
+msgid "No users are blocked from commenting."
 msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:32
@@ -39,12 +47,4 @@ msgstr ""
 
 #: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:34
 msgid "Next"
-msgstr ""
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:14
-msgid "Loading blocked users..."
-msgstr ""
-
-#: src/lib/taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-blocked-users/taon-cms-comments-blocked-users.component.html:27
-msgid "No users are blocked from commenting."
 msgstr ""

@@ -6,28 +6,28 @@ msgstr ""
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:43
 msgid "Add category"
-msgstr ""
+msgstr "Kategorie hinzufügen"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:44
 msgid "Add tag"
-msgstr ""
+msgstr "Tag hinzufügen"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:50
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:59
 msgid "Slug"
-msgstr ""
+msgstr "Slug"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:68
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:80
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: src/lib/taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component.ts:87
 msgid "Create"
-msgstr ""
+msgstr "Erstellen"

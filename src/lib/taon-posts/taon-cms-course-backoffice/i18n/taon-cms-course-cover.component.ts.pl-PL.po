@@ -6,4 +6,4 @@ msgstr ""
 
 #: src/lib/taon-posts/taon-cms-course-backoffice/taon-cms-course-cover.component.ts:90
 msgid "Cover unavailable. Retry"
-msgstr ""
+msgstr "Okładka niedostępna. Spróbuj ponownie"

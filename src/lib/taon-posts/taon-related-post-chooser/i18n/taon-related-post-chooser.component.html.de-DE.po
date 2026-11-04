@@ -17,10 +17,6 @@ msgstr "Beiträge suchen"
 msgid "Search posts by ID, title or slug"
 msgstr "Beiträge nach ID, Titel oder Slug suchen"
 
-#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
-msgid "Cancel"
-msgstr "Abbrechen"
-
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:13
 msgid "Loading posts..."
 msgstr "Beiträge werden geladen..."
@@ -36,3 +32,7 @@ msgstr "Verwandter Beitrag"
 #: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:37
 msgid "No matching posts available."
 msgstr "Keine passenden Beiträge verfügbar."
+
+#: src/lib/taon-posts/taon-related-post-chooser/taon-related-post-chooser.component.html:47
+msgid "Cancel"
+msgstr "Abbrechen"
