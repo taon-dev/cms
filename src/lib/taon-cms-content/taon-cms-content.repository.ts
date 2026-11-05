@@ -16,6 +16,7 @@ import { _ } from 'tnp-core/src';
 
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
 import { TaonCmsContentType } from './taon-cms-content.models';
+import { TaonCmsContentUtils } from './taon-cms-content.utils';
 import type {
   TaonCmsContentFields,
   TaonCmsContentSnapshot,
@@ -647,7 +648,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     );
     await this.taonCmsContentRevisionRepository.recordContent(
       content,
-      { ...fields, tagIds, relatedPostIds, permissionIds },
+      { ...fields, tagIds, relatedPostIds, relatedPostOrderSaved: true, permissionIds },
       manager,
     );
     return this.requireContent(content.id, manager);
@@ -1484,7 +1485,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
-  private async requireContent(
+  async requireContent(
     id: number,
     manager: EntityManager,
   ): Promise<TaonCmsContentEntity> {
@@ -1502,6 +1503,10 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     if (!content) {
       contentError(`Content ${id} does not exist.`, 404);
     }
+    await this.taonCmsContentRevisionRepository.applyRelatedPostOrder(
+      content,
+      manager,
+    );
     return content;
     //#endregion
   }
@@ -1851,12 +1856,16 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
       await this.replaceApplicationHook(current.id, applicationHook, manager);
     }
     const updated = await this.requireContent(current.id, manager);
+    // The join table has no order; the revision snapshot is the saved sequence.
+    const relatedPostIds = [...new Set(snapshot.relatedPostIds ?? [])];
+    TaonCmsContentUtils.orderRelatedPosts(updated.relatedPosts, relatedPostIds);
     await this.taonCmsContentRevisionRepository.recordContent(
       updated,
       {
         ...fields,
         tagIds: snapshot.tagIds,
-        relatedPostIds: updated.relatedPosts.map(post => post.id),
+        relatedPostIds,
+        relatedPostOrderSaved: true,
         permissionIds: updated.permissions.map(permission => permission.id),
       },
       manager,

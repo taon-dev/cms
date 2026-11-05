@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Language: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post-thumbnail.component.ts:58
+msgid "The thumbnail could not be loaded."
+msgstr ""

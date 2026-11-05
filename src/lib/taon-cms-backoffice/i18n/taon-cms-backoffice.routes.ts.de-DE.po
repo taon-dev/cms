@@ -5,25 +5,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:28
+msgid "Website Features"
+msgstr "Website-Funktionen"
+
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:42
 msgid "Posts"
 msgstr "Beiträge"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:40
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:54
 msgid "Courses"
 msgstr "Kurse"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:54
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:68
 msgid "Comments"
 msgstr "Kommentare"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:65
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:79
 msgid "Assets"
 msgstr "Medien"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:76
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:90
 msgid "Categories"
 msgstr "Kategorien"
 
-#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:87
+#: src/lib/taon-cms-backoffice/taon-cms-backoffice.routes.ts:101
 msgid "Tags"
 msgstr "Tags"

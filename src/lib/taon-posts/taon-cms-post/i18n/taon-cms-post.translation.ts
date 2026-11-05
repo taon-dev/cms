@@ -8,6 +8,9 @@ import { DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialog
 import { EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs } from './taon-cms-post-choice-dialog.component.ts.en-US.i18n.data';
 import { PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs } from './taon-cms-post-choice-dialog.component.ts.pl-PL.i18n.data';
 import { DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs } from './taon-cms-post-choice-dialog.component.ts.de-DE.i18n.data';
+import { EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs } from './taon-cms-post-thumbnail.component.ts.en-US.i18n.data';
+import { PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs } from './taon-cms-post-thumbnail.component.ts.pl-PL.i18n.data';
+import { DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs } from './taon-cms-post-thumbnail.component.ts.de-DE.i18n.data';
 import { EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml } from './taon-cms-post.component.html.en-US.i18n.data';
 import { PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml } from './taon-cms-post.component.html.pl-PL.i18n.data';
 import { DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml } from './taon-cms-post.component.html.de-DE.i18n.data';
@@ -20,6 +23,9 @@ export type TaonCmsPostOverride = CoreModels.DeepPartial<EnUsTraslationOverrideS
 | EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs 
 | PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs 
 | DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostChoiceDialogComponentTs 
+| EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs 
+| PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs 
+| DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostThumbnailComponentTs 
 | EnUsTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml 
 | PlPlTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml 
 | DeDeTraslationOverrideSrcLibTaonPostsTaonCmsPostTaonCmsPostComponentHtml 

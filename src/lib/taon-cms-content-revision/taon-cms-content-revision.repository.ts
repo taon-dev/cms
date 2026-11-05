@@ -6,6 +6,7 @@ import type { EntityManager } from 'taon-typeorm/src';
 import type { TaonCmsContentEntity } from '../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsContentSnapshot } from '../taon-cms-content/taon-cms-content.models';
 import { contentError } from '../taon-cms-content/taon-cms-content.validation';
+import { TaonCmsContentUtils } from '../taon-cms-content/taon-cms-content.utils';
 
 import { TaonCmsContentRevisionEntity } from './taon-cms-content-revision.entity';
 //#endregion
@@ -16,6 +17,30 @@ import { TaonCmsContentRevisionEntity } from './taon-cms-content-revision.entity
 export class TaonCmsContentRevisionRepository extends TaonBaseRepository<TaonCmsContentRevisionEntity> {
   entityClassResolveFn: () => typeof TaonCmsContentRevisionEntity = () =>
     TaonCmsContentRevisionEntity;
+
+  async applyRelatedPostOrder(
+    content: TaonCmsContentEntity,
+    manager: EntityManager,
+  ): Promise<void> {
+    //#region @websqlFunc
+    if (!content.relatedPosts?.length) {
+      return;
+    }
+    const revision = await manager
+      .getRepository<TaonCmsContentRevisionEntity>(this.target)
+      .findOne({
+        where: { contentId: content.id },
+        order: { revisionNumber: 'DESC' },
+      });
+    // Older snapshots stored relationship membership, not an explicit order.
+    const ids = revision?.snapshot?.relatedPostOrderSaved
+      ? revision.snapshot.relatedPostIds
+      : undefined;
+    if (ids) {
+      TaonCmsContentUtils.orderRelatedPosts(content.relatedPosts, ids);
+    }
+    //#endregion
+  }
 
   async listForContent(
     contentId: number,

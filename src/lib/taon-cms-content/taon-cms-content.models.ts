@@ -101,6 +101,7 @@ export interface TaonCmsRestoreContent {
 export interface TaonCmsContentSnapshot extends TaonCmsContentFields {
   tagIds: number[];
   relatedPostIds?: number[];
+  relatedPostOrderSaved?: boolean;
   permissionIds: number[];
 }
 import type { TaonCmsApplicationHook } from '../taon-cms-application-hooks';

@@ -351,6 +351,21 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
 
   //#region methods / get by id
   @GET()
+  getBy(@Query('id') id: number | string): Taon.Response<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    return () => {
+      const contentId = Number(id);
+      if (!Number.isSafeInteger(contentId) || contentId <= 0) {
+        contentError('contentId must be a positive integer.');
+      }
+      return this.taonCmsContentRepository.connection.transaction(manager =>
+        this.taonCmsContentRepository.requireContent(contentId, manager),
+      );
+    };
+    //#endregion
+  }
+
+  @GET()
   getBySlug(@Query(`slug`) slug: string): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
     return async () => {

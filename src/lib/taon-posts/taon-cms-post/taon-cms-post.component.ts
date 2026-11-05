@@ -1,5 +1,6 @@
 //#region imports
 import { NgTemplateOutlet } from '@angular/common';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -97,6 +98,7 @@ import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/ta
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
+import { TaonCmsPostThumbnailComponent } from './taon-cms-post-thumbnail.component';
 import { TaonCmsPostChoiceDialogComponent } from './taon-cms-post-choice-dialog.component';
 import type { TaonCmsPostChoiceDialogData } from './taon-cms-post-choice-dialog.component';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
@@ -149,6 +151,8 @@ interface RelatedChildFileSelection {
     TaonCmsCommentsComponent,
     NgTemplateOutlet,
     MatDividerModule,
+    DragDropModule,
+    TaonCmsPostThumbnailComponent,
   ],
   providers: [
     TaonCmsContentApiService,
@@ -1405,6 +1409,24 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   //#endregion
 
   //#region methods / remove related post
+  reorderRelatedPosts(event: CdkDragDrop<TaonCmsContentEntity[]>): void {
+    if (
+      !this.editing() ||
+      this.busy() ||
+      this.dialogOpen() ||
+      this.relatedPostsLoading() ||
+      this.relatedPostsError() ||
+      event.previousContainer !== event.container
+    ) {
+      return;
+    }
+    this.relatedPosts.update(posts => {
+      const reordered = [...posts];
+      moveItemInArray(reordered, event.previousIndex, event.currentIndex);
+      return reordered;
+    });
+  }
+
   removeRelatedPost(id: number): void {
     if (
       !this.editing() ||

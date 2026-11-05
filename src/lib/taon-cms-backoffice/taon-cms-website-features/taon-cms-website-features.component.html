@@ -1,0 +1,45 @@
+<h1>{{ t.gettext('Website Features') }}</h1>
+@if (error()) {
+  <p role="alert">{{ error() }}</p>
+  <button mat-button type="button" [disabled]="busy()" (click)="reload()">
+    {{ t.gettext('Reload features') }}
+  </button>
+}
+<p role="status" aria-live="polite">{{ feedback() }}</p>
+<ul [attr.aria-busy]="busy()">
+  @for (feature of features(); track feature.key) {
+    <li>
+      <mat-checkbox
+        [checked]="feature.enabled"
+        [disabled]="busy()"
+        [attr.aria-label]="feature.name"
+        (change)="toggle(feature, $event.checked)" />
+      <div class="feature-name">
+        <span>{{ feature.name }}</span>
+        <small>{{ feature.key }}</small>
+      </div>
+      <button mat-icon-button type="button"
+        [attr.aria-label]="t.gettext('Copy feature key')"
+        (click)="copyKey(feature.key)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button type="button" [disabled]="busy()"
+        [attr.aria-label]="t.gettext('Delete feature')"
+        (click)="deleteFeature(feature)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  }
+</ul>
+<form (ngSubmit)="addFeature()">
+  <mat-form-field class="flex-grow">
+    <mat-label>{{ t.gettext('Enter feature name') }}</mat-label>
+    <input matInput name="featureName" [(ngModel)]="name"
+      [disabled]="busy() || !loaded()"
+      [placeholder]="t.gettext('Enter feature name')" />
+  </mat-form-field>
+  <button mat-flat-button type="submit" class="flex"
+    [disabled]="busy() || !loaded() || !name.trim()">
+    {{ t.gettext('Add feature') }}
+  </button>
+</form>

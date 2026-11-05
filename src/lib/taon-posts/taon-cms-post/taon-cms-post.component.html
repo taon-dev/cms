@@ -696,6 +696,7 @@
                 </p>
               } @else if (parentPost(); as parent) {
                 <p>
+                  <taon-cms-post-thumbnail [post]="parent" />
                   <a
                     href="#"
                     (click)="requestPostEditor($event, parent)">
@@ -754,10 +755,27 @@
                   {{ t.gettext('Try again') }}
                 </button>
               } @else {
-                <ul>
+                <ul
+                  cdkDropList
+                  [cdkDropListData]="relatedPosts()"
+                  [cdkDropListDisabled]="busy() || dialogOpen()"
+                  (cdkDropListDropped)="reorderRelatedPosts($event)">
                   @for (post of relatedPosts(); track post.id) {
-                    <li>
-                      <span>
+                    <li cdkDrag [cdkDragData]="post">
+                      <button
+                        mat-icon-button
+                        cdkDragHandle
+                        type="button"
+                        [disabled]="busy() || dialogOpen()"
+                        [attr.aria-label]="
+                          t.gettext('Reorder related post [[ title ]]', {
+                            title: post.title,
+                          })
+                        ">
+                        <mat-icon>drag_indicator</mat-icon>
+                      </button>
+                      <taon-cms-post-thumbnail [post]="post" />
+                      <span class="related-post-title">
                         #{{ post.id }} -
                         <a
                           href="#"
@@ -833,6 +851,7 @@
                 <h3>{{ t.gettext('Public post version') }}</h3>
                 @if (postVersionLinks().publicVersionPost; as versionPost) {
                   <p>
+                    <taon-cms-post-thumbnail [post]="versionPost" />
                     <a
                       href="#"
                       (click)="requestPostEditor($event, versionPost)">
@@ -898,6 +917,7 @@
                 <h3>{{ t.gettext('Private post version') }}</h3>
                 @if (postVersionLinks().privateVersionPost; as versionPost) {
                   <p>
+                    <taon-cms-post-thumbnail [post]="versionPost" />
                     <a
                       href="#"
                       (click)="requestPostEditor($event, versionPost)">

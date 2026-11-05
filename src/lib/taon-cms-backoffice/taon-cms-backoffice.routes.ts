@@ -24,6 +24,20 @@ export const TaonCmsBackofficeRoutes: Routes = [
           // console.log('context', { context });
           return !context?.hasAccess.toManageCms;
         },
+        path: 'website-features',
+        menuItem: t.signal.gettext('Website Features'),
+        expandable: false,
+        icon: 'toggle_on',
+        loader: () =>
+          import('./taon-cms-website-features/taon-cms-website-features.routes').then(
+            m => m.TaonCmsWebsiteFeaturesRoutes,
+          ),
+      }),
+      adminLazyRoute({
+        isDisabled: ({ context }) => {
+          // console.log('context', { context });
+          return !context?.hasAccess.toManageCms;
+        },
         path: 'posts',
         menuItem: t.signal.gettext('Posts'),
         expandable: true,

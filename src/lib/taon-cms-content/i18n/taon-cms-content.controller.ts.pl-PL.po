@@ -28,12 +28,12 @@ msgstr "Zawartość ta nie jest dostępna publicznie."
 msgid "You do not have access to this content."
 msgstr "Nie masz dostępu do tej treści."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:376
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:404
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:391
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:419
 msgid "The post slug is invalid."
 msgstr "Nieprawidłowy slug wpisu."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:383
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:411
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:398
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:426
 msgid "The post was not found."
 msgstr "Nie znaleziono wpisu."

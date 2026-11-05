@@ -116,6 +116,9 @@ export * from './taon-cms-tag/taon-cms-tag.utils';
 export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.component'; // @browser
 export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-backoffice.routes'; // @browser
 export * from './taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component'; // @browser
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component'; // @browser
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.models'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.routes'; // @browser
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-backoffice.component'; // @browser
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-backoffice.models'; 
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-backoffice.routes'; // @browser
@@ -127,6 +130,7 @@ export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-cover.com
 export * from './taon-posts/taon-cms-post/taon-cms-document-extractor'; 
 export * from './taon-posts/taon-cms-post/taon-cms-editable.directive'; // @browser
 export * from './taon-posts/taon-cms-post/taon-cms-post-choice-dialog.component'; // @browser
+export * from './taon-posts/taon-cms-post/taon-cms-post-thumbnail.component'; // @browser
 export * from './taon-posts/taon-cms-post/taon-cms-post.component'; // @browser
 export * from './taon-posts/taon-cms-post/taon-cms-post.models'; 
 export * from './taon-posts/taon-cms-post/taon-cms-post.routes'; // @browser
@@ -138,6 +142,16 @@ export * from './taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.
 export * from './taon-posts/taon-cms-posts-backoffice/taon-cms-posts-backoffice.routes'; // @browser
 export * from './taon-posts/taon-cms-revision-chooser/taon-cms-revision-chooser.component'; // @browser
 export * from './taon-posts/taon-related-post-chooser/taon-related-post-chooser.component'; // @browser
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.abstract.context'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.api.service'; // @browser
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.config.service'; // @browser
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.constants'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.controller'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.kv.repository'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.models'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.provider'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.utils'; 
+export * from './taon-cms-backoffice/taon-cms-website-features/taon-cms-website-feature/taon-cms-website-feature.validators'; 
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.component'; // @browser
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.models'; 
 export * from './taon-cms-comment/taon-cms-comments-backoffice/taon-cms-comments-all-preview-backoffice/taon-cms-comments-all-preview-backoffice.routes'; // @browser

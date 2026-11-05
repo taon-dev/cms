@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:45
+msgid "Website features loaded."
+msgstr "Website-Funktionen geladen."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:56
+msgid "Enter a feature name that produces a valid key."
+msgstr "Geben Sie einen Funktionsnamen ein, der einen gültigen Schlüssel ergibt."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:60
+msgid "A feature with this key already exists."
+msgstr "Eine Funktion mit diesem Schlüssel ist bereits vorhanden."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:65
+msgid "Feature added."
+msgstr "Funktion hinzugefügt."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:82
+msgid "Feature saved."
+msgstr "Funktion gespeichert."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:92
+msgid "Feature deleted. Missing features are enabled by default."
+msgstr "Funktion gelöscht. Fehlende Funktionen sind standardmäßig aktiviert."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:104
+msgid "Feature key copied."
+msgstr "Funktionsschlüssel kopiert."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:107
+msgid "The feature key could not be copied."
+msgstr "Der Funktionsschlüssel konnte nicht kopiert werden."
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.ts:132
+msgid "Website features could not be saved or loaded. Please try again."
+msgstr "Website-Funktionen konnten nicht gespeichert oder geladen werden. Bitte versuchen Sie es erneut."

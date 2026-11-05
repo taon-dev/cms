@@ -256,6 +256,14 @@ ngx-editor {
   }
 }
 
+.related-post-title {
+  flex: 1;
+}
+
+[cdkDragHandle] {
+  cursor: grab;
+}
+
 .related-child-file {
   flex: 1;
   min-width: 0;

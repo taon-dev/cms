@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+li,
+form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 0.75rem;
+}
+
+.feature-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+small {
+  display: block;
+  opacity: 0.7;
+}

@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:1
+msgid "Website Features"
+msgstr "Website-Funktionen"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:5
+msgid "Reload features"
+msgstr "Funktionen neu laden"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:22
+msgid "Copy feature key"
+msgstr "Funktionsschlüssel kopieren"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:27
+msgid "Delete feature"
+msgstr "Funktion löschen"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:36
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:39
+msgid "Enter feature name"
+msgstr "Funktionsnamen eingeben"
+
+#: src/lib/taon-cms-backoffice/taon-cms-website-features/taon-cms-website-features.component.html:43
+msgid "Add feature"
+msgstr "Funktion hinzufügen"
