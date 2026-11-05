@@ -4,256 +4,272 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:171
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:186
 msgid "A short introduction..."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:175
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:190
 msgid "Title"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:177
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:192
 msgid "Visibility inherited from parent"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:182
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:197
 msgid "Tell your story..."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:201
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:216
 msgid "Normal post"
 msgstr "Normal post"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:203
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:218
 msgid "Video post"
 msgstr "Video post"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:204
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:219
 msgid "Audio post"
 msgstr "Audio post"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:207
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:222
 msgid "Attachment post"
 msgstr "Attachment post"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:234
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:249
 msgid "Video Attachment"
 msgstr "Video Attachment"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:235
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:250
 msgid "Upload video"
 msgstr "Upload video"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:241
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:256
 msgid "Audio Attachment"
 msgstr "Audio Attachment"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:242
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:257
 msgid "Upload audio"
 msgstr "Upload audio"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:248
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:263
 msgid "File Attachment"
 msgstr "File Attachment"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:249
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:264
 msgid "Upload file"
 msgstr "Upload file"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:468
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:547
 msgid "Status: Published"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:470
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:549
 msgid "Status: Archived"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:472
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:551
 msgid "Status: Draft"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:568
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:647
 msgid "Post body"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:680
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:759
 msgid "The thumbnail could not be loaded."
 msgstr "The thumbnail could not be loaded."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:769
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:848
 msgid "Media preview could not be loaded. Please reopen the editor to try again."
 msgstr "Media preview could not be loaded. Please reopen the editor to try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:838
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:917
 msgid "Categories and tags could not be loaded. Please try again."
 msgstr "Categories and tags could not be loaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:930
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1009
 msgid "The category could not be created. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:933
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1012
 msgid "The tag could not be created. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:967
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1046
 msgid "Please select an image for the thumbnail."
 msgstr "Please select an image for the thumbnail."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:978
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1057
 msgid "The thumbnail could not be uploaded. Please try again."
 msgstr "The thumbnail could not be uploaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1051
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1130
 msgid "Related posts could not be loaded. Please try again."
 msgstr "Related posts could not be loaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1082
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1161
 msgid "The parent post could not be loaded. Please retry."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1121
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1200
 msgid "The post visibility could not be verified."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1157
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1236
 msgid "Post version links could not be loaded. Please retry."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1207
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1286
 msgid "The parent post could not be removed. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1318
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1397
 msgid "The parent post could not be changed. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1373
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1452
 msgid "Select the public version post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1374
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1453
 msgid "Select the private version post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1375
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1454
 msgid "Link post version"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1376
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1455
 msgid "Post version"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1377
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1456
 msgid "Select an eligible post version."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1416
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1495
 msgid "The post version could not be linked. Reload the post and try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1458
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1537
 msgid "The post version could not be removed. Reload the post and try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1491
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1570
 msgid "Application hooks could not be loaded. Please try again."
 msgstr "Application hooks could not be loaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1548
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1627
 msgid "Permissions could not be loaded. Please try again."
 msgstr "Permissions could not be loaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1621
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1700
 msgid "Available permissions could not be loaded. Please try again."
 msgstr "Available permissions could not be loaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1730
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1819
+msgid "Unable to read the selected files."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2020
+msgid "The creation result could not be verified; retrying will not duplicate an existing child."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2158
+msgid "An uploaded file is still linked to a post and was not deleted."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2171
+msgid "An uploaded file could not be cleaned up."
+msgstr ""
+
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2204
 msgid "Unable to read the selected media file."
 msgstr "Unable to read the selected media file."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1782
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2256
 msgid "The video was uploaded, but its thumbnail could not be generated. Upload a thumbnail or apply a default placeholder."
 msgstr "The video was uploaded, but its thumbnail could not be generated. Upload a thumbnail or apply a default placeholder."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1792
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2266
 msgid "The media could not be uploaded. Please try again."
 msgstr "The media could not be uploaded. Please try again."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1921
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1983
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2395
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2457
 msgid "A title and slug are required."
 msgstr "A title and slug are required."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1960
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2434
 msgid "Change post status"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1962
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2436
 msgid "Published"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1963
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2437
 msgid "Draft"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:1964
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2438
 msgid "Archived"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2025
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2499
 msgid "this post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2108
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2582
 msgid "Permanently delete post?"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2109
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2583
 msgid "Archive post?"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2111
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2585
 msgid "This permanently deletes the post and its assets. This action cannot be undone."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2114
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2588
 msgid "This archives the post. It can be restored from its revisions."
 msgstr "This archives the post. It can be restored from its revisions."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2118
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2592
 msgid "Permanently delete"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2119
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2593
 msgid "Delete"
 msgstr "Delete"
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2148
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2622
 msgid "The post could not be permanently deleted. Please refresh before retrying."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2186
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2660
 msgid "Duplicate post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2190
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2664
 msgid "Duplicate only this post"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2194
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2668
 msgid "Duplicate this post and its children"
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2220
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2244
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2694
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2718
 msgid "The post could not be duplicated. Please try again."
 msgstr ""
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2278
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2752
 msgid "No post is loaded."
 msgstr "No post is loaded."
 
-#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2407
+#: src/lib/taon-posts/taon-cms-post/taon-cms-post.component.ts:2890
 msgid "The post could not be saved. Check the slug and your connection. If another user changed it, close and reopen the post before retrying."
 msgstr "The post could not be saved. Check the slug and your connection. If another user changed it, close and reopen the post before retrying."

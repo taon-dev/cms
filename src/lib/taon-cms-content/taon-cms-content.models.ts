@@ -58,6 +58,33 @@ export interface TaonCmsCreateContent
   applicationHook?: TaonCmsApplicationHook | null;
 }
 
+export interface TaonCmsCreateRelatedChildInput {
+  titlePrefix: string;
+  expectedTitle: string;
+  fileName: string;
+  mimeType: string;
+  sourceKey: string;
+  type: TaonCmsContentType;
+  body: string | null;
+  videoKey: string | null;
+  audioKey: string | null;
+  attachmentKey: string | null;
+  thumbnailKey: string;
+}
+
+export interface TaonCmsCreateRelatedChildResult {
+  child: TaonCmsContentEntity;
+  parentVersion: number;
+}
+
+export interface TaonCmsPublicVideoChild {
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  videoUrl: string;
+  posterUrl: string;
+}
+
 export interface TaonCmsUpdateContent extends Partial<TaonCmsContentFields> {
   tagIds?: number[];
   relatedPostIds?: number[];

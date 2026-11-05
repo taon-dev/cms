@@ -68,6 +68,7 @@ import {
   take,
 } from 'rxjs';
 import { Taon } from 'taon/src';
+import type { TaonStorageObject } from 'taon/src';
 import { _ } from 'tnp-core/src';
 
 import type { TaonCmsApplicationHookEntity } from '../../taon-cms-application-hook/taon-cms-application-hook.entity';
@@ -80,6 +81,7 @@ import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-con
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
 import type { TaonCmsContentFields } from '../../taon-cms-content/taon-cms-content.models';
+import { extractDocumentHtml } from './taon-cms-document-extractor';
 import type {
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
@@ -108,6 +110,19 @@ import { MatDividerModule } from '@angular/material/divider';
 //#endregion
 
 const t = Translation.for(Taon.__FILE_RELATIVE_PATH, Taon.LANG_IMPORT_MAP);
+
+interface RelatedChildFileSelection {
+  id: number;
+  file: File;
+  status: 'pending' | 'processing' | 'success' | 'error';
+  progress: number;
+  error: string;
+  createdTitle?: string;
+  uploads?: {
+    source?: TaonStorageObject;
+    thumbnail?: TaonStorageObject;
+  };
+}
 
 @Component({
   selector: 'taon-cms-post',
@@ -346,6 +361,70 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   readonly relatedPostsLoading = signal(false);
 
   readonly relatedPostsError = signal('');
+
+  readonly childTitlePrefix = signal('');
+
+  readonly childFiles = signal<RelatedChildFileSelection[]>([]);
+
+  readonly childBatchError = signal('');
+
+  readonly canUploadRelatedChildren = computed(
+    () =>
+      !!this.currentPost() &&
+      !!this.childTitlePrefix().trim() &&
+      !this.relatedPostsLoading() &&
+      !this.relatedPostsError() &&
+      !this.busy() &&
+      !this.dialogOpen() &&
+      this.childFiles().some(file => file.status !== 'success'),
+  );
+
+  readonly childOverallProgress = computed(() => {
+    const files = this.childFiles();
+    return files.length
+      ? Math.round(
+          files.reduce(
+            (total, file) =>
+              total +
+              (file.status === 'success' ? 100 : Math.max(0, file.progress)),
+            0,
+          ) / files.length,
+        )
+      : 0;
+  });
+
+  readonly childTitlePreviews = computed(() => {
+    const prefix = this.childTitlePrefix().trim();
+    let highest = 0;
+    if (prefix) {
+      for (const post of this.relatedPosts()) {
+        const titlePrefix = `${prefix} `;
+        if (!post.title.startsWith(titlePrefix)) {
+          continue;
+        }
+        const suffix = post.title.slice(titlePrefix.length);
+        if (/^\d+$/.test(suffix)) {
+          const number = Number(suffix);
+          if (Number.isSafeInteger(number)) {
+            highest = Math.max(highest, number);
+          }
+        }
+      }
+    }
+    return this.childFiles().map(file => {
+      if (file.status === 'success' && file.createdTitle) {
+        return file.createdTitle;
+      }
+      highest += 1;
+      return prefix ? `${prefix} ${String(highest).padStart(2, '0')}` : '';
+    });
+  });
+
+  private childFileSequence = 0;
+
+  private childTitlePrefixParentId: number | null = null;
+
+  private childTitlePrefixEdited = false;
 
   readonly parentPost = signal<TaonCmsContentEntity | null>(null);
 
@@ -1724,6 +1803,401 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   //#endregion
   //#endregion
 
+  //#region methods / related child title prefix
+  updateChildTitlePrefix(event: Event): void {
+    if (event.target instanceof HTMLInputElement) {
+      this.childTitlePrefixEdited = true;
+      this.childTitlePrefix.set(event.target.value);
+    }
+  }
+  //#endregion
+
+  //#region methods / related child files selected
+  relatedChildFilesSelected(event: Event): void {
+    if (!(event.target instanceof HTMLInputElement)) {
+      this.childBatchError.set(
+        this.t.gettext('Unable to read the selected files.'),
+      );
+      return;
+    }
+    const input = event.target;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!this.currentPost() || this.busy() || !files.length) {
+      return;
+    }
+    this.childBatchError.set('');
+    this.childFiles.update(selected => [
+      ...selected,
+      ...files.map(file => ({
+        id: ++this.childFileSequence,
+        file,
+        status: 'pending' as const,
+        progress: 0,
+        error: '',
+      })),
+    ]);
+  }
+  //#endregion
+
+  //#region methods / remove related child file
+  removeRelatedChildFile(id: number): void {
+    if (this.busy()) {
+      return;
+    }
+    this.childFiles.update(files => files.filter(file => file.id !== id));
+  }
+  //#endregion
+
+  //#region methods / upload and create related children
+  async uploadAndCreateChildren(): Promise<void> {
+    const parent = this.currentPost();
+    const titlePrefix = this.childTitlePrefix().trim();
+    if (
+      !parent ||
+      !titlePrefix ||
+      this.busy() ||
+      !this.childFiles().some(file => file.status !== 'success')
+    ) {
+      return;
+    }
+    const pendingFiles = this.childFiles()
+      .map((file, index) => ({ file, index }))
+      .filter(({ file }) => file.status !== 'success');
+    this.busy.set(true);
+    this.childBatchError.set('');
+    try {
+      for (const { file: selectedFile, index } of pendingFiles) {
+        const expectedTitle = this.childTitlePreviews()[index];
+        this.updateRelatedChildFile(selectedFile.id, {
+          status: 'processing',
+          progress: selectedFile.uploads ? 75 : 0,
+          error: '',
+        });
+        const type = this.relatedChildFileType(selectedFile.file);
+        let body: string | null = null;
+        try {
+          if (type === TaonCmsContentType.Normal) {
+            body = await extractDocumentHtml(selectedFile.file);
+            this.updateRelatedChildFile(selectedFile.id, { progress: 10 });
+          }
+          let uploads = this.childFiles().find(
+            file => file.id === selectedFile.id,
+          )?.uploads;
+          if (!uploads?.source) {
+            const source = await this.api.uploadMedia(
+              selectedFile.file,
+              percentage =>
+                this.updateRelatedChildFile(selectedFile.id, {
+                  progress:
+                    type === TaonCmsContentType.Video
+                      ? Math.round(percentage * 0.65)
+                      : Math.round(percentage * 0.8),
+                }),
+            );
+            uploads = { ...uploads, source };
+            this.updateRelatedChildFile(selectedFile.id, { uploads });
+          }
+          if (type === TaonCmsContentType.Video && !uploads.thumbnail) {
+            const thumbnailBlob = await generateVideoThumbnail(
+              selectedFile.file,
+            );
+            const extension =
+              thumbnailBlob.type === 'image/webp' ? 'webp' : 'png';
+            const thumbnail = await this.api.uploadMedia(
+              new File([thumbnailBlob], `thumbnail.${extension}`, {
+                type: thumbnailBlob.type,
+              }),
+              percentage =>
+                this.updateRelatedChildFile(selectedFile.id, {
+                  progress: 65 + Math.round(percentage * 0.25),
+                }),
+            );
+            uploads = { ...uploads, thumbnail };
+            this.updateRelatedChildFile(selectedFile.id, { uploads });
+          }
+          this.updateRelatedChildFile(selectedFile.id, { progress: 95 });
+          const thumbnailKey =
+            type === TaonCmsContentType.Video
+              ? uploads.thumbnail?.key
+              : type === TaonCmsContentType.Audio
+                ? defaultThumbnailKey(TaonCmsContentType.Audio)
+                : defaultThumbnailKey(TaonCmsContentType.Normal);
+          if (!thumbnailKey) {
+            throw new Error('The video thumbnail could not be uploaded.');
+          }
+          const sourceUpload = uploads.source;
+          if (!sourceUpload) {
+            throw new Error('The uploaded source file is unavailable.');
+          }
+          const result = await this.api.createRelatedChild(parent.id, {
+            titlePrefix,
+            expectedTitle,
+            fileName: selectedFile.file.name,
+            mimeType: selectedFile.file.type,
+            sourceKey: sourceUpload.key,
+            type,
+            body,
+            videoKey:
+              type === TaonCmsContentType.Video ? sourceUpload.key : null,
+            audioKey:
+              type === TaonCmsContentType.Audio ? sourceUpload.key : null,
+            attachmentKey:
+              type === TaonCmsContentType.Attachment ? sourceUpload.key : null,
+            thumbnailKey,
+          });
+          this.recordRelatedChildSuccess(
+            selectedFile.id,
+            result.child,
+            result.parentVersion,
+          );
+          if (type === TaonCmsContentType.Normal) {
+            const cleanupErrors = await this.cleanupRelatedChildUploads(
+              selectedFile.id,
+              uploads,
+              [sourceUpload],
+            );
+            if (cleanupErrors.length) {
+              this.updateRelatedChildFile(selectedFile.id, {
+                error: cleanupErrors.join(' '),
+              });
+            }
+          }
+        } catch (error: unknown) {
+          console.error(
+            '[taon-cms-post] Unable to create related child from file',
+            selectedFile.file.name,
+            error,
+          );
+          let relatedPosts: TaonCmsContentEntity[] | null = null;
+          try {
+            relatedPosts = await firstValueFrom(
+              this.api.listRelatedPosts(parent.id),
+            );
+            this.relatedPosts.set(relatedPosts);
+          } catch (refreshError: unknown) {
+            console.error(
+              '[taon-cms-post] Unable to verify related child creation',
+              refreshError,
+            );
+          }
+          const uploads = this.childFiles().find(
+            file => file.id === selectedFile.id,
+          )?.uploads;
+          const existingChild = relatedPosts?.find(
+            post =>
+              post.title === expectedTitle &&
+              this.relatedChildMatchesFile(post, type, body, uploads),
+          );
+          if (existingChild) {
+            this.recordRelatedChildSuccess(
+              selectedFile.id,
+              existingChild,
+              this.currentPost()?.version ?? parent.version,
+            );
+            if (type === TaonCmsContentType.Normal && uploads?.source) {
+              const cleanupErrors = await this.cleanupRelatedChildUploads(
+                selectedFile.id,
+                uploads,
+                [uploads.source],
+              );
+              if (cleanupErrors.length) {
+                this.updateRelatedChildFile(selectedFile.id, {
+                  error: cleanupErrors.join(' '),
+                });
+              }
+            }
+            continue;
+          }
+          const cleanupErrors = uploads
+            ? relatedPosts
+              ? await this.cleanupRelatedChildUploads(selectedFile.id, uploads)
+              : []
+            : [];
+          const reason = error instanceof Error ? error.message : String(error);
+          const verificationError = relatedPosts
+            ? ''
+            : `${this.t.gettext(
+                'The creation result could not be verified; retrying will not duplicate an existing child.',
+              )} `;
+          this.updateRelatedChildFile(selectedFile.id, {
+            status: 'error',
+            error:
+              `${verificationError}${reason}` +
+              (cleanupErrors.length ? ` ${cleanupErrors.join(' ')}` : ''),
+          });
+          break;
+        }
+      }
+    } finally {
+      this.busy.set(false);
+      this.loadRelatedPosts();
+    }
+  }
+  //#endregion
+
+  //#region methods / related child file type
+  private relatedChildFileType(file: File): TaonCmsContentType {
+    const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (['doc', 'docx', 'rtf', 'txt'].includes(extension)) {
+      return TaonCmsContentType.Normal;
+    }
+    if (
+      file.type.startsWith('video/') ||
+      [
+        '3gp',
+        'avi',
+        'm4v',
+        'mkv',
+        'mov',
+        'mp4',
+        'mpeg',
+        'mpg',
+        'ogv',
+        'webm',
+      ].includes(extension)
+    ) {
+      return TaonCmsContentType.Video;
+    }
+    if (
+      file.type.startsWith('audio/') ||
+      [
+        'aac',
+        'flac',
+        'm4a',
+        'mp3',
+        'oga',
+        'ogg',
+        'opus',
+        'wav',
+        'weba',
+        'wma',
+      ].includes(extension)
+    ) {
+      return TaonCmsContentType.Audio;
+    }
+    return TaonCmsContentType.Attachment;
+  }
+  //#endregion
+
+  //#region methods / related child matches file
+  private relatedChildMatchesFile(
+    post: TaonCmsContentEntity,
+    type: TaonCmsContentType,
+    body: string | null,
+    uploads?: RelatedChildFileSelection['uploads'],
+  ): boolean {
+    const thumbnailKey =
+      type === TaonCmsContentType.Video
+        ? uploads?.thumbnail?.key
+        : type === TaonCmsContentType.Audio
+          ? defaultThumbnailKey(TaonCmsContentType.Audio)
+          : defaultThumbnailKey(TaonCmsContentType.Normal);
+    return (
+      post.type === type &&
+      post.body === body &&
+      post.videoKey ===
+        (type === TaonCmsContentType.Video ? uploads?.source?.key : null) &&
+      post.audioKey ===
+        (type === TaonCmsContentType.Audio ? uploads?.source?.key : null) &&
+      post.attachmentKey ===
+        (type === TaonCmsContentType.Attachment
+          ? uploads?.source?.key
+          : null) &&
+      post.thumbnailKey === thumbnailKey
+    );
+  }
+  //#endregion
+
+  //#region methods / record related child success
+  private recordRelatedChildSuccess(
+    fileId: number,
+    child: TaonCmsContentEntity,
+    parentVersion: number,
+  ): void {
+    this.relatedPosts.update(posts =>
+      posts.some(post => post.id === child.id) ? posts : [...posts, child],
+    );
+    this.currentPost.update(post =>
+      post
+        ? ({
+            ...post,
+            version: parentVersion,
+            relatedPosts: this.relatedPosts(),
+          } as TaonCmsContentEntity)
+        : post,
+    );
+    this.updateRelatedChildFile(fileId, {
+      status: 'success',
+      progress: 100,
+      createdTitle: child.title,
+      error: '',
+      uploads: undefined,
+    });
+  }
+  //#endregion
+
+  //#region methods / cleanup related child uploads
+  private async cleanupRelatedChildUploads(
+    fileId: number,
+    uploads: NonNullable<RelatedChildFileSelection['uploads']>,
+    only?: TaonStorageObject[],
+  ): Promise<string[]> {
+    const objects =
+      only ??
+      [uploads.thumbnail, uploads.source].filter(
+        (object): object is TaonStorageObject => !!object,
+      );
+    const remaining = new Set<string>();
+    const errors: string[] = [];
+    for (const object of objects) {
+      try {
+        if (!(await this.api.deleteUnattachedMedia(object.key))) {
+          remaining.add(object.key);
+          errors.push(
+            this.t.gettext(
+              'An uploaded file is still linked to a post and was not deleted.',
+            ),
+          );
+        }
+      } catch (error: unknown) {
+        console.error(
+          '[taon-cms-post] Unable to clean up uploaded media',
+          object.key,
+          error,
+        );
+        remaining.add(object.key);
+        errors.push(
+          this.t.gettext('An uploaded file could not be cleaned up.'),
+        );
+      }
+    }
+    const retained = {
+      ...(uploads.source && remaining.has(uploads.source.key)
+        ? { source: uploads.source }
+        : {}),
+      ...(uploads.thumbnail && remaining.has(uploads.thumbnail.key)
+        ? { thumbnail: uploads.thumbnail }
+        : {}),
+    };
+    this.updateRelatedChildFile(fileId, {
+      uploads: Object.keys(retained).length ? retained : undefined,
+    });
+    return errors;
+  }
+  //#endregion
+
+  //#region methods / update related child file
+  private updateRelatedChildFile(
+    id: number,
+    changes: Partial<RelatedChildFileSelection>,
+  ): void {
+    this.childFiles.update(files =>
+      files.map(file => (file.id === id ? { ...file, ...changes } : file)),
+    );
+  }
+  //#endregion
+
   //#region methods / file selected
   async fileSelected(event: Event): Promise<void> {
     if (!(event.target instanceof HTMLInputElement)) {
@@ -2302,6 +2776,15 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     this.uploadedMediaPreview.set(null);
     this.mediaPreviewSignature = '';
     this.mediaPreviewRequest += 1;
+    if ((post?.id ?? null) !== this.childTitlePrefixParentId) {
+      this.childTitlePrefixParentId = post?.id ?? null;
+      this.childTitlePrefixEdited = false;
+      this.childTitlePrefix.set(post ? `${post.title} child` : '');
+      this.childFiles.set([]);
+      this.childBatchError.set('');
+    } else if (post && !this.childTitlePrefixEdited) {
+      this.childTitlePrefix.set(`${post.title} child`);
+    }
     this.currentPost.set(post);
     this.loadVisibilityConfiguration(
       post && this.mode() !== 'view-clean' ? post : null,

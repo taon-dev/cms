@@ -33,6 +33,9 @@ import { TaonCmsContentStorageController } from './taon-cms-content-storage.cont
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
 import type {
   TaonCmsCreateContent,
+  TaonCmsCreateRelatedChildInput,
+  TaonCmsCreateRelatedChildResult,
+  TaonCmsPublicVideoChild,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
@@ -42,6 +45,10 @@ import type {
 } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';
+import {
+  defaultThumbnailKey,
+  defaultThumbnailUrl,
+} from '../taon-posts/taon-cms-post/taon-cms-thumbnail';
 //#endregion
 
 @TaonController<TaonCmsContentController>({
@@ -51,7 +58,9 @@ import { contentError } from './taon-cms-content.validation';
     'getAll',
     'getBy',
     'getPublicBySlug',
+    'getPublicVideoChildrenBySlug',
     'createContent',
+    'createRelatedChild',
     'duplicateContent',
     'permanentlyDeleteContent',
     'updateContent',
@@ -118,6 +127,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     if (
       methodConfig.methodName === 'getPublicContentByHook' ||
       methodConfig.methodName === 'getPublicBySlug' ||
+      methodConfig.methodName === 'getPublicVideoChildrenBySlug' ||
       methodConfig.methodName === 'listCourses' ||
       methodConfig.methodName === 'getPublicVideoLinkBySlug' ||
       methodConfig.methodName === 'getPublicAudioLinkBySlug' ||
@@ -383,6 +393,72 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   }
   //#endregion
 
+  @GET()
+  getPublicVideoChildrenBySlug(
+    @Query('slug') slug: string,
+  ): Taon.Response<TaonCmsPublicVideoChild[]> {
+    //#region @websqlFunc
+    return async (req, _res, { t }) => {
+      const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+      if (!normalizedSlug || normalizedSlug.length > 255) {
+        contentError(t.gettext('The post slug is invalid.'), 400);
+      }
+      const parent =
+        await this.taonCmsContentRepository.getContentBySlugForMedia(
+          normalizedSlug,
+        );
+      if (!parent) {
+        contentError(t.gettext('The post was not found.'), 404);
+      }
+      await this.requireReadAccess(parent, true, req, t);
+      const children =
+        await this.taonCmsContentRepository.listPublicVideoChildren(parent.id);
+      const publicVideos: TaonCmsPublicVideoChild[] = [];
+      for (const child of children) {
+        if (!child.videoKey) {
+          continue;
+        }
+        if (
+          !(await this.taonCmsContentStorageController.isPublicMediaObject(
+            child.videoKey,
+          ))
+        ) {
+          continue;
+        }
+        const fallbackThumbnail = defaultThumbnailUrl(
+          defaultThumbnailKey(child.type),
+        );
+        const posterUrl =
+          child.thumbnailKey &&
+          !child.thumbnailKey.startsWith('cms-placeholder:') &&
+          (await this.taonCmsContentStorageController.isPublicMediaObject(
+            child.thumbnailKey,
+          ))
+            ? this.taonCmsContentStorageController.buildStorageDownloadUrl({
+                req,
+                key: child.thumbnailKey,
+                private: false,
+              })
+            : (fallbackThumbnail ?? '');
+        publicVideos.push({
+          slug: child.slug,
+          title: child.title,
+          excerpt: child.excerpt,
+          videoUrl:
+            this.taonCmsContentStorageController.buildStorageDownloadUrl({
+              req,
+              key: child.videoKey,
+              private: false,
+            }),
+          posterUrl,
+        });
+      }
+      return publicVideos;
+    };
+    //#endregion
+  }
+  //#endregion
+
   //#region methods / create content
   @POST()
   createContent(
@@ -390,6 +466,58 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   ): Taon.Response<TaonCmsContentEntity> {
     //#region @websqlFunc
     return async () => this.taonCmsContentRepository.createContent(input);
+    //#endregion
+  }
+  //#endregion
+
+  @POST()
+  createRelatedChild(
+    @Query('parentId') parentId: number,
+    @Body() input: TaonCmsCreateRelatedChildInput,
+  ): Taon.Response<TaonCmsCreateRelatedChildResult> {
+    //#region @websqlFunc
+    return async () => {
+      if (!input || typeof input !== 'object') {
+        contentError('The child post input is invalid.');
+      }
+      if (typeof input.sourceKey !== 'string') {
+        contentError('The uploaded source media key is invalid.');
+      }
+      for (const key of [
+        input.videoKey,
+        input.audioKey,
+        input.attachmentKey,
+        input.thumbnailKey,
+      ]) {
+        if (key !== null && typeof key !== 'string') {
+          contentError('The uploaded media key is invalid.');
+        }
+      }
+      if (
+        !(await this.taonCmsContentStorageController.isMediaObjectAvailable(
+          input.sourceKey,
+        ))
+      ) {
+        contentError('The uploaded source file was not found.', 404);
+      }
+      for (const key of [
+        input.videoKey,
+        input.audioKey,
+        input.attachmentKey,
+        input.thumbnailKey,
+      ]) {
+        if (
+          key &&
+          !key.startsWith('cms-placeholder:') &&
+          !(await this.taonCmsContentStorageController.isMediaObjectAvailable(
+            key,
+          ))
+        ) {
+          contentError('The uploaded media file was not found.', 404);
+        }
+      }
+      return this.taonCmsContentRepository.createRelatedChild(parentId, input);
+    };
     //#endregion
   }
   //#endregion

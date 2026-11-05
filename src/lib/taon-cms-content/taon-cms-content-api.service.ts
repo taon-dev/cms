@@ -14,6 +14,9 @@ import { TaonCmsContentController } from './taon-cms-content.controller';
 import type { TaonCmsContentEntity } from './taon-cms-content.entity';
 import type {
   TaonCmsCreateContent,
+  TaonCmsCreateRelatedChildInput,
+  TaonCmsCreateRelatedChildResult,
+  TaonCmsPublicVideoChild,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
@@ -70,6 +73,20 @@ export class TaonCmsContentApiService<
       .request!();
     if (response.statusCode >= 400 || !response.body?.json) {
       throw new Error(response.responseText || 'The post could not be loaded.');
+    }
+    return response.body.json;
+  }
+
+  public async getPublicVideoChildrenBySlug(
+    slug: string,
+  ): Promise<TaonCmsPublicVideoChild[]> {
+    const response = await this.taonCmsContentController
+      .getPublicVideoChildrenBySlug(slug)
+      .request();
+    if (response.statusCode >= 400 || !Array.isArray(response.body?.json)) {
+      throw new Error(
+        response.responseText || 'Public video children could not be loaded.',
+      );
     }
     return response.body.json;
   }
@@ -203,6 +220,14 @@ export class TaonCmsContentApiService<
   }
   //#endregion
 
+  public async deleteUnattachedMedia(key: string): Promise<boolean> {
+    return (
+      await this.taonCmsContentStorageController
+        .deleteUnattachedMedia(key)
+        .request()
+    ).body.json;
+  }
+
   //#region API / list assets
   public listAssets(): Observable<TaonStorageObject[]> {
     return this.taonCmsContentStorageController
@@ -251,6 +276,17 @@ export class TaonCmsContentApiService<
       .request!().observable.pipe(map(res => res.body.json));
   }
   //#endregion
+
+  public async createRelatedChild(
+    parentId: number,
+    input: TaonCmsCreateRelatedChildInput,
+  ): Promise<TaonCmsCreateRelatedChildResult> {
+    return (
+      await this.taonCmsContentController
+        .createRelatedChild(parentId, input)
+        .request()
+    ).body.json;
+  }
 
   //#region API / duplicate content
   public duplicateContent(

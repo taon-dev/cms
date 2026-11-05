@@ -309,6 +309,131 @@
       </mat-tab>
       <mat-tab [label]="t.gettext('SETTINGS')">
         <div class="post-settings">
+          <mat-card class="post-setting-card">
+            <section
+              class="related-child-files"
+              aria-labelledby="related-child-files-heading">
+              <h2 id="related-child-files-heading">
+                {{ t.gettext('Create related children from files') }}
+              </h2>
+              @if (!currentPost()) {
+                <p role="note">
+                  {{
+                    t.gettext(
+                      'Please save the post before creating children.'
+                    )
+                  }}
+                </p>
+              }
+              <mat-form-field appearance="outline">
+                <mat-label>{{ t.gettext('Child title prefix') }}</mat-label>
+                <input
+                  matInput
+                  [value]="childTitlePrefix()"
+                  [disabled]="!currentPost() || busy() || dialogOpen()"
+                  (input)="updateChildTitlePrefix($event)" />
+              </mat-form-field>
+              <input
+                #relatedChildFilesInput
+                hidden
+                type="file"
+                multiple
+                [disabled]="!currentPost() || busy() || dialogOpen()"
+                (change)="relatedChildFilesSelected($event)" />
+              <button
+                mat-button
+                type="button"
+                [disabled]="!currentPost() || busy() || dialogOpen()"
+                (click)="relatedChildFilesInput.click()">
+                <mat-icon>add</mat-icon>
+                {{ t.gettext('Choose files') }}
+              </button>
+              @if (childBatchError()) {
+                <p
+                  class="error"
+                  role="alert">
+                  {{ childBatchError() }}
+                </p>
+              }
+              @if (childFiles().length) {
+                <div class="related-child-progress">
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="childOverallProgress()"
+                    [attr.aria-label]="
+                      t.gettext('Overall child creation progress')
+                    " />
+                  <span>
+                    {{ childOverallProgress() }}%
+                    {{ t.gettext('overall progress') }}
+                  </span>
+                </div>
+                <ul>
+                  @for (file of childFiles(); track file.id; let index =
+                  $index) {
+                    <li>
+                      <div class="related-child-file">
+                        <div class="related-child-file-heading">
+                          <span>{{ file.file.name }}</span>
+                          <span>{{ childTitlePreviews()[index] }}</span>
+                        </div>
+                        <div class="related-child-file-progress">
+                          <mat-progress-bar
+                            mode="determinate"
+                            [value]="file.progress"
+                            [attr.aria-label]="
+                              t.gettext('Progress for [[ fileName ]]', {
+                                fileName: file.file.name,
+                              })
+                            " />
+                          <span>{{ file.progress }}%</span>
+                        </div>
+                        @if (file.status === 'processing') {
+                          <p role="status">{{ t.gettext('Processing...') }}</p>
+                        } @else if (file.status === 'success') {
+                          <p role="status">{{ t.gettext('Child created.') }}</p>
+                          @if (file.error) {
+                            <p
+                              class="error"
+                              role="alert">
+                              {{ file.error }}
+                            </p>
+                          }
+                        } @else if (file.status === 'error') {
+                          <p
+                            class="error"
+                            role="alert">
+                            {{ file.error }}
+                          </p>
+                        } @else {
+                          <p>{{ t.gettext('Waiting to upload.') }}</p>
+                        }
+                      </div>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        [attr.aria-label]="
+                          t.gettext('Remove file [[ fileName ]]', {
+                            fileName: file.file.name,
+                          })
+                        "
+                        [disabled]="!currentPost() || busy() || dialogOpen()"
+                        (click)="removeRelatedChildFile(file.id)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+              <button
+                mat-flat-button
+                type="button"
+                [disabled]="!canUploadRelatedChildren()"
+                (click)="uploadAndCreateChildren()">
+                {{ t.gettext('Upload and Create Children') }}
+              </button>
+            </section>
+          </mat-card>
           @if (mediaAttachment(); as media) {
             <mat-card class="post-setting-card">
               <section

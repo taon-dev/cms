@@ -212,10 +212,17 @@ ngx-editor {
 }
 
 .related-posts,
+.related-child-files,
 .post-permissions {
   ul {
     padding: 0;
     list-style: none;
+  }
+
+  mat-form-field {
+    display: block;
+    width: min(100%, 28rem);
+    margin-top: 0.75rem;
   }
 
   .application-hook {
@@ -233,6 +240,53 @@ ngx-editor {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
+  }
+}
+
+.related-child-files {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #8883;
+  }
+}
+
+.related-child-file {
+  flex: 1;
+  min-width: 0;
+}
+
+.related-child-file-heading,
+.related-child-file-progress,
+.related-child-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.related-child-file-heading {
+  justify-content: space-between;
+  overflow-wrap: anywhere;
+}
+
+.related-child-file-progress {
+  margin-top: 0.5rem;
+
+  mat-progress-bar {
+    flex: 1;
+  }
+}
+
+.related-child-progress {
+  margin: 0.75rem 0;
+
+  mat-progress-bar {
+    flex: 1;
   }
 }
 

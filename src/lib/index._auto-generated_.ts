@@ -124,6 +124,7 @@ export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffic
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-backoffice.routes'; // @browser
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-contents.component'; // @browser
 export * from './taon-posts/taon-cms-course-backoffice/taon-cms-course-cover.component'; // @browser
+export * from './taon-posts/taon-cms-post/taon-cms-document-extractor'; 
 export * from './taon-posts/taon-cms-post/taon-cms-editable.directive'; // @browser
 export * from './taon-posts/taon-cms-post/taon-cms-post-choice-dialog.component'; // @browser
 export * from './taon-posts/taon-cms-post/taon-cms-post.component'; // @browser

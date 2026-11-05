@@ -12,6 +12,7 @@ import { TaonCmsContentRevisionRepository } from '../taon-cms-content-revision/t
 import { TaonCmsContentTagRepository } from '../taon-cms-content-tag/taon-cms-content-tag.repository';
 import { TaonCmsTagRepository } from '../taon-cms-tag/taon-cms-tag.repository';
 import { TaonCmsContentAssetEntity } from '../taon-cms-content-asset/taon-cms-content-asset.entity';
+import { _ } from 'tnp-core/src';
 
 import { TaonCmsContentEntity } from './taon-cms-content.entity';
 import { TaonCmsContentType } from './taon-cms-content.models';
@@ -19,6 +20,8 @@ import type {
   TaonCmsContentFields,
   TaonCmsContentSnapshot,
   TaonCmsCreateContent,
+  TaonCmsCreateRelatedChildInput,
+  TaonCmsCreateRelatedChildResult,
   TaonCmsRestoreContent,
   TaonCmsUpdateContent,
   TaonCmsPermissionConfiguration,
@@ -85,6 +88,319 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     return this.connection.transaction('SERIALIZABLE', manager =>
       this.createContentWithManager(input, manager),
     );
+    //#endregion
+  }
+
+  async createRelatedChild(
+    parentId: number,
+    input: TaonCmsCreateRelatedChildInput,
+  ): Promise<TaonCmsCreateRelatedChildResult> {
+    //#region @websqlFunc
+    requireContentId(parentId, 'parentId');
+    this.validateRelatedChildInput(input);
+    return this.connection.transaction('SERIALIZABLE', async manager => {
+      const parent = await this.requireContent(parentId, manager);
+      const prefix = input.titlePrefix.trim();
+      const requestedTitle = input.expectedTitle.trim();
+      const matchingChild = parent.relatedPosts.find(
+        child =>
+          child.title === requestedTitle &&
+          this.relatedChildMatchesInput(child, input),
+      );
+      if (matchingChild) {
+        return { child: matchingChild, parentVersion: parent.version };
+      }
+      const uploadedKeys = [
+        input.sourceKey,
+        ...(input.thumbnailKey.startsWith('cms-placeholder:')
+          ? []
+          : [input.thumbnailKey]),
+      ];
+      for (const key of new Set(uploadedKeys)) {
+        if (await this.isMediaKeyInUseWithinManager(key, manager)) {
+          contentError('An uploaded media file is already assigned to a post.', 409);
+        }
+      }
+
+      const title = this.nextRelatedChildTitle(prefix, parent.relatedPosts);
+      if (requestedTitle !== title) {
+        contentError(
+          'The child title sequence changed. Reload related posts and retry.',
+          409,
+        );
+      }
+      const inheritedVisibility = await this.resolveVisibilityConfiguration(
+        parent,
+        manager,
+      );
+      const status = parent.applyVisibilityToRelatedPosts
+        ? this.contentStatus(parent.status)
+        : inheritedVisibility.source
+          ? inheritedVisibility.status
+          : 'draft';
+      const repository = manager.getRepository<TaonCmsContentEntity>(
+        this.target,
+      );
+      const baseSlug = _.kebabCase(title);
+      if (!baseSlug) {
+        contentError('The child title cannot be converted into a URL slug.');
+      }
+      let slug = baseSlug;
+      let suffix = 2;
+      while (await repository.findOneBy({ slug })) {
+        slug = `${baseSlug}-${suffix}`;
+        suffix += 1;
+      }
+      const child = await this.createContentWithManager(
+        {
+          title,
+          slug,
+          type: input.type,
+          body: input.body,
+          videoKey: input.videoKey,
+          audioKey: input.audioKey,
+          attachmentKey: input.attachmentKey,
+          thumbnailKey: input.thumbnailKey,
+          status,
+          publishedAt: status === 'published' ? new Date() : null,
+          relatedPostIds: [],
+          tagIds: [],
+          permissionIds: [],
+          applicationHook: null,
+        },
+        manager,
+      );
+      const snapshot = await this.snapshotOf(parent, manager);
+      snapshot.relatedPostIds = [
+        ...parent.relatedPosts.map(relatedPost => relatedPost.id),
+        child.id,
+      ];
+      const updatedParent = await this.commitUpdate(
+        parent,
+        parent.version,
+        snapshot,
+        manager,
+        undefined,
+        false,
+      );
+      return { child, parentVersion: updatedParent.version };
+    });
+    //#endregion
+  }
+
+  private validateRelatedChildInput(
+    input: TaonCmsCreateRelatedChildInput,
+  ): void {
+    //#region @websqlFunc
+    if (!input || typeof input !== 'object') {
+      contentError('The child post input is invalid.');
+    }
+    const prefix =
+      typeof input.titlePrefix === 'string' ? input.titlePrefix.trim() : '';
+    if (!prefix || prefix.length > 240 || /[\r\n]/.test(prefix)) {
+      contentError('The child title prefix is invalid.');
+    }
+    if (
+      typeof input.expectedTitle !== 'string' ||
+      !input.expectedTitle.trim() ||
+      input.expectedTitle.trim().length > 255
+    ) {
+      contentError('The child title is invalid.');
+    }
+    if (
+      typeof input.fileName !== 'string' ||
+      !input.fileName.trim() ||
+      input.fileName.length > 255 ||
+      typeof input.mimeType !== 'string' ||
+      input.mimeType.length > 127
+    ) {
+      contentError('The uploaded file information is invalid.');
+    }
+    if (
+      (input.body !== null && typeof input.body !== 'string') ||
+      (typeof input.body === 'string' && input.body.length > 10_000_000)
+    ) {
+      contentError('The document content is invalid or too large.');
+    }
+    for (const key of [
+      input.videoKey,
+      input.audioKey,
+      input.attachmentKey,
+    ]) {
+      if (key !== null && typeof key !== 'string') {
+        contentError('The uploaded media key is invalid.');
+      }
+    }
+    if (
+      typeof input.sourceKey !== 'string' ||
+      !input.sourceKey.trim() ||
+      input.sourceKey.length > 1024 ||
+      typeof input.thumbnailKey !== 'string' ||
+      !input.thumbnailKey.trim() ||
+      input.thumbnailKey.length > 1024
+    ) {
+      contentError('The uploaded media key is invalid.');
+    }
+    const fileName = input.fileName.split(/[\\/]/).pop() ?? '';
+    const keyFileName = input.sourceKey.split('/').pop() ?? '';
+    const storedFileName = keyFileName.replace(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}__/i,
+      '',
+    );
+    if (storedFileName === keyFileName) {
+      contentError('The uploaded source media key is invalid.');
+    }
+    const extension = fileName.match(/\.([^.]+)$/)?.[1]?.toLowerCase() ?? '';
+    const keyExtension =
+      storedFileName.match(/\.([^.]+)$/)?.[1]?.toLowerCase() ?? '';
+    if (extension !== keyExtension) {
+      contentError('The uploaded file extension does not match its media key.');
+    }
+    const documentExtensions = new Set(['doc', 'docx', 'rtf', 'txt']);
+    const videoExtensions = new Set([
+      '3gp',
+      'avi',
+      'm4v',
+      'mkv',
+      'mov',
+      'mp4',
+      'mpeg',
+      'mpg',
+      'ogv',
+      'webm',
+    ]);
+    const audioExtensions = new Set([
+      'aac',
+      'flac',
+      'm4a',
+      'mp3',
+      'oga',
+      'ogg',
+      'opus',
+      'wav',
+      'weba',
+      'wma',
+    ]);
+    const mimeType = input.mimeType.toLowerCase();
+    const expectedType = documentExtensions.has(extension)
+      ? TaonCmsContentType.Normal
+      : mimeType.startsWith('video/')
+        ? TaonCmsContentType.Video
+        : mimeType.startsWith('audio/')
+          ? TaonCmsContentType.Audio
+          : videoExtensions.has(extension)
+            ? TaonCmsContentType.Video
+            : audioExtensions.has(extension)
+              ? TaonCmsContentType.Audio
+              : TaonCmsContentType.Attachment;
+    if (input.type !== expectedType) {
+      contentError('The uploaded file type does not match the child post type.');
+    }
+    if (input.type === TaonCmsContentType.Video) {
+      if (
+        input.videoKey !== input.sourceKey ||
+        input.audioKey !== null ||
+        input.attachmentKey !== null ||
+        input.body !== null ||
+        input.thumbnailKey === 'cms-placeholder:video'
+      ) {
+        contentError('The video child media mapping is invalid.');
+      }
+      if (!/\.(?:avif|gif|jpe?g|png|webp)$/i.test(input.thumbnailKey)) {
+        contentError('The video thumbnail file type is invalid.');
+      }
+    } else if (input.type === TaonCmsContentType.Audio) {
+      if (
+        input.audioKey !== input.sourceKey ||
+        input.videoKey !== null ||
+        input.attachmentKey !== null ||
+        input.body !== null ||
+        input.thumbnailKey !== 'cms-placeholder:audio'
+      ) {
+        contentError('The audio child media mapping is invalid.');
+      }
+    } else if (input.type === TaonCmsContentType.Normal) {
+      if (
+        !input.body?.trim() ||
+        input.videoKey !== null ||
+        input.audioKey !== null ||
+        input.attachmentKey !== null ||
+        input.thumbnailKey !== 'cms-placeholder:normal'
+      ) {
+        contentError('The document child content mapping is invalid.');
+      }
+    } else if (
+      input.attachmentKey !== input.sourceKey ||
+      input.videoKey !== null ||
+      input.audioKey !== null ||
+      input.body !== null ||
+      input.thumbnailKey !== 'cms-placeholder:normal'
+    ) {
+      contentError('The attachment child media mapping is invalid.');
+    }
+    //#endregion
+  }
+
+  private relatedChildMatchesInput(
+    child: TaonCmsContentEntity,
+    input: TaonCmsCreateRelatedChildInput,
+  ): boolean {
+    //#region @websqlFunc
+    return (
+      child.type === input.type &&
+      child.body === input.body &&
+      child.videoKey === input.videoKey &&
+      child.audioKey === input.audioKey &&
+      child.attachmentKey === input.attachmentKey &&
+      child.thumbnailKey === input.thumbnailKey
+    );
+    //#endregion
+  }
+
+  private nextRelatedChildTitle(
+    prefix: string,
+    children: TaonCmsContentEntity[],
+  ): string {
+    //#region @websqlFunc
+    let highest = 0;
+    for (const child of children) {
+      const candidatePrefix = `${prefix} `;
+      if (!child.title.startsWith(candidatePrefix)) {
+        continue;
+      }
+      const suffix = child.title.slice(candidatePrefix.length);
+      if (!/^\d+$/.test(suffix)) {
+        continue;
+      }
+      const number = Number(suffix);
+      if (Number.isSafeInteger(number)) {
+        highest = Math.max(highest, number);
+      }
+    }
+    const next = highest + 1;
+    if (!Number.isSafeInteger(next)) {
+      contentError('No available child title number could be generated.', 409);
+    }
+    return `${prefix} ${String(next).padStart(2, '0')}`;
+    //#endregion
+  }
+
+  private async isMediaKeyInUseWithinManager(
+    key: string,
+    manager: EntityManager,
+  ): Promise<boolean> {
+    //#region @websqlFunc
+    return !!(await manager
+      .getRepository<TaonCmsContentEntity>(this.target)
+      .findOne({
+        where: [
+          { videoKey: key },
+          { audioKey: key },
+          { attachmentKey: key },
+          { thumbnailKey: key },
+        ],
+        select: { id: true },
+      }));
     //#endregion
   }
 
@@ -633,6 +949,35 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
 
+  async listPublicVideoChildren(
+    parentId: number,
+  ): Promise<TaonCmsContentEntity[]> {
+    //#region @websqlFunc
+    requireContentId(parentId, 'parentId');
+    return this.connection.transaction(async manager => {
+      const parent = await this.requireContent(parentId, manager);
+      const publicChildren: TaonCmsContentEntity[] = [];
+      for (const child of parent.relatedPosts) {
+        if (
+          child.type !== TaonCmsContentType.Video ||
+          child.status !== 'published' ||
+          !child.videoKey
+        ) {
+          continue;
+        }
+        const permissions = await this.resolvePermissionConfiguration(
+          child,
+          manager,
+        );
+        if (!permissions.permissions?.length) {
+          publicChildren.push(child);
+        }
+      }
+      return publicChildren;
+    });
+    //#endregion
+  }
+
   async getParentPost(id: number): Promise<TaonCmsContentEntity | null> {
     //#region @websqlFunc
     requireContentId(id);
@@ -905,6 +1250,22 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     //#endregion
   }
   //#endregion
+
+  async isMediaKeyInUse(key: string): Promise<boolean> {
+    //#region @websqlFunc
+    return !!(await this.connection
+      .getRepository<TaonCmsContentEntity>(this.target)
+      .findOne({
+        where: [
+          { videoKey: key },
+          { audioKey: key },
+          { attachmentKey: key },
+          { thumbnailKey: key },
+        ],
+        select: { id: true },
+      }));
+    //#endregion
+  }
 
   async addRelatedPost(
     id: number,

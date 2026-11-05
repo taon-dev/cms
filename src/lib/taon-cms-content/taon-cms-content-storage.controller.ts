@@ -9,6 +9,8 @@ import {
   ExpressResponse,
   TaonBaseStorageController,
   TaonController,
+  DELETE,
+  Query,
   TaonStorageObject,
   TaonUploadedFile,
   ClassHelpers,
@@ -53,9 +55,12 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
   }: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentStorageController>): Promise<void> {
     //#region @backendFunc
     if (
-      !['uploadFormDataToServer', 'list', 'getPrivateUrl'].includes(
-        methodConfig.methodName,
-      )
+      ![
+        'uploadFormDataToServer',
+        'list',
+        'getPrivateUrl',
+        'deleteUnattachedMedia',
+      ].includes(methodConfig.methodName)
     ) {
       return;
     }
@@ -119,6 +124,40 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
   async isMediaObjectAvailable(key: string): Promise<boolean> {
     //#region @backendFunc
     return this.storageObjectExists(key);
+    //#endregion
+  }
+
+  async isPublicMediaObject(key: string): Promise<boolean> {
+    //#region @backendFunc
+    return (
+      (await this.storageObjectExists(key)) &&
+      (await this.taonCmsContentRepository.isPublicMediaKey(key))
+    );
+    //#endregion
+  }
+
+  @DELETE()
+  deleteUnattachedMedia(@Query('key') key: string): Taon.Response<boolean> {
+    //#region @backendFunc
+    return async () => {
+      const fileName = typeof key === 'string' ? key.split('/').pop() : '';
+      if (
+        !fileName ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}__/i.test(
+          fileName,
+        )
+      ) {
+        contentError('The uploaded media key is invalid.');
+      }
+      if (await this.taonCmsContentRepository.isMediaKeyInUse(key)) {
+        return false;
+      }
+      if (!(await this.storageObjectExists(key))) {
+        return true;
+      }
+      await Taon.getResponseValue(this.delete(key));
+      return true;
+    };
     //#endregion
   }
 
