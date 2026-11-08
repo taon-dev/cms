@@ -1,5 +1,5 @@
 //#region imports
-import { NgTemplateOutlet } from '@angular/common';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit,
@@ -153,6 +153,7 @@ interface RelatedChildFileSelection {
     MatDividerModule,
     DragDropModule,
     TaonCmsPostThumbnailComponent,
+    JsonPipe,
   ],
   providers: [
     TaonCmsContentApiService,

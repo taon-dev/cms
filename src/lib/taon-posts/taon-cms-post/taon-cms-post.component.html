@@ -396,14 +396,14 @@
                             <p
                               class="error"
                               role="alert">
-                              {{ file.error }}
+                              {{ file.error | json }}
                             </p>
                           }
                         } @else if (file.status === 'error') {
                           <p
                             class="error"
                             role="alert">
-                            {{ file.error }}
+                            {{ file.error | json }}
                           </p>
                         } @else {
                           <p>{{ t.gettext('Waiting to upload.') }}</p>
