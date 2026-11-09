@@ -742,7 +742,7 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
           contentError('Only archived posts can be permanently deleted.', 409);
         }
         const repository = manager.getRepository<TaonCmsContentEntity>(
-          this.target,
+          TaonCmsContentEntity,
         );
         const assetRepository =
           manager.getRepository<TaonCmsContentAssetEntity>(
