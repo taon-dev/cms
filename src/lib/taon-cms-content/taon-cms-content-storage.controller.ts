@@ -17,9 +17,11 @@ import {
   apiPrefix,
   Models,
   Taon,
+  TaonMultipartUploadOptions,
 } from 'taon/src';
 import { UtilsJwt } from 'tnp-core/src';
 
+import { TAON_CMS_MAX_UPLOAD_BYTES } from './taon-cms-content.constants';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';
 //#endregion
@@ -60,6 +62,10 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
         'list',
         'getPrivateUrl',
         'deleteUnattachedMedia',
+        'startMultipartUpload',
+        'uploadMultipartPart',
+        'completeMultipartUpload',
+        'abortMultipartUpload',
       ].includes(methodConfig.methodName)
     ) {
       return;
@@ -116,6 +122,64 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
         };
       }),
     );
+    //#endregion
+  }
+
+  /**
+   * Access is checked in beforeEachRequest (CMS managers only).
+   * The declared size is fixed at start and enforced for every part.
+   */
+  protected override async authorizeMultipartUpload(options: {
+    operation: 'start' | 'part' | 'complete' | 'abort';
+    key: string;
+    options: TaonMultipartUploadOptions;
+  }): Promise<boolean> {
+    //#region @backendFunc
+    if (
+      options.operation === 'start' &&
+      !(Number(options.options?.size) <= TAON_CMS_MAX_UPLOAD_BYTES)
+    ) {
+      contentError(
+        `The file is too large. The maximum upload size is 1 GB (${TAON_CMS_MAX_UPLOAD_BYTES} bytes).`,
+        413,
+      );
+    }
+    return true;
+    //#endregion
+  }
+
+  protected override async handleCompletedMultipartUpload(
+    object: TaonStorageObject,
+    queryParams?: {},
+    req?: ExpressRequest,
+  ): Promise<TaonStorageObject[]> {
+    //#region @backendFunc
+    if (!req) {
+      contentError('Upload request context is required.', 500);
+    }
+    return [await this.withDownloadUrl(object, req!)];
+    //#endregion
+  }
+
+  private async withDownloadUrl(
+    object: TaonStorageObject,
+    req: ExpressRequest,
+  ): Promise<TaonStorageObject> {
+    //#region @backendFunc
+    const token = await this.createStorageDownloadToken({
+      key: object.key,
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    });
+    return {
+      ...object,
+      downloadUrl: this.buildStorageDownloadUrl({
+        req,
+        key: object.key,
+        private: true,
+        token,
+        download: false,
+      }),
+    };
     //#endregion
   }
 

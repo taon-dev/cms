@@ -10,6 +10,7 @@ import { TaonCmsApplicationHook } from '../taon-cms-application-hooks';
 import type { TaonCmsContentRevisionEntity } from '../taon-cms-content-revision/taon-cms-content-revision.entity';
 
 import { TaonCmsContentStorageController } from './taon-cms-content-storage.controller';
+import { TAON_CMS_MAX_UPLOAD_BYTES } from './taon-cms-content.constants';
 import { TaonCmsContentController } from './taon-cms-content.controller';
 import type { TaonCmsContentEntity } from './taon-cms-content.entity';
 import type {
@@ -24,7 +25,6 @@ import type {
   TaonCmsPostVersionLinks,
   TaonCmsVisibilityConfiguration,
 } from './taon-cms-content.models';
-import { trackCmsUpload } from './taon-cms-upload-progress';
 
 //#endregion
 
@@ -192,31 +192,25 @@ export class TaonCmsContentApiService<
   public async uploadMedia(
     file: File,
     onProgress?: (percentage: number) => void,
+    signal?: AbortSignal,
   ): Promise<TaonStorageObject> {
-    const formData = new FormData();
-    formData.append('file', file);
-    const stopTracking = onProgress
-      ? trackCmsUpload(
-          this.taonCmsContentStorageController.getThisControllerMethodFullUrl(
-            'uploadFormDataToServer',
-          ),
-          formData,
-          onProgress,
-        )
-      : undefined;
-    try {
-      const response = await this.taonCmsContentStorageController
-        .uploadFormDataToServer(formData)
-        .request();
-      const objects = response.body.json;
-      if (!Array.isArray(objects) || objects.length !== 1 || !objects[0]?.key) {
-        throw new Error('The upload did not return a media key.');
-      }
-      onProgress?.(100);
-      return objects[0];
-    } finally {
-      stopTracking?.();
+    if (file.size > TAON_CMS_MAX_UPLOAD_BYTES) {
+      throw new Error(
+        `The file "${file.name}" is too large. The maximum upload size is 1 GB.`,
+      );
     }
+    const objects =
+      await this.taonCmsContentStorageController.uploadFileInChunks(file, {
+        fileName: file.name,
+        contentType: file.type || 'application/octet-stream',
+        signal,
+        onProgress,
+      });
+    if (!Array.isArray(objects) || objects.length !== 1 || !objects[0]?.key) {
+      throw new Error('The upload did not return a media key.');
+    }
+    onProgress?.(100);
+    return objects[0];
   }
   //#endregion
 

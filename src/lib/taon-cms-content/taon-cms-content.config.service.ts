@@ -10,4 +10,14 @@ export class TaonCmsContentConfigService extends TaonBaseAngularService {
   get siteName(): string {
     return this.taonCmsContentProvider.siteName;
   }
+
+  get requiredSlugs(): string[] {
+    return [
+      ...new Set(
+        (this.taonCmsContentProvider.requiredSlugs ?? [])
+          .map(slug => String(slug ?? '').trim())
+          .filter(Boolean),
+      ),
+    ];
+  }
 }

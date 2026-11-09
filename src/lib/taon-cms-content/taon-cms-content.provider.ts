@@ -11,6 +11,11 @@ import { Injectable } from '@angular/core';
 export class TaonCmsContentProvider extends TaonBaseProvider {
   public siteName: string;
 
+  /**
+   * Slugs offered in the post editor "Required Slugs" selector.
+   */
+  public requiredSlugs: string[] = [];
+
   async _(): Promise<void> {
     if (!this.siteName) {
       throw new Error(`Please provide siteName in TaonCmsContentProvider`);

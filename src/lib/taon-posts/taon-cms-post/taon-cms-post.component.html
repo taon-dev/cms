@@ -306,6 +306,21 @@
             (input)="updateSlug($event)"
             [placeholder]="t.gettext('my-post')" />
         </label>
+        @if (requiredSlugs.length) {
+          <mat-form-field
+            class="required-slugs-field"
+            appearance="outline">
+            <mat-label>{{ t.gettext('Required Slugs') }}</mat-label>
+            <mat-select
+              [value]="selectedRequiredSlug()"
+              [disabled]="busy() || dialogOpen()"
+              (selectionChange)="selectRequiredSlug($event.value)">
+              @for (slug of requiredSlugs; track slug) {
+                <mat-option [value]="slug">{{ slug }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
       </mat-tab>
       <mat-tab [label]="t.gettext('SETTINGS')">
         <div class="post-settings">
@@ -432,6 +447,14 @@
                 (click)="uploadAndCreateChildren()">
                 {{ t.gettext('Upload and Create Children') }}
               </button>
+              @if (childUploadRunning()) {
+                <button
+                  mat-button
+                  type="button"
+                  (click)="cancelRelatedChildUploads()">
+                  {{ t.gettext('Cancel upload') }}
+                </button>
+              }
             </section>
           </mat-card>
           @if (mediaAttachment(); as media) {
@@ -445,6 +468,12 @@
                     mode="determinate"
                     [value]="uploadProgress()"
                     [attr.aria-label]="t.gettext('Media upload progress')" />
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="cancelMediaUpload()">
+                    {{ t.gettext('Cancel upload') }}
+                  </button>
                 }
                 @if (draft()[media.key]; as key) {
                   @if (mediaPreviewLoading()) {

@@ -1,6 +1,6 @@
 //#region imports
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -26,6 +26,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -79,10 +80,10 @@ import type { TaonCmsCategoryEntity } from '../../taon-cms-category/taon-cms-cat
 import { TaonCmsCommentsComponent } from '../../taon-cms-comment/taon-cms-comments.component';
 import { TaonCmsContentApiService } from '../../taon-cms-content/taon-cms-content-api.service';
 import { TaonCmsContentConfigService } from '../../taon-cms-content/taon-cms-content.config.service';
+import { TAON_CMS_MAX_UPLOAD_BYTES } from '../../taon-cms-content/taon-cms-content.constants';
 import type { TaonCmsContentEntity } from '../../taon-cms-content/taon-cms-content.entity';
 import type { TaonCmsUpdateContent } from '../../taon-cms-content/taon-cms-content.models';
 import type { TaonCmsContentFields } from '../../taon-cms-content/taon-cms-content.models';
-import { extractDocumentHtml } from './taon-cms-document-extractor';
 import type {
   TaonCmsPostVersionKind,
   TaonCmsPostVersionLinks,
@@ -97,17 +98,17 @@ import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/ta
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 
+import { extractDocumentHtml } from './taon-cms-document-extractor';
 import { TaonCmsEditableDirective } from './taon-cms-editable.directive';
-import { TaonCmsPostThumbnailComponent } from './taon-cms-post-thumbnail.component';
 import { TaonCmsPostChoiceDialogComponent } from './taon-cms-post-choice-dialog.component';
 import type { TaonCmsPostChoiceDialogData } from './taon-cms-post-choice-dialog.component';
+import { TaonCmsPostThumbnailComponent } from './taon-cms-post-thumbnail.component';
 import type { TaonCmsPostDraft, TaonCmsPostMode } from './taon-cms-post.models';
 import {
   defaultThumbnailKey,
   defaultThumbnailUrl,
   generateVideoThumbnail,
 } from './taon-cms-thumbnail';
-import { MatDividerModule } from '@angular/material/divider';
 
 //#endregion
 
@@ -338,6 +339,12 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   readonly uploading = signal(false);
 
   readonly uploadProgress = signal(0);
+
+  private mediaUploadAbort: AbortController | null = null;
+
+  private childUploadAbort: AbortController | null = null;
+
+  readonly childUploadRunning = signal(false);
 
   readonly mediaPreviewUrl = signal('');
 
@@ -570,6 +577,15 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   private readonly api = inject(TaonCmsContentApiService);
 
   private readonly contentConfig = inject(TaonCmsContentConfigService);
+
+  get requiredSlugs(): string[] {
+    return this.contentConfig.requiredSlugs;
+  }
+
+  readonly selectedRequiredSlug = computed(() => {
+    const slug = this.draft().slug;
+    return this.requiredSlugs.includes(slug) ? slug : null;
+  });
 
   readonly contentTab = signal(0);
 
@@ -880,7 +896,10 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   }
   //#endregion
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.mediaUploadAbort?.abort();
+    this.childUploadAbort?.abort();
+  }
 
   //#region methods / load related posts
   loadTaxonomy(preserveSelectedTags = false): void {
@@ -1050,6 +1069,10 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
       this.error.set(
         this.t.gettext('Please select an image for the thumbnail.'),
       );
+      return;
+    }
+    if (file.size > TAON_CMS_MAX_UPLOAD_BYTES) {
+      this.error.set(this.fileTooLargeMessage(file));
       return;
     }
     this.busy.set(true);
@@ -1849,10 +1872,17 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     if (!this.currentPost() || this.busy() || !files.length) {
       return;
     }
-    this.childBatchError.set('');
+    const oversized = files.filter(
+      file => file.size > TAON_CMS_MAX_UPLOAD_BYTES,
+    );
+    this.childBatchError.set(
+      oversized.map(file => this.fileTooLargeMessage(file)).join(' '),
+    );
     this.childFiles.update(selected => [
       ...selected,
-      ...files.map(file => ({
+      ...files
+        .filter(file => file.size <= TAON_CMS_MAX_UPLOAD_BYTES)
+        .map(file => ({
         id: ++this.childFileSequence,
         file,
         status: 'pending' as const,
@@ -1887,10 +1917,16 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     const pendingFiles = this.childFiles()
       .map((file, index) => ({ file, index }))
       .filter(({ file }) => file.status !== 'success');
+    const abort = new AbortController();
+    this.childUploadAbort = abort;
+    this.childUploadRunning.set(true);
     this.busy.set(true);
     this.childBatchError.set('');
     try {
       for (const { file: selectedFile, index } of pendingFiles) {
+        if (abort.signal.aborted) {
+          break;
+        }
         const expectedTitle = this.childTitlePreviews()[index];
         this.updateRelatedChildFile(selectedFile.id, {
           status: 'processing',
@@ -1908,6 +1944,7 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
             file => file.id === selectedFile.id,
           )?.uploads;
           if (!uploads?.source) {
+            abort.signal.throwIfAborted();
             const source = await this.api.uploadMedia(
               selectedFile.file,
               percentage =>
@@ -1917,6 +1954,7 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
                       ? Math.round(percentage * 0.65)
                       : Math.round(percentage * 0.8),
                 }),
+              abort.signal,
             );
             uploads = { ...uploads, source };
             this.updateRelatedChildFile(selectedFile.id, { uploads });
@@ -1927,6 +1965,7 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
             );
             const extension =
               thumbnailBlob.type === 'image/webp' ? 'webp' : 'png';
+            abort.signal.throwIfAborted();
             const thumbnail = await this.api.uploadMedia(
               new File([thumbnailBlob], `thumbnail.${extension}`, {
                 type: thumbnailBlob.type,
@@ -1935,6 +1974,7 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
                 this.updateRelatedChildFile(selectedFile.id, {
                   progress: 65 + Math.round(percentage * 0.25),
                 }),
+              abort.signal,
             );
             uploads = { ...uploads, thumbnail };
             this.updateRelatedChildFile(selectedFile.id, { uploads });
@@ -1953,6 +1993,8 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
           if (!sourceUpload) {
             throw new Error('The uploaded source file is unavailable.');
           }
+          // Cancellation is honoured only before the child post is created.
+          abort.signal.throwIfAborted();
           const result = await this.api.createRelatedChild(parent.id, {
             titlePrefix,
             expectedTitle,
@@ -2037,7 +2079,10 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
               ? await this.cleanupRelatedChildUploads(selectedFile.id, uploads)
               : []
             : [];
-          const reason = error instanceof Error ? error.message : String(error);
+          const reason = abort.signal.aborted
+            ? this.t.gettext('Upload cancelled. No child post was created.')
+            : (error as any)?.body?.json?.message ||
+              (error instanceof Error ? error.message : String(error));
           const verificationError = relatedPosts
             ? ''
             : `${this.t.gettext(
@@ -2053,6 +2098,10 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
         }
       }
     } finally {
+      if (this.childUploadAbort === abort) {
+        this.childUploadAbort = null;
+      }
+      this.childUploadRunning.set(false);
       this.busy.set(false);
       this.loadRelatedPosts();
     }
@@ -2237,17 +2286,28 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
       input.value = '';
       return;
     }
+    if (file.size > TAON_CMS_MAX_UPLOAD_BYTES) {
+      input.value = '';
+      this.error.set(this.fileTooLargeMessage(file));
+      return;
+    }
     const session = this.editorSession;
+    const abort = new AbortController();
+    this.mediaUploadAbort = abort;
     this.busy.set(true);
     this.uploading.set(true);
     this.uploadProgress.set(0);
     this.error.set('');
     try {
-      const object = await this.api.uploadMedia(file, percentage => {
-        if (!this.destroyRef.destroyed) {
-          this.uploadProgress.set(percentage);
-        }
-      });
+      const object = await this.api.uploadMedia(
+        file,
+        percentage => {
+          if (!this.destroyRef.destroyed) {
+            this.uploadProgress.set(percentage);
+          }
+        },
+        abort.signal,
+      );
       if (!this.destroyRef.destroyed && this.editorSession === session) {
         const fileName = object.fileName || file.name;
         this.mediaFileNames.update(names => ({
@@ -2284,16 +2344,53 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
         }
       }
     } catch (error: unknown) {
-      console.error('[taon-cms-post] Unable to upload media', error);
-      this.error.set(
-        this.t.gettext('The media could not be uploaded. Please try again.'),
-      );
+      if (abort.signal.aborted) {
+        if (!this.destroyRef.destroyed) {
+          this.error.set(this.t.gettext('The media upload was cancelled.'));
+        }
+      } else {
+        console.error('[taon-cms-post] Unable to upload media', error);
+        this.error.set(
+          `${this.t.gettext('The media could not be uploaded. Please try again.')}${this.uploadErrorDetails(error)}`,
+        );
+      }
     } finally {
+      if (this.mediaUploadAbort === abort) {
+        this.mediaUploadAbort = null;
+      }
       this.busy.set(false);
       this.uploading.set(false);
       this.uploadProgress.set(0);
       input.value = '';
     }
+  }
+  //#endregion
+
+  //#region methods / cancel media upload
+  cancelMediaUpload(): void {
+    this.mediaUploadAbort?.abort();
+  }
+  //#endregion
+
+  //#region methods / cancel related child uploads
+  cancelRelatedChildUploads(): void {
+    this.childUploadAbort?.abort();
+  }
+  //#endregion
+
+  //#region methods / upload error helpers
+  private fileTooLargeMessage(file: File): string {
+    return this.t.gettext(
+      'The file "[[ fileName ]]" is too large. The maximum upload size is 1 GB.',
+      { fileName: file.name },
+    );
+  }
+
+  private uploadErrorDetails(error: unknown): string {
+    const message =
+      (error as any)?.body?.json?.message ||
+      (error instanceof Error ? error.message : '');
+    return message ? ` (${message})` : '';
   }
   //#endregion
 
@@ -2378,6 +2475,12 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   updateSlug(event: Event): void {
     if (event.target instanceof HTMLInputElement) {
       this.updateDraft('slug', event.target.value);
+    }
+  }
+
+  selectRequiredSlug(slug: string | null): void {
+    if (slug && this.requiredSlugs.includes(slug)) {
+      this.updateDraft('slug', slug);
     }
   }
   //#endregion
