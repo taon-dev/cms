@@ -1,0 +1,177 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.spreadsheet {
+  border: 1px solid #8885;
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #8885;
+}
+
+.import-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.import-button input {
+  display: none;
+}
+
+.table-scroll {
+  max-width: 100%;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th,
+td {
+  padding: 0.35rem;
+  border-right: 1px solid #8883;
+  border-bottom: 1px solid #8883;
+  text-align: left;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--mat-sys-surface, white);
+}
+
+thead small {
+  display: block;
+  opacity: 0.65;
+}
+
+.row-number {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 3rem;
+  background: var(--mat-sys-surface, white);
+  text-align: center;
+}
+
+td input:not([type='checkbox']),
+td textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 7rem;
+  padding: 0.4rem;
+  border: 1px solid transparent;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+}
+
+td textarea {
+  min-height: 2.5rem;
+  resize: vertical;
+}
+
+td input:focus,
+td textarea:focus,
+td.active {
+  outline: 2px solid #3f51b5;
+  outline-offset: -2px;
+}
+
+.row-actions {
+  white-space: nowrap;
+}
+
+.empty-state,
+.json-preview,
+.settings {
+  padding: 1rem;
+}
+
+.json-preview pre {
+  max-height: 60vh;
+  overflow: auto;
+  padding: 1rem;
+  background: #8881;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.settings {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.settings fieldset {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.settings label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.settings input {
+  min-width: 0;
+  padding: 0.5rem;
+}
+
+.validation-error {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  color: #b3261e;
+}
+
+.import-preview {
+  position: fixed;
+  inset: 10vh max(1rem, calc((100vw - 56rem) / 2));
+  z-index: 1000;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  overflow: auto;
+  padding: 1.25rem;
+  border: 1px solid #8887;
+  border-radius: 8px;
+  background: var(--mat-sys-surface, white);
+  box-shadow: 0 1rem 4rem #0005;
+}
+
+.import-preview h2,
+.import-preview p {
+  margin: 0;
+}
+
+.import-preview footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.read-only td input,
+.read-only td textarea {
+  cursor: default;
+}

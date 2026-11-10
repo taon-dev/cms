@@ -38,7 +38,9 @@ export function validateContentInput(
     input.type !== undefined &&
     !Object.values(TaonCmsContentType).includes(input.type)
   ) {
-    contentError('type must be normal, video, audio, or attachment.');
+    contentError(
+      'type must be normal, video, audio, attachment, or json-table.',
+    );
   }
   for (const field of ['title', 'slug'] as const) {
     if (creating || input[field] !== undefined) {

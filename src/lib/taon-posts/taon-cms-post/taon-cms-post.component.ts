@@ -94,6 +94,9 @@ import type { TaonCmsTemplateVariable } from '../../taon-cms-content/taon-cms-te
 import { TaonCmsTagApiService } from '../../taon-cms-tag/taon-cms-tag-api.service';
 import type { TaonCmsTagEntity } from '../../taon-cms-tag/taon-cms-tag.entity';
 import { TaonCmsTaxonomyQuickCreateDialogComponent } from '../../taon-cms-taxonomy-backoffice/taon-cms-taxonomy-quick-create-dialog.component';
+import { TaonSpreadsheetTableComponent } from '../../taon-spreadsheet-table/taon-spreadsheet-table.component';
+import type { TaonSpreadsheetData } from '../../taon-spreadsheet-table/taon-spreadsheet-table.models';
+import { parseSpreadsheetDocument, validateSpreadsheetData } from '../../taon-spreadsheet-table/taon-spreadsheet-table.utils';
 import { TaonCmsRevisionChooserComponent } from '../taon-cms-revision-chooser/taon-cms-revision-chooser.component';
 import { TaonRelatedPostChooserComponent } from '../taon-related-post-chooser/taon-related-post-chooser.component';
 import type { TaonRelatedPostChooserData } from '../taon-related-post-chooser/taon-related-post-chooser.component';
@@ -154,6 +157,7 @@ interface RelatedChildFileSelection {
     MatDividerModule,
     DragDropModule,
     TaonCmsPostThumbnailComponent,
+    TaonSpreadsheetTableComponent,
     JsonPipe,
   ],
   providers: [
@@ -167,6 +171,8 @@ interface RelatedChildFileSelection {
 export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
   //#region fields and getters
   readonly t = t.for(this);
+
+  readonly contentType = TaonCmsContentType;
 
   readonly post = input<TaonCmsContentEntity | null>(null);
 
@@ -216,6 +222,14 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     tagIds: [],
   });
 
+  readonly jsonTableData = signal<TaonSpreadsheetData>({
+    version: 1,
+    columns: [],
+    rows: [],
+  });
+
+  readonly jsonTableValidationError = signal('');
+
   readonly postTypes = [
     {
       value: TaonCmsContentType.Normal,
@@ -226,6 +240,10 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     {
       value: TaonCmsContentType.Attachment,
       label: this.t.gettext('Attachment post'),
+    },
+    {
+      value: TaonCmsContentType.JsonTable,
+      label: this.t.gettext('JSON Table post'),
     },
   ];
 
@@ -243,6 +261,8 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
         return 'audiotrack';
       case TaonCmsContentType.Attachment:
         return 'attach_file';
+      case TaonCmsContentType.JsonTable:
+        return 'table_chart';
       default:
         return 'article';
     }
@@ -546,7 +566,9 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
       !this.permissionsLoading() &&
       !this.permissionsError() &&
       !this.taxonomyLoading() &&
-      !this.taxonomyError(),
+      !this.taxonomyError() &&
+      (this.draft().type !== TaonCmsContentType.JsonTable ||
+        !this.jsonTableValidationError()),
   );
 
   readonly statusLabel = computed(() => {
@@ -1835,6 +1857,38 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     field: K,
     value: TaonCmsPostDraft[K],
   ): void {
+    if (
+      field === 'type' &&
+      value === TaonCmsContentType.JsonTable &&
+      this.draft().type !== TaonCmsContentType.JsonTable
+    ) {
+      let tableData: TaonSpreadsheetData = {
+        version: 1,
+        columns: [],
+        rows: [],
+      };
+      if (this.draft().body.trim()) {
+        try {
+          tableData = parseSpreadsheetDocument(this.draft().body);
+        } catch {
+          if (
+            !globalThis.confirm(
+              'Changing the post to a JSON Table will replace its current body. Continue?',
+            )
+          ) {
+            return;
+          }
+        }
+      }
+      this.jsonTableData.set(tableData);
+      this.jsonTableValidationError.set('');
+      this.draft.update(draft => ({
+        ...draft,
+        type: value,
+        body: JSON.stringify(tableData),
+      }));
+      return;
+    }
     if (field === 'title' && this.mode() === 'add') {
       const title = String(value);
       this.draft.update(draft => ({
@@ -2948,6 +3002,12 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
       categoryId: post?.categoryId ?? null,
       tagIds: [],
     });
+    if ((post?.type ?? TaonCmsContentType.Normal) === TaonCmsContentType.JsonTable) {
+      this.loadJsonTableData(post?.body ?? null);
+    } else {
+      this.jsonTableData.set({ version: 1, columns: [], rows: [] });
+      this.jsonTableValidationError.set('');
+    }
     if (
       post &&
       post.relatedPosts === undefined &&
@@ -2963,6 +3023,38 @@ export class TaonCmsPostComponent implements AfterViewInit, OnDestroy {
     }
   }
   //#endregion
+
+  setJsonTableData(value: TaonSpreadsheetData): void {
+    try {
+      const data = validateSpreadsheetData(value);
+      this.jsonTableData.set(data);
+      this.draft.update(draft => ({
+        ...draft,
+        body: JSON.stringify(data),
+      }));
+    } catch (error) {
+      this.jsonTableValidationError.set(
+        error instanceof Error ? error.message : 'JSON Table data is invalid.',
+      );
+    }
+  }
+
+  private loadJsonTableData(body: string | null): void {
+    try {
+      const data = parseSpreadsheetDocument(body);
+      this.jsonTableData.set(data);
+      this.draft.update(draft => ({
+        ...draft,
+        body: JSON.stringify(data),
+      }));
+      this.jsonTableValidationError.set('');
+    } catch (error) {
+      this.jsonTableData.set({ version: 1, columns: [], rows: [] });
+      this.jsonTableValidationError.set(
+        error instanceof Error ? error.message : 'JSON Table data is invalid.',
+      );
+    }
+  }
 
   //#region methods / set application hook selection
   private setApplicationHookSelection(

@@ -1,0 +1,364 @@
+<section
+  class="spreadsheet"
+  [class.read-only]="readOnly() || disabled()">
+  <header class="toolbar">
+    @if (!readOnly()) {
+      <button
+        mat-button
+        type="button"
+        [disabled]="disabled()"
+        (click)="addRow()">
+        <mat-icon>add</mat-icon> Add row
+      </button>
+      <button
+        mat-button
+        type="button"
+        [disabled]="disabled()"
+        (click)="addColumn()">
+        <mat-icon>view_column</mat-icon> Add column
+      </button>
+      <label class="import-button">
+        <mat-icon>upload_file</mat-icon> Import JSON/CSV
+        <input
+          type="file"
+          accept=".json,.csv,application/json,text/csv"
+          [disabled]="disabled()"
+          (change)="importFile($event)" />
+      </label>
+      <button
+        mat-button
+        type="button"
+        [disabled]="disabled()"
+        (click)="undo()">
+        Undo
+      </button>
+      <button
+        mat-button
+        type="button"
+        [disabled]="disabled()"
+        (click)="redo()">
+        Redo
+      </button>
+    }
+    <div class="w-full">
+      <button
+        mat-button
+        type="button"
+        (click)="view.set('table')">
+        Table
+      </button>
+      <button
+        mat-button
+        type="button"
+        (click)="view.set('json')">
+        JSON Preview
+      </button>
+    </div>
+    @if (!readOnly()) {
+      <button
+        mat-button
+        type="button"
+        (click)="view.set('settings')">
+        Settings
+      </button>
+      <button
+        mat-button
+        type="button"
+        (click)="downloadJson()">
+        Export JSON
+      </button>
+      <button
+        mat-button
+        type="button"
+        (click)="downloadJson(true)">
+        Full JSON
+      </button>
+      <button
+        mat-button
+        type="button"
+        (click)="downloadCsv()">
+        Export CSV
+      </button>
+    }
+  </header>
+
+  @if (validationError()) {
+    <p
+      class="validation-error"
+      role="alert">
+      {{ validationError() }}
+    </p>
+  }
+
+  @if (pendingImport(); as imported) {
+    <section
+      class="import-preview"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="import-preview-title">
+      <h2 id="import-preview-title">Preview {{ importFormat() }} import</h2>
+      <p>
+        {{ imported.rows.length }} rows · {{ imported.columns.length }} columns
+      </p>
+      @if (data().rows.length || data().columns.length) {
+        <label>
+          Import mode
+          <mat-select
+            [value]="importMode()"
+            (selectionChange)="importMode.set($event.value)">
+            <mat-option value="replace">Replace table</mat-option>
+            <mat-option value="append">Append rows</mat-option>
+          </mat-select>
+        </label>
+      }
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              @for (column of imported.columns; track column.key) {
+                <th>
+                  {{ column.label || column.key }}
+                  <small>{{ column.key }} · {{ column.type }}</small>
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of imported.rows.slice(0, 5); track $index) {
+              <tr>
+                @for (column of imported.columns; track column.key) {
+                  <td>{{ previewCell(row, column) }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <footer>
+        <button
+          mat-button
+          type="button"
+          (click)="cancelImport()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          type="button"
+          (click)="applyImport()">
+          Apply import
+        </button>
+      </footer>
+    </section>
+  }
+
+  @if (view() === 'table') {
+    @if (!data().columns.length) {
+      <div class="empty-state">
+        <p>No columns yet. Add a column or import a JSON/CSV file.</p>
+        @if (!readOnly()) {
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="addColumn()">
+            Add first column
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table>
+          <thead
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            [cdkDropListDisabled]="readOnly() || disabled()"
+            (cdkDropListDropped)="onColumnDrop($event)">
+            <tr>
+              <th class="row-number">#</th>
+              @for (
+                column of data().columns;
+                track trackColumn($index, column)
+              ) {
+                <th
+                  cdkDrag
+                  cdkDragHandle
+                  [cdkDragDisabled]="readOnly() || disabled()"
+                  [style.minWidth.px]="column.width || 140">
+                  {{ column.label || column.key }}
+                  @if (!readOnly()) {
+                    <small>{{ column.type }}</small>
+                  }
+                </th>
+              }
+              @if (!readOnly()) {
+                <th class="row-actions">Actions</th>
+              }
+            </tr>
+          </thead>
+          <tbody
+            cdkDropList
+            [cdkDropListDisabled]="readOnly() || disabled()"
+            (cdkDropListDropped)="onRowDrop($event)">
+            @for (row of data().rows; track $index; let rowIndex = $index) {
+              <tr
+                cdkDrag
+                [cdkDragDisabled]="readOnly() || disabled()">
+                <th
+                  class="row-number"
+                  cdkDragHandle>
+                  {{ rowIndex + 1 }}
+                </th>
+                @for (
+                  column of data().columns;
+                  track trackColumn($index, column);
+                  let columnIndex = $index
+                ) {
+                  <td
+                    [class.active]="
+                      activeCell()?.row === rowIndex &&
+                      activeCell()?.column === columnIndex
+                    ">
+                    @if (column.type === 'boolean') {
+                      <input
+                        type="checkbox"
+                        [checked]="row[column.key] === true"
+                        [disabled]="readOnly() || disabled()"
+                        [attr.data-cell]="rowIndex + ':' + columnIndex"
+                        (focus)="
+                          activeCell.set({ row: rowIndex, column: columnIndex })
+                        "
+                        (change)="setCell(rowIndex, column, $event)"
+                        (keydown)="
+                          onCellKeydown($event, rowIndex, columnIndex)
+                        " />
+                    } @else if (column.type === 'json') {
+                      <textarea
+                        [value]="cellValue(rowIndex, column)"
+                        [readonly]="readOnly() || disabled()"
+                        [attr.data-cell]="rowIndex + ':' + columnIndex"
+                        (focus)="
+                          activeCell.set({ row: rowIndex, column: columnIndex })
+                        "
+                        (input)="setCell(rowIndex, column, $event)"
+                        (paste)="onCellPaste($event, rowIndex, columnIndex)"
+                        (keydown)="
+                          onCellKeydown($event, rowIndex, columnIndex)
+                        "></textarea>
+                    } @else {
+                      <input
+                        [type]="
+                          column.type === 'number'
+                            ? 'number'
+                            : column.type === 'date'
+                              ? 'date'
+                              : 'text'
+                        "
+                        [value]="cellValue(rowIndex, column)"
+                        [readonly]="readOnly() || disabled()"
+                        [attr.data-cell]="rowIndex + ':' + columnIndex"
+                        (focus)="
+                          activeCell.set({ row: rowIndex, column: columnIndex })
+                        "
+                        (input)="setCell(rowIndex, column, $event)"
+                        (paste)="onCellPaste($event, rowIndex, columnIndex)"
+                        (keydown)="
+                          onCellKeydown($event, rowIndex, columnIndex)
+                        " />
+                    }
+                  </td>
+                }
+                @if (!readOnly()) {
+                  <td class="row-actions">
+                    <button
+                      mat-icon-button
+                      type="button"
+                      aria-label="Duplicate row"
+                      (click)="duplicateRow(rowIndex)">
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      aria-label="Delete row"
+                      (click)="deleteRow(rowIndex)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  } @else if (view() === 'json') {
+    <div class="json-preview">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="copyJson()">
+        Copy JSON
+      </button>
+      <pre>{{ jsonPreview() }}</pre>
+    </div>
+  } @else {
+    <div class="settings">
+      @for (
+        column of data().columns;
+        track trackColumn($index, column);
+        let columnIndex = $index
+      ) {
+        <fieldset>
+          <legend>Column {{ columnIndex + 1 }}</legend>
+          <label>
+            Label
+            <input
+              [value]="column.label || ''"
+              [disabled]="disabled()"
+              (change)="
+                renameColumn(columnIndex, 'label', $any($event.target).value)
+              " />
+          </label>
+          <label>
+            Key
+            <input
+              [value]="column.key"
+              [disabled]="disabled()"
+              (change)="
+                renameColumn(columnIndex, 'key', $any($event.target).value)
+              " />
+          </label>
+          <label>
+            Type
+            <mat-select
+              [value]="column.type"
+              [disabled]="disabled()"
+              (selectionChange)="setColumnType(columnIndex, $event.value)">
+              @for (type of columnTypes; track type) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+              }
+            </mat-select>
+          </label>
+          <label>
+            Width (px)
+            <input
+              type="number"
+              min="40"
+              max="1000"
+              [value]="column.width || 140"
+              [disabled]="disabled()"
+              (change)="
+                setColumnWidth(columnIndex, $any($event.target).value)
+              " />
+          </label>
+          <button
+            mat-stroked-button
+            type="button"
+            [disabled]="disabled()"
+            (click)="deleteColumn(columnIndex)">
+            Delete column
+          </button>
+        </fieldset>
+      }
+    </div>
+  }
+</section>

@@ -68,27 +68,54 @@ export class TaonCmsContentApiService<
   //#endregion
 
   public async getPublicBySlug(slug: string): Promise<TaonCmsContentEntity> {
-    const response = await this.taonCmsContentController
-      .getPublicBySlug(slug)
-      .request!();
+    const response =
+      await this.taonCmsContentController.getPublicBySlug(slug).request!();
     if (response.statusCode >= 400 || !response.body?.json) {
       throw new Error(response.responseText || 'The post could not be loaded.');
     }
     return response.body.json;
   }
 
-  public async getPublicVideoChildrenBySlug(
+  public async getJsonTableBySlug(
     slug: string,
-  ): Promise<TaonCmsPublicVideoChild[]> {
-    const response = await this.taonCmsContentController
-      .getPublicVideoChildrenBySlug(slug)
-      .request();
+  ): Promise<Record<string, unknown>[]> {
+    const response =
+      await this.taonCmsContentController.getJsonTableBySlug(slug).request!();
     if (response.statusCode >= 400 || !Array.isArray(response.body?.json)) {
       throw new Error(
-        response.responseText || 'Public video children could not be loaded.',
+        response.responseText || 'The JSON Table could not be loaded.',
       );
     }
     return response.body.json;
+  }
+
+  public getPublicJsonTableBySlug(
+    slug: string,
+  ): Observable<Record<string, unknown>[]> {
+    return this.taonCmsContentController.getPublicJsonTableBySlug(slug)
+      .request!().observable.pipe(
+      map(c => c.body.json as Record<string, unknown>[]),
+      catchError(error => {
+        console.error(`Failed to load JSON table "${slug}":`, error);
+        return of([] as Record<string, unknown>[]);
+      }),
+    );
+  }
+
+  public getPublicVideoChildrenBySlug(
+    slug: string,
+  ): Observable<TaonCmsPublicVideoChild[]> {
+    return this.taonCmsContentController.getPublicVideoChildrenBySlug(slug)
+      .request!().observable.pipe(
+      map(c => c.body.json as TaonCmsPublicVideoChild[]),
+      catchError(error => {
+        console.error(
+          `Failed to load public video children for "${slug}":`,
+          error,
+        );
+        return of([] as TaonCmsPublicVideoChild[]);
+      }),
+    );
   }
 
   //#region API / get video link by slug
@@ -316,10 +343,10 @@ export class TaonCmsContentApiService<
     id: number,
     expectedVersion: number,
   ): Observable<boolean> {
-    return this.taonCmsContentController
-      .permanentlyDeleteContent(id, expectedVersion)
-      .request!()
-      .observable.pipe(map(res => res.body.json));
+    return this.taonCmsContentController.permanentlyDeleteContent(
+      id,
+      expectedVersion,
+    ).request!().observable.pipe(map(res => res.body.json));
   }
 
   //#region API / restore content
@@ -351,12 +378,9 @@ export class TaonCmsContentApiService<
   }
   //#endregion
 
-  public async getParentPost(
-    id: number,
-  ): Promise<TaonCmsContentEntity | null> {
-    return (
-      await this.taonCmsContentController.getParentPost(id).request()
-    ).body.json;
+  public async getParentPost(id: number): Promise<TaonCmsContentEntity | null> {
+    return (await this.taonCmsContentController.getParentPost(id).request())
+      .body.json;
   }
 
   public async getVisibilityConfiguration(
@@ -369,12 +393,9 @@ export class TaonCmsContentApiService<
     ).body.json;
   }
 
-  public async getPostVersions(
-    id: number,
-  ): Promise<TaonCmsPostVersionLinks> {
-    return (
-      await this.taonCmsContentController.getPostVersions(id).request()
-    ).body.json;
+  public async getPostVersions(id: number): Promise<TaonCmsPostVersionLinks> {
+    return (await this.taonCmsContentController.getPostVersions(id).request())
+      .body.json;
   }
 
   //#region API / list permissions
@@ -427,10 +448,12 @@ export class TaonCmsContentApiService<
     kind: TaonCmsPostVersionKind,
     expectedVersion: number,
   ): Observable<TaonCmsContentEntity> {
-    return this.taonCmsContentController
-      .linkVersionPost(id, versionPostId, kind, expectedVersion)
-      .request!()
-      .observable.pipe(map(res => res.body.json));
+    return this.taonCmsContentController.linkVersionPost(
+      id,
+      versionPostId,
+      kind,
+      expectedVersion,
+    ).request!().observable.pipe(map(res => res.body.json));
   }
 
   public removeVersionPost(
@@ -438,10 +461,11 @@ export class TaonCmsContentApiService<
     kind: TaonCmsPostVersionKind,
     expectedVersion: number,
   ): Observable<TaonCmsContentEntity> {
-    return this.taonCmsContentController
-      .removeVersionPost(id, kind, expectedVersion)
-      .request!()
-      .observable.pipe(map(res => res.body.json));
+    return this.taonCmsContentController.removeVersionPost(
+      id,
+      kind,
+      expectedVersion,
+    ).request!().observable.pipe(map(res => res.body.json));
   }
 
   //#region API / get all entites

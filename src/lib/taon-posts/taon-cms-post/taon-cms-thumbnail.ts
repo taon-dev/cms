@@ -19,6 +19,8 @@ export function defaultThumbnailUrl(key: string): string | null {
     audio: '<path d="M280 164v40m20-60v80m20-98v116m20-98v80m20-60v40"/>',
     attachment:
       '<path d="M276 124h60l32 32v84h-92z M336 124v36h32m-70 30h48m-48 22h36"/>',
+    'json-table':
+      '<path d="M252 130h136v100H252z M252 164h136m-92-34v100m46-100v100m-90-66h136m-136 33h136"/>',
   };
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#eaf0ff"/><stop offset="1" stop-color="#e4f5f0"/></linearGradient></defs><rect width="640" height="360" rx="24" fill="url(#bg)"/><circle cx="320" cy="180" r="112" fill="#fff" opacity=".65"/><g fill="none" stroke="#52669a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${shapes[type]}</g></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;

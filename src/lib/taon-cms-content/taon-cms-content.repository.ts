@@ -36,6 +36,10 @@ import {
   requireContentVersion,
   validateContentInput,
 } from './taon-cms-content.validation';
+import {
+  parseSpreadsheetDocument,
+  TAON_SPREADSHEET_MAX_BYTES,
+} from '../taon-spreadsheet-table/taon-spreadsheet-table.utils';
 //#endregion
 
 @TaonRepository({
@@ -1520,6 +1524,22 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
     const slug = input.slug ?? current?.slug;
     if (title === undefined || slug === undefined) {
       contentError('title and slug are required.');
+    }
+    if (type === TaonCmsContentType.JsonTable) {
+      try {
+        const body = input.body === undefined ? (current?.body ?? null) : input.body;
+        if (typeof body === 'string' && body.length > TAON_SPREADSHEET_MAX_BYTES) {
+          contentError('JSON Table content exceeds the 10 MB limit.');
+        }
+        parseSpreadsheetDocument(
+          body,
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          contentError(`JSON Table content is invalid: ${error.message}`);
+        }
+        throw error;
+      }
     }
     const publishedAt =
       input.publishedAt === undefined

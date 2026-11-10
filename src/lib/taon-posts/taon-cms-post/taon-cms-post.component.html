@@ -166,6 +166,14 @@
           </button>
         }
         <section class="post-content-editor">
+          @if (draft().type === contentType.JsonTable) {
+            <taon-spreadsheet-table
+              [data]="jsonTableData()"
+              [disabled]="busy() || dialogOpen()"
+              [validationError]="jsonTableValidationError()"
+              (dataChange)="setJsonTableData($event)"
+              (validationErrorChange)="jsonTableValidationError.set($event)" />
+          } @else {
           <mat-tab-group
             [selectedIndex]="contentTab()"
             (selectedIndexChange)="setContentTab($event)"
@@ -296,6 +304,7 @@
               {{ t.gettext('Post Thumbnail URL') }}
             </button>
           </mat-menu>
+          }
         </section>
         <label class="slug-field">
           <span>{{ t.gettext('URL slug') }}</span>
@@ -1236,9 +1245,16 @@
     @if (post.excerpt) {
       <p class="post-excerpt">{{ post.excerpt }}</p>
     }
-    <div
-      class="post-body"
-      [innerHTML]="resolvedBody()"></div>
+    @if (post.type === contentType.JsonTable) {
+      <taon-spreadsheet-table
+        [data]="jsonTableData()"
+        [validationError]="jsonTableValidationError()"
+        [readOnly]="true" />
+    } @else {
+      <div
+        class="post-body"
+        [innerHTML]="resolvedBody()"></div>
+    }
     @if (mediaAttachment(); as media) {
       @if (draft()[media.key]; as key) {
         @if (mediaPreviewLoading()) {

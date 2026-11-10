@@ -43,12 +43,17 @@ import type {
   TaonCmsPostVersionLinks,
   TaonCmsVisibilityConfiguration,
 } from './taon-cms-content.models';
+import { TaonCmsContentType } from './taon-cms-content.models';
 import { TaonCmsContentRepository } from './taon-cms-content.repository';
 import { contentError } from './taon-cms-content.validation';
 import {
   defaultThumbnailKey,
   defaultThumbnailUrl,
 } from '../taon-posts/taon-cms-post/taon-cms-thumbnail';
+import {
+  parseSpreadsheetDocument,
+  TAON_SPREADSHEET_MAX_BYTES,
+} from '../taon-spreadsheet-table/taon-spreadsheet-table.utils';
 //#endregion
 
 @TaonController<TaonCmsContentController>({
@@ -57,6 +62,8 @@ import {
   allowedMethods: [
     'getAll',
     'getBy',
+    'getJsonTableBySlug',
+    'getPublicJsonTableBySlug',
     'getPublicBySlug',
     'getPublicVideoChildrenBySlug',
     'createContent',
@@ -126,6 +133,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#region @backendFunc
     if (
       methodConfig.methodName === 'getPublicContentByHook' ||
+      methodConfig.methodName === 'getPublicJsonTableBySlug' ||
       methodConfig.methodName === 'getPublicBySlug' ||
       methodConfig.methodName === 'getPublicVideoChildrenBySlug' ||
       methodConfig.methodName === 'listCourses' ||
@@ -141,6 +149,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
       methodConfig.methodName === 'getVideoLinkBySlug' ||
       methodConfig.methodName === 'getAudioLinkBySlug' ||
       methodConfig.methodName === 'getAttachmentLinkBySlug' ||
+      methodConfig.methodName === 'getJsonTableBySlug' ||
       methodConfig.methodName === 'getContentByHook' ||
       methodConfig.methodName === 'getThumbnailLinkBySlug'
     ) {
@@ -379,6 +388,80 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     //#endregion
   }
   //#endregion
+
+  @GET()
+  getJsonTableBySlug(
+    @Query('slug') slug: string,
+  ): Taon.Response<Record<string, unknown>[]> {
+    //#region @websqlFunc
+    return async (req, _res, { t }) => {
+      const post = await this.requireJsonTablePost(slug, req, t, false);
+      return this.jsonTableRows(post.body, t);
+    };
+    //#endregion
+  }
+
+  @GET()
+  getPublicJsonTableBySlug(
+    @Query('slug') slug: string,
+  ): Taon.Response<Record<string, unknown>[]> {
+    //#region @websqlFunc
+    return async (req, _res, { t }) => {
+      const post = await this.requireJsonTablePost(slug, req, t, true);
+      return this.jsonTableRows(post.body, t);
+    };
+    //#endregion
+  }
+
+  private async requireJsonTablePost(
+    slug: string,
+    req: ExpressRequest,
+    t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
+    publicOnly: boolean,
+  ): Promise<TaonCmsContentEntity> {
+    //#region @websqlFunc
+    const normalizedSlug = typeof slug === 'string' ? slug.trim() : '';
+    if (!normalizedSlug || normalizedSlug.length > 255) {
+      contentError(t.gettext('The post slug is invalid.'), 400);
+    }
+    const post =
+      await this.taonCmsContentRepository.getContentBySlugForMedia(
+        normalizedSlug,
+      );
+    if (!post) {
+      contentError(t.gettext('The post was not found.'), 404);
+    }
+    if (post.type !== TaonCmsContentType.JsonTable) {
+      contentError(t.gettext('The post is not a JSON Table.'), 400);
+    }
+    await this.requireReadAccess(post, publicOnly, req, t);
+    return post;
+    //#endregion
+  }
+
+  private jsonTableRows(
+    body: string | null,
+    t: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>['t'],
+  ): Record<string, unknown>[] {
+    //#region @websqlFunc
+    if (body && body.length > TAON_SPREADSHEET_MAX_BYTES) {
+      contentError('JSON Table content exceeds the 10 MB limit.', 400);
+    }
+    try {
+      return parseSpreadsheetDocument(body).rows;
+    } catch (error) {
+      if (error instanceof Error) {
+        contentError(
+          t.gettext('JSON Table content is invalid: [[ error ]]', {
+            error: error.message,
+          }),
+          400,
+        );
+      }
+      throw error;
+    }
+    //#endregion
+  }
 
   @GET()
   getPublicBySlug(

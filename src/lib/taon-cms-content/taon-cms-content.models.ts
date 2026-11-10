@@ -6,6 +6,7 @@ export enum TaonCmsContentType {
   Video = 'video',
   Audio = 'audio',
   Attachment = 'attachment',
+  JsonTable = 'json-table',
 }
 
 export enum TaonCmsContentState {

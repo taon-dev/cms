@@ -110,6 +110,27 @@ Reload courses fetches the latest list from the server.
 
 ## Posts UI
 
+### JSON Table posts
+
+Posts can use the `json-table` content type to store structured rows in the
+existing post `body` field. The versioned document stores ordered columns,
+labels, types, and rows, so edits, duplication, and existing revision restore
+continue to use the normal CMS persistence workflow. The reusable
+`taon-spreadsheet-table` component is exported from the package and can be used
+outside the CMS.
+
+The editor supports typed cells, row and column editing/reordering, JSON
+preview, JSON/CSV imports, and data-only/full-document JSON plus CSV exports.
+Date cells use ISO `YYYY-MM-DD` strings, and empty typed cells serialize as
+`null` (except explicitly entered empty strings in string columns).
+JSON Table API methods `getJsonTableBySlug` and
+`getPublicJsonTableBySlug` return rows only. Both apply the existing content
+read checks; the public method rejects drafts, archived posts, and
+permission-protected content. CSV parsing supports quoted fields, escaped
+quotes, multiline cells, UTF-8 BOM, comma/semicolon/tab delimiters, and formula
+escaping on export. XLSX parsing/export and related-post batch creation are not
+currently included.
+
 ### Content editing and template variables
 
 The post body has Editor (`ngx-editor`), Raw HTML, and read-only Preview tabs.

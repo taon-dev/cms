@@ -4,36 +4,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:157
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:166
 msgid "You can't manage posts"
 msgstr "Nie możesz zarządzać wpisami"
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:271
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:280
 msgid "Content was not found."
 msgstr "Zawartość nie została znaleziona."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:284
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:293
 msgid "Content has no [[ type ]] media."
 msgstr "Treść nie zawiera multimediów typu [[ type ]]."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:291
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:300
 msgid "The media file was not found in storage."
 msgstr "Nie znaleziono pliku multimedialnego w magazynie danych."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:329
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:338
 msgid "This content is not publicly accessible."
 msgstr "Zawartość ta nie jest dostępna publicznie."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:344
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:353
 msgid "You do not have access to this content."
 msgstr "Nie masz dostępu do tej treści."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:391
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:419
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:425
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:474
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:502
 msgid "The post slug is invalid."
 msgstr "Nieprawidłowy slug wpisu."
 
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:398
-#: src/lib/taon-cms-content/taon-cms-content.controller.ts:426
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:432
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:481
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:509
 msgid "The post was not found."
 msgstr "Nie znaleziono wpisu."
+
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:435
+msgid "The post is not a JSON Table."
+msgstr "Post nie jest Tabelą JSON"
+
+#: src/lib/taon-cms-content/taon-cms-content.controller.ts:455
+msgid "JSON Table content is invalid: [[ error ]]"
+msgstr "Zawartość tabela JSON jest nieprawidłowa [[ error ]]"
