@@ -202,7 +202,7 @@ export class TaonCmsContentApiService<
   public getPublicContentByHook(hook: HOOKS): Observable<string> {
     return this.taonCmsContentController.getPublicContentByHook(hook)
       .request!().observable.pipe(
-      map(res => res.body.text),
+      map(res => (res.body.text || '')?.replace(/\\n/g, '\n')),
       catchError(() => of('---')),
     );
   }
