@@ -60,6 +60,7 @@ import {
   //#region controller options
   className: 'TaonCmsContentController',
   allowedMethods: [
+    'getPublicExcerptBySlug',
     'getAll',
     'getBy',
     'getJsonTableBySlug',
@@ -132,6 +133,7 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   }: Models.TaonCtrlBeforeEachRequestParams<TaonCmsContentController>): Promise<void> {
     //#region @backendFunc
     if (
+      methodConfig.methodName === 'getPublicExcerptBySlug' ||
       methodConfig.methodName === 'getPublicContentByHook' ||
       methodConfig.methodName === 'getPublicJsonTableBySlug' ||
       methodConfig.methodName === 'getPublicBySlug' ||
@@ -409,6 +411,20 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
     return async (req, _res, { t }) => {
       const post = await this.requireJsonTablePost(slug, req, t, true);
       return this.jsonTableRows(post.body, t);
+    };
+    //#endregion
+  }
+
+  @GET()
+  getPublicExcerptBySlug(@Query('slug') slug: string): Taon.Response<string> {
+    //#region @websqlFunc
+    return async (req, _res, { t }) => {
+      const model = await this.db.findOne({
+        where: {
+          slug,
+        },
+      });
+      return model?.excerpt || '';
     };
     //#endregion
   }

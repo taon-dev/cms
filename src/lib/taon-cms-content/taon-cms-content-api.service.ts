@@ -102,6 +102,17 @@ export class TaonCmsContentApiService<
     );
   }
 
+  public getPublicExcerptBySlug(slug: string): Observable<string> {
+    return this.taonCmsContentController.getPublicExcerptBySlug(slug)
+      .request!().observable.pipe(
+      map(c => c.body.text),
+      catchError(error => {
+        console.error(`Failed to load JSON table "${slug}":`, error);
+        return '---';
+      }),
+    );
+  }
+
   public getPublicVideoChildrenBySlug(
     slug: string,
   ): Observable<TaonCmsPublicVideoChild[]> {
