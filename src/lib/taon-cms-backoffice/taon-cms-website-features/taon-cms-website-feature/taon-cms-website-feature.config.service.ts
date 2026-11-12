@@ -9,7 +9,7 @@ import { TaonCmsWebsiteFeatureProvider } from './taon-cms-website-feature.provid
 
 @Injectable()
 export class TaonCmsWebsiteFeatureConfigService extends TaonBaseAngularService {
-  private taonCmsWebsiteFeatureProvider = this.injectProvider(TaonCmsWebsiteFeatureProvider);
+  private taonCmsWebsiteFeatureProvider = this.inject(TaonCmsWebsiteFeatureProvider);
 
   get isEnableOption() {
     return this.taonCmsWebsiteFeatureProvider.enabledTaonCmsWebsiteFeatureOption;

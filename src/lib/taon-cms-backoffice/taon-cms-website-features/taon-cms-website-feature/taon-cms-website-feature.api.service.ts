@@ -9,7 +9,7 @@ import { map, Observable, startWith } from 'rxjs';
 
 @Injectable()
 export class TaonCmsWebsiteFeatureApiService extends TaonBaseAngularService {
-  private readonly taonCmsWebsiteFeatureController = this.injectController(
+  private readonly taonCmsWebsiteFeatureController = this.inject(
     TaonCmsWebsiteFeatureController,
   );
 

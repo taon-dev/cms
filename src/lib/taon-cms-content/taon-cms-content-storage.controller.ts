@@ -34,20 +34,20 @@ export class TaonCmsContentStorageController extends TaonBaseStorageController<
   {},
   TaonCmsContentStorageController
 > {
-  private readonly taonSessionRepository = this.injectCustomRepo(
+  private readonly taonSessionRepository = this.inject(
     TaonSessionRepository,
   );
 
-  private readonly taonAuthContextRepository = this.injectCustomRepo(
+  private readonly taonAuthContextRepository = this.inject(
     TaonAuthContextRepository,
   );
 
-  private readonly taonCmsContentRepository = this.injectCustomRepo(
+  private readonly taonCmsContentRepository = this.inject(
     TaonCmsContentRepository,
   );
 
   private readonly taonSessionProvider =
-    this.injectProvider(TaonSessionProvider);
+    this.inject(TaonSessionProvider);
 
   protected async beforeEachRequest({
     req,

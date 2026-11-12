@@ -33,11 +33,11 @@ export class TaonCmsContentApiService<
   HOOKS extends TaonCmsApplicationHook = TaonCmsApplicationHook,
 > extends TaonBaseAngularService {
   //#region fields & getters
-  protected readonly taonCmsContentController = this.injectController(
+  protected readonly taonCmsContentController = this.inject(
     TaonCmsContentController,
   );
 
-  protected readonly taonCmsContentStorageController = this.injectController(
+  protected readonly taonCmsContentStorageController = this.inject(
     TaonCmsContentStorageController,
   );
 

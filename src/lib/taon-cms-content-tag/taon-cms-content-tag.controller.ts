@@ -21,7 +21,7 @@ export class TaonCmsContentTagController extends TaonBaseCrudController<TaonCmsC
   entityClassResolveFn: () => typeof TaonCmsContentTagEntity = () =>
     TaonCmsContentTagEntity;
 
-  taonCmsContentTagRepository = this.injectCustomRepo(
+  taonCmsContentTagRepository = this.inject(
     TaonCmsContentTagRepository,
   );
 }

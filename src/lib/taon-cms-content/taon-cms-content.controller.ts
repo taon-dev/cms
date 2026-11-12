@@ -107,19 +107,19 @@ export class TaonCmsContentController extends TaonBaseCrudController<TaonCmsCont
   entityClassResolveFn: () => typeof TaonCmsContentEntity = () =>
     TaonCmsContentEntity;
 
-  private readonly taonCmsContentRepository = this.injectCustomRepo(
+  private readonly taonCmsContentRepository = this.inject(
     TaonCmsContentRepository,
   );
 
-  private readonly taonSessionRepository = this.injectCustomRepo(
+  private readonly taonSessionRepository = this.inject(
     TaonSessionRepository,
   );
 
-  private readonly taonAuthContextRepository = this.injectCustomRepo(
+  private readonly taonAuthContextRepository = this.inject(
     TaonAuthContextRepository,
   );
 
-  private readonly taonCmsContentStorageController = this.injectController(
+  private readonly taonCmsContentStorageController = this.inject(
     TaonCmsContentStorageController,
   );
   //#endregion

@@ -26,11 +26,11 @@ import type { TaonCmsWebsiteFeatureModels } from './taon-cms-website-feature.mod
   allowedMethods: ['isEnabled', 'listFeatures', 'addFeature', 'setEnabled', 'deleteFeature'],
 })
 export class TaonCmsWebsiteFeatureController extends TaonBaseController {
-  private readonly features = this.injectKvRepository(TaonCmsWebsiteFeatureKvRepository);
+  private readonly features = this.inject(TaonCmsWebsiteFeatureKvRepository);
 
-  private readonly sessions = this.injectCustomRepo(TaonSessionRepository);
+  private readonly sessions = this.inject(TaonSessionRepository);
 
-  private readonly auth = this.injectCustomRepo(TaonAuthContextRepository);
+  private readonly auth = this.inject(TaonAuthContextRepository);
 
   protected async beforeEachRequest({
     req,

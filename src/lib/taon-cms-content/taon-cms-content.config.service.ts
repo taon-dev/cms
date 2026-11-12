@@ -5,7 +5,7 @@ import { TaonCmsContentProvider } from './taon-cms-content.provider';
 
 @Injectable()
 export class TaonCmsContentConfigService extends TaonBaseAngularService {
-  taonCmsContentProvider = this.injectProvider(TaonCmsContentProvider);
+  taonCmsContentProvider = this.inject(TaonCmsContentProvider);
 
   get siteName(): string {
     return this.taonCmsContentProvider.siteName;

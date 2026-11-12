@@ -75,15 +75,15 @@ export class TaonCmsCommentController extends TaonBaseCrudController<TaonCmsComm
   entityClassResolveFn: () => typeof TaonCmsCommentEntity = () =>
     TaonCmsCommentEntity;
 
-  private readonly taonSessionRepository = this.injectCustomRepo(
+  private readonly taonSessionRepository = this.inject(
     TaonSessionRepository,
   );
 
-  private readonly taonAuthContextRepository = this.injectCustomRepo(
+  private readonly taonAuthContextRepository = this.inject(
     TaonAuthContextRepository,
   );
 
-  private readonly posts = this.injectCustomRepo(TaonCmsContentRepository);
+  private readonly posts = this.inject(TaonCmsContentRepository);
 
   private repository<T>(entity: { new (): T }) {
     return this.ctx.connection.manager.getRepository(entity);

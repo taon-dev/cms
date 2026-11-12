@@ -30,11 +30,11 @@ export class TaonCmsCategoryController extends TaonBaseCrudController<TaonCmsCat
   entityClassResolveFn: () => typeof TaonCmsCategoryEntity = () =>
     TaonCmsCategoryEntity;
 
-  taonCmsCategoryRepository = this.injectCustomRepo(TaonCmsCategoryRepository);
+  taonCmsCategoryRepository = this.inject(TaonCmsCategoryRepository);
 
-  private readonly sessions = this.injectCustomRepo(TaonSessionRepository);
+  private readonly sessions = this.inject(TaonSessionRepository);
 
-  private readonly auth = this.injectCustomRepo(TaonAuthContextRepository);
+  private readonly auth = this.inject(TaonAuthContextRepository);
 
   protected async beforeEachRequest({
     req,

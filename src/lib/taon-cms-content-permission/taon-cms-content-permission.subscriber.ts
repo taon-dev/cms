@@ -9,7 +9,7 @@ import { TaonCmsContentPermissionProvider } from './taon-cms-content-permission.
   // allowedEvents: ['afterUpdate'],
 })
 export class TaonCmsContentPermissionSubscriber extends TaonBaseSubscriberForEntity {
-  taonCmsContentPermissionProvider = this.injectProvider(TaonCmsContentPermissionProvider);
+  taonCmsContentPermissionProvider = this.inject(TaonCmsContentPermissionProvider);
   listenTo(): typeof TaonCmsContentPermissionEntity {
     return TaonCmsContentPermissionEntity;
   }

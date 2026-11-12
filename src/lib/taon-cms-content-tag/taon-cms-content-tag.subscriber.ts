@@ -9,7 +9,7 @@ import { TaonCmsContentTagProvider } from './taon-cms-content-tag.provider';
   // allowedEvents: ['afterUpdate'],
 })
 export class TaonCmsContentTagSubscriber extends TaonBaseSubscriberForEntity {
-  taonCmsContentTagProvider = this.injectProvider(TaonCmsContentTagProvider);
+  taonCmsContentTagProvider = this.inject(TaonCmsContentTagProvider);
   listenTo(): typeof TaonCmsContentTagEntity {
     return TaonCmsContentTagEntity;
   }

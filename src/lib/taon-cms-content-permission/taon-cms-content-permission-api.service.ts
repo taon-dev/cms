@@ -8,7 +8,7 @@ import { TaonCmsContentPermissionController } from './taon-cms-content-permissio
 
 @Injectable()
 export class TaonCmsContentPermissionApiService extends TaonBaseAngularService {
-  protected readonly taonCmsContentPermissionController = this.injectController(
+  protected readonly taonCmsContentPermissionController = this.inject(
     TaonCmsContentPermissionController,
   );
 

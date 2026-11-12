@@ -20,7 +20,7 @@ import { TaonCmsContentAssetRepository } from './taon-cms-content-asset.reposito
 export class TaonCmsContentAssetController extends TaonBaseCrudController<TaonCmsContentAssetEntity> {
   entityClassResolveFn: () => typeof TaonCmsContentAssetEntity = () => TaonCmsContentAssetEntity;
 
-  taonCmsContentAssetRepository = this.injectCustomRepo(TaonCmsContentAssetRepository);
+  taonCmsContentAssetRepository = this.inject(TaonCmsContentAssetRepository);
 
   //#region methods & getters / hello world
   /**

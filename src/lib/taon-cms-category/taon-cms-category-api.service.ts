@@ -9,7 +9,7 @@ import type { TaonCmsCategoryFields } from './taon-cms-taxonomy.validation';
 
 @Injectable()
 export class TaonCmsCategoryApiService extends TaonBaseAngularService {
-  protected readonly taonCmsCategoryController = this.injectController(
+  protected readonly taonCmsCategoryController = this.inject(
     TaonCmsCategoryController,
   );
 

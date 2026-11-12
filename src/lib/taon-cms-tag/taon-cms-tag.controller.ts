@@ -29,11 +29,11 @@ import { TaonCmsTagRepository } from './taon-cms-tag.repository';
 export class TaonCmsTagController extends TaonBaseCrudController<TaonCmsTagEntity> {
   entityClassResolveFn: () => typeof TaonCmsTagEntity = () => TaonCmsTagEntity;
 
-  taonCmsTagRepository = this.injectCustomRepo(TaonCmsTagRepository);
+  taonCmsTagRepository = this.inject(TaonCmsTagRepository);
 
-  private readonly sessions = this.injectCustomRepo(TaonSessionRepository);
+  private readonly sessions = this.inject(TaonSessionRepository);
 
-  private readonly auth = this.injectCustomRepo(TaonAuthContextRepository);
+  private readonly auth = this.inject(TaonAuthContextRepository);
 
   protected async beforeEachRequest({
     req,

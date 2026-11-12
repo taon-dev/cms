@@ -9,7 +9,7 @@ import { TaonCmsCommentProvider } from './taon-cms-comment.provider';
   // allowedEvents: ['afterUpdate'],
 })
 export class TaonCmsCommentSubscriber extends TaonBaseSubscriberForEntity {
-  taonCmsCommentProvider = this.injectProvider(TaonCmsCommentProvider);
+  taonCmsCommentProvider = this.inject(TaonCmsCommentProvider);
   listenTo(): typeof TaonCmsCommentEntity {
     return TaonCmsCommentEntity;
   }

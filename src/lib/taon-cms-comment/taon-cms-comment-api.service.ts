@@ -11,7 +11,7 @@ import {
 
 @Injectable()
 export class TaonCmsCommentApiService extends TaonBaseAngularService {
-  protected readonly taonCmsCommentController = this.injectController(
+  protected readonly taonCmsCommentController = this.inject(
     TaonCmsCommentController,
   );
 

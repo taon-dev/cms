@@ -49,19 +49,19 @@ export class TaonCmsContentRepository extends TaonBaseRepository<TaonCmsContentE
   entityClassResolveFn: () => typeof TaonCmsContentEntity = () =>
     TaonCmsContentEntity;
 
-  private readonly taonCmsContentRevisionRepository = this.injectCustomRepo(
+  private readonly taonCmsContentRevisionRepository = this.inject(
     TaonCmsContentRevisionRepository,
   );
 
-  private readonly taonCmsContentTagRepository = this.injectCustomRepo(
+  private readonly taonCmsContentTagRepository = this.inject(
     TaonCmsContentTagRepository,
   );
 
-  private readonly taonCmsCategoryRepository = this.injectCustomRepo(
+  private readonly taonCmsCategoryRepository = this.inject(
     TaonCmsCategoryRepository,
   );
 
-  private readonly tags = this.injectCustomRepo(TaonCmsTagRepository);
+  private readonly tags = this.inject(TaonCmsTagRepository);
 
   async listTagIds(id: number): Promise<number[]> {
     //#region @websqlFunc

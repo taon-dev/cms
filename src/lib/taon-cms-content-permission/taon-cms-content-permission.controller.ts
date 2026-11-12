@@ -20,7 +20,7 @@ import { TaonCmsContentPermissionRepository } from './taon-cms-content-permissio
 export class TaonCmsContentPermissionController extends TaonBaseCrudController<TaonCmsContentPermissionEntity> {
   entityClassResolveFn: () => typeof TaonCmsContentPermissionEntity = () => TaonCmsContentPermissionEntity;
 
-  taonCmsContentPermissionRepository = this.injectCustomRepo(TaonCmsContentPermissionRepository);
+  taonCmsContentPermissionRepository = this.inject(TaonCmsContentPermissionRepository);
 
   //#region methods & getters / hello world
   /**

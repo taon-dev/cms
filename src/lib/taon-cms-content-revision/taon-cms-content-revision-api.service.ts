@@ -12,11 +12,11 @@ import { TaonCmsContentRevisionController } from './taon-cms-content-revision.co
 
 @Injectable()
 export class TaonCmsContentRevisionApiService extends TaonBaseAngularService {
-  protected readonly contentController = this.injectController(
+  protected readonly contentController = this.inject(
     TaonCmsContentController,
   );
 
-  protected readonly taonCmsContentRevisionController = this.injectController(
+  protected readonly taonCmsContentRevisionController = this.inject(
     TaonCmsContentRevisionController,
   );
 

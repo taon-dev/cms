@@ -10,7 +10,7 @@ import type { TaonCmsTaxonomyFields } from '../taon-cms-category/taon-cms-taxono
 @Injectable()
 export class TaonCmsTagApiService extends TaonBaseAngularService {
   private readonly taonCmsTagController =
-    this.injectController(TaonCmsTagController);
+    this.inject(TaonCmsTagController);
 
   get allMyEntities$(): Observable<TaonCmsTagEntity[]> {
     return this.taonCmsTagController

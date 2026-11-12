@@ -21,7 +21,7 @@ export class TaonCmsContentRevisionController extends TaonBaseCrudController<Tao
   entityClassResolveFn: () => typeof TaonCmsContentRevisionEntity = () =>
     TaonCmsContentRevisionEntity;
 
-  taonCmsContentRevisionRepository = this.injectCustomRepo(
+  taonCmsContentRevisionRepository = this.inject(
     TaonCmsContentRevisionRepository,
   );
 }

@@ -8,7 +8,7 @@ import { TaonCmsContentAssetController } from './taon-cms-content-asset.controll
 
 @Injectable()
 export class TaonCmsContentAssetApiService extends TaonBaseAngularService {
-  protected readonly taonCmsContentAssetController = this.injectController(
+  protected readonly taonCmsContentAssetController = this.inject(
     TaonCmsContentAssetController,
   );
 
