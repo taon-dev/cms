@@ -8,4 +8,15 @@ export const MIGRATIONS_CLASSES_FOR_CmsContext = {
   /* 20-10-2026 16:32:37 */ CmsContext_1792506757808_applicaitonHooks,
   /* 03-11-2026 01:00:00 */ CmsContext_1793664000000_postVersionLinks,
 };
+export const MIGRATIONS_CLASSES_FOR_TaonCmsAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsCategoryAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsCommentAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsContentAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsContentAssetAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsContentPermissionAbstractContext =
+  {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsContentRevisionAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsContentTagAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsTagAbstractContext = {};
+export const MIGRATIONS_CLASSES_FOR_TaonCmsWebsiteFeatureAbstractContext = {};
 // THIS FILE IS GENERATED - DO NOT MODIFY
